@@ -1,7 +1,7 @@
 import { Suspense } from "react";
 import { Outlet } from "react-router-dom";
 
-function Layout() {
+function MainLayout() {
   return (
     <Suspense fallback={<div>Loading...</div>}>
       <Outlet />
@@ -9,4 +9,4 @@ function Layout() {
   );
 }
 
-export default Layout;
+export default MainLayout;

@@ -1,8 +1,9 @@
-import { lazy, Suspense } from "react";
+import { lazy } from "react";
 import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
 
-// Main Layout
-import Layout from "./Layout";
+// Layouts
+import AuthLayout from "./layouts/AuthLayout";
+import MainLayout from "./layouts/MainLayout";
 
 // Route Protector
 import PrivateRoute from "./routes/PrivateRoute";
@@ -22,23 +23,20 @@ const UserDashBorad = lazy(() => import("./pages/Users/Dashboard"));
 const MyTasks = lazy(() => import("./pages/Users/MyTasks"));
 const ViewTaskDetails = lazy(() => import("./pages/Users/ViewTaskDetails"));
 
-// componenets
-import { AuthLoader } from "./components";
-
 function App() {
   return (
     <Router>
       {/* Auth Routes */}
-      <Suspense fallback={<AuthLoader />}>
-        <Routes>
-          <Route path="/login" element={<Login />} />
-          <Route path="/register" element={<Register />} />
-        </Routes>
-      </Suspense>
+      <Routes>
+        <Route path="/auth" element={<AuthLayout />}>
+          <Route path="login" element={<Login />} />
+          <Route path="register" element={<Register />} />
+        </Route>
+      </Routes>
 
       {/* Other Routes */}
       <Routes>
-        <Route path="/" element={<Layout />}>
+        <Route path="/" element={<MainLayout />}>
           {/* Admin Routes */}
           <Route path="admin" element={<PrivateRoute allowedRoles="admin" />}>
             <Route path="dashboard" element={<AdminDashBorad />} />
