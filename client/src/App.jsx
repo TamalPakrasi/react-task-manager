@@ -32,10 +32,8 @@ function App() {
           <Route path="login" element={<Login />} />
           <Route path="register" element={<Register />} />
         </Route>
-      </Routes>
 
-      {/* Other Routes */}
-      <Routes>
+        {/* Other Routes */}
         <Route path="/" element={<MainLayout />}>
           {/* Admin Routes */}
           <Route path="admin" element={<PrivateRoute allowedRoles="admin" />}>
