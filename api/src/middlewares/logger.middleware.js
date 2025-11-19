@@ -1,7 +1,11 @@
 import fs from "fs/promises";
 import path from "path";
 
-const logPath = path.resolve(import.meta.dirname, "../../logs/requests.log");
+const logsDir = path.resolve(import.meta.dirname, "../../logs/");
+
+await fs.mkdir(logsDir, { recursive: true });
+
+const logPath = path.resolve(logsDir, "requests.log");
 
 const logger = (req, res, next) => {
   const start = Date.now();
