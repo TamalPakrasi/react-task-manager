@@ -14,3 +14,6 @@ export const DOMAIN = process.env.DOMAIN;
 
 // Environment configuration for mongodb
 export const MONGO_URI = process.env.MONGO_URI;
+
+// Environment configuration for client side origin
+export const CLIENT_SIDE_ORIGIN = process.env.CLIENT_SIDE_ORIGIN;
