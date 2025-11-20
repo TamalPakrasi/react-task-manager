@@ -11,7 +11,7 @@ const UsersSchema = {
       email: {
         bsonType: "string",
         description: "Email is required and must be a string",
-        pattern: "/^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+.[a-zA-Z]{2,}$/",
+        pattern: "^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\\.[a-zA-Z]{2,}$",
       },
       password: {
         bsonType: "string",
@@ -20,6 +20,10 @@ const UsersSchema = {
       profileImageUrl: {
         bsonType: ["string", "null"],
         description: "Profile image URL can be string or null",
+      },
+      profileImagePublicId: {
+        bsonType: ["string", "null"],
+        description: "Public Id can be string or null",
       },
       role: {
         bsonType: "string",

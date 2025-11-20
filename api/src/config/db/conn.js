@@ -39,12 +39,14 @@ export const connectDB = async () => {
     );
 
     await _db.collection("users").createIndex({ email: 1 }, { unique: true });
+
+    return _db;
   } catch (error) {
     await client?.close();
     console.error("MongoDB connection error:", error);
   }
 };
 
-export const getDB = () => {
-  return _db;
+export const getCollection = (collection) => {
+  return _db.collection(collection);
 };

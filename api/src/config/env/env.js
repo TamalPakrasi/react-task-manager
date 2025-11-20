@@ -17,3 +17,13 @@ export const MONGO_URI = process.env.MONGO_URI;
 
 // Environment configuration for client side origin
 export const CLIENT_SIDE_ORIGIN = process.env.CLIENT_SIDE_ORIGIN;
+
+// Environment configuration for tokens
+export const { ACCESS_TOKEN_SECRET, REFRESH_TOKEN_SECRET } = process.env;
+
+// Environment configuaration for cloudinary
+export const {
+  CLOUDINARY_CLOUD_NAME,
+  CLOUDINARY_API_KEY,
+  CLOUDINARY_API_SECRET_KEY,
+} = process.env;

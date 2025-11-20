@@ -17,7 +17,7 @@ const run = async (req, res, ...fns) => {
       await fn(req, res, next);
     } catch (error) {
       console.error("Middleware error:", error);
-      res?.sendJSON({ message: "Something Went wrong" }, 500);
+      res.sendJSON({ message: "Something Went wrong" }, 500);
     }
   };
 
