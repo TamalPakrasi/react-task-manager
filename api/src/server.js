@@ -12,6 +12,8 @@ import parseBody from "./middlewares/parseBody.middleware.js";
 
 // database connection
 import { connectDB, client } from "./config/db/conn.js";
+
+// router
 import router from "./router.js";
 
 // Connect the database
@@ -40,12 +42,12 @@ const server = http.createServer(
 
     if (req.url.endsWith("/")) req.url = req.url.slice(0, -1);
 
-    await run(req, res, logger, parseBody, (req, res) => {
+    await run(req, res, logger, parseBody, async (req, res) => {
       if (!req.url.startsWith("/api/")) {
         return res.sendJSON({ route: req.url, message: "Not Found" }, 404);
       }
 
-      router(req, res);
+      await router(req, res);
     });
   })
 );

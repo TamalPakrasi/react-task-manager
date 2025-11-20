@@ -1,6 +1,13 @@
 import { MongoClient, ServerApiVersion } from "mongodb";
 import { MONGO_URI } from "../env/env.js";
 
+// schema validator
+import validateSchema from "./validator.js";
+
+// schema
+import UsersSchema from "./Users.schema.js";
+import TasksSchema from "./Tasks.schema.js";
+
 export const client = new MongoClient(MONGO_URI, {
   serverApi: {
     version: ServerApiVersion.v1,
@@ -11,6 +18,11 @@ export const client = new MongoClient(MONGO_URI, {
 
 let _db = null;
 
+const validations = {
+  users: UsersSchema,
+  tasks: TasksSchema,
+};
+
 export const connectDB = async () => {
   if (_db) return _db;
   try {
@@ -20,15 +32,19 @@ export const connectDB = async () => {
 
     _db = client.db("taskmanager");
 
-    return _db;
+    await Promise.all(
+      Object.entries(validations).map(([collection, schema]) =>
+        validateSchema(_db, collection, schema)
+      )
+    );
+
+    await _db.collection("users").createIndex({ email: 1 }, { unique: true });
   } catch (error) {
+    await client?.close();
     console.error("MongoDB connection error:", error);
   }
 };
 
 export const getDB = () => {
-  if (!_db) {
-    throw new Error("Database not initialized.");
-  }
   return _db;
 };
