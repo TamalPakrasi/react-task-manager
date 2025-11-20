@@ -12,6 +12,7 @@ import parseBody from "./middlewares/parseBody.middleware.js";
 
 // database connection
 import { connectDB, client } from "./config/db/conn.js";
+import router from "./router.js";
 
 // Connect the database
 await connectDB();
@@ -39,17 +40,12 @@ const server = http.createServer(
 
     if (req.url.endsWith("/")) req.url = req.url.slice(0, -1);
 
-    await run(req, res, logger, parseBody, (req, res, next) => {
-      if (req.url === "/api" && req.method === "GET") {
-        res.setHeader(
-          "Set-Cookie",
-          "sessionId=123; HttpOnly; Path=/; SameSite=None; Secure"
-        );
-        return res.sendJSON({ msg: "hello" }, 200);
+    await run(req, res, logger, parseBody, (req, res) => {
+      if (!req.url.startsWith("/api/")) {
+        return res.sendJSON({ route: req.url, message: "Not Found" }, 404);
       }
-      if (req.url === "/api" && req.method === "POST") {
-        return res.sendJSON({ msg: req.headers.cookie }, 200);
-      }
+
+      router(req, res);
     });
   })
 );
@@ -59,13 +55,15 @@ server.listen(PORT, () => {
 });
 
 // shutdown process
-process.emit("SIGINT", async () => {
+process.on("SIGINT", async () => {
   console.log("Shutting down...");
   await client.close();
+  console.log("MongoDB Connetion is closing...");
   process.exit(0);
 });
 
 process.on("SIGTERM", async () => {
   await client.close();
+  console.log("MongoDB Connetion is closing...");
   process.exit(0);
 });
