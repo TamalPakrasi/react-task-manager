@@ -7,6 +7,7 @@ import validateSchema from "./validator.js";
 // schema
 import UsersSchema from "./Users.schema.js";
 import TasksSchema from "./Tasks.schema.js";
+import RefreshTokenSchema from "./Tokens.schema.js";
 
 export const client = new MongoClient(MONGO_URI, {
   serverApi: {
@@ -21,6 +22,7 @@ let _db = null;
 const validations = {
   users: UsersSchema,
   tasks: TasksSchema,
+  refreshTokens: RefreshTokenSchema,
 };
 
 export const connectDB = async () => {
@@ -39,6 +41,10 @@ export const connectDB = async () => {
     );
 
     await _db.collection("users").createIndex({ email: 1 }, { unique: true });
+
+    await _db
+      .collection("refreshTokens")
+      .createIndex({ expiresAt: 1 }, { expireAfterSeconds: 0 });
 
     return _db;
   } catch (error) {

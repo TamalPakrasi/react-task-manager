@@ -3,11 +3,10 @@ import path from "path";
 
 const logsDir = path.resolve(import.meta.dirname, "../../logs/");
 
-await fs.mkdir(logsDir, { recursive: true });
+const logger = async (req, res, next) => {
+  await fs.mkdir(logsDir, { recursive: true });
 
-const logPath = path.resolve(logsDir, "requests.log");
-
-const logger = (req, res, next) => {
+  const logPath = path.resolve(logsDir, "requests.log");
   const start = Date.now();
 
   res.on("finish", async () => {

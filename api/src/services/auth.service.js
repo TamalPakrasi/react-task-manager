@@ -6,11 +6,13 @@ import {
 } from "../config/env/env.js";
 
 import throwUploadError from "../utils/errors/Upload.error.js";
+import throwAuthError from "../utils/errors/Auth.error.js";
 
 import ValidationService from "./validation.service.js";
 import UplaodService from "./Upload.service.js";
 
 import * as UsersModel from "../models/Users.model.js";
+import * as TokensModel from "../models/Tokens.model.js";
 
 class Auth {
   #username = "";
@@ -20,8 +22,6 @@ class Auth {
 
   #profilePictureUrl = null;
   #profilePicturePublicId = null;
-
-  #user = null;
 
   #salt_rounds = 10;
 
@@ -33,11 +33,31 @@ class Auth {
   }
 
   #generateAccessToken(userID) {
-    return jwt.sign({ id: userID }, ACCESS_TOKEN_SECRET, { expiresIn: "30m" });
+    const token = jwt.sign({ id: userID }, ACCESS_TOKEN_SECRET, {
+      expiresIn: "30m",
+    });
+    if (!token) {
+      throwAuthError("Failed to generate tokens", 500);
+    }
+    return token;
   }
 
-  #generateRefreshToken(userID) {
-    return jwt.sign({ id: userID }, REFRESH_TOKEN_SECRET, { expiresIn: "14d" });
+  async #generateRefreshToken(userID) {
+    const token = jwt.sign({ id: userID }, REFRESH_TOKEN_SECRET, {
+      expiresIn: "14d",
+    });
+
+    if (!token) {
+      throwAuthError("Failed to generate tokens", 500);
+    }
+
+    const hashToken = await this.#generateHashedPass(token);
+
+    return {
+      refresh_token: token,
+      hashToken,
+      expiresAt: new Date(Date.now() + 1000 * 60 * 60 * 24 * 14),
+    };
   }
 
   async #generateHashedPass() {
@@ -45,7 +65,7 @@ class Auth {
       const hash = await bcrypt.hash(this.#pass, this.#salt_rounds);
       return hash;
     } catch (error) {
-      throw new Error("Failed to hash password");
+      throwAuthError("Failed to hash password", 500);
     }
   }
 
@@ -54,8 +74,27 @@ class Auth {
     return user;
   }
 
-  async #login() {
-    return this.#user;
+  async #login(userId) {
+    const access_token = this.#generateAccessToken(userId);
+
+    const { refresh_token, hashToken, expiresAt } =
+      await this.#generateRefreshToken(userId);
+
+    await TokensModel.store({
+      userId,
+      token: hashToken,
+      expiresAt,
+    });
+
+    return {
+      access_token: {
+        token: access_token,
+      },
+      refresh_token: {
+        token: refresh_token,
+        expiry: expiresAt,
+      },
+    };
   }
 
   async #create() {
@@ -69,9 +108,7 @@ class Auth {
       profileImagePublicId: this.#profilePicturePublicId,
     });
 
-    this.#user = newUser;
-
-    this.#login();
+    return await this.#login(newUser.userId);
   }
 
   async register() {
@@ -87,7 +124,6 @@ class Auth {
 
     // if user is present log in user
     if (user) {
-      this.#user = user;
       this.#login();
       return;
     }
@@ -110,9 +146,7 @@ class Auth {
     }
 
     // create new user
-    await this.#create();
-
-    return this.#user;
+    return await this.#create();
   }
 }
 

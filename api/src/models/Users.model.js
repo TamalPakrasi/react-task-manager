@@ -85,12 +85,7 @@ export const create = async ({
 
     const res = await Users.insertOne(newUser);
 
-    const response = { ...newUser, userId: res.insertId };
-
-    delete response.password;
-    delete response.updatedAt;
-
-    return response;
+    return { userId: res.insertedId };
   } catch (error) {
     console.log(error);
     throwDBError("Failed to create new user");
