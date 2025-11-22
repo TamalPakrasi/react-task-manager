@@ -5,9 +5,9 @@ import tasksRoutes from "./routes/tasks.route.js";
 import reportsRoutes from "./routes/reports.route.js";
 
 const router = async (req, res) => {
-  const [route, endPoint] = req.url.replace("/api/", "").split("/");
+  const [route, ...endPoint] = req.url.replace("/api/", "").split("/");
 
-  req.api = endPoint ?? "";
+  req.api = endPoint.join("/") || "";
 
   switch (route) {
     case "auth":
