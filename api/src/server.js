@@ -9,6 +9,7 @@ import run from "./utils/run.js";
 // middlewares
 import logger from "./middlewares/Logger.middleware.js";
 import parseBody from "./middlewares/parseBody.middleware.js";
+import parseCookies from "./middlewares/parseCookies.middleware.js";
 
 // database connection
 import { connectDB, client } from "./config/db/conn.js";
@@ -42,7 +43,7 @@ const server = http.createServer(
 
     if (req.url.endsWith("/")) req.url = req.url.slice(0, -1);
 
-    await run(req, res, logger, parseBody, async (req, res) => {
+    await run(req, res, logger, parseBody, parseCookies, async (req, res) => {
       if (!req.url.startsWith("/api/")) {
         return res.sendJSON({ route: req.url, message: "Not Found" }, 404);
       }

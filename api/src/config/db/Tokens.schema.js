@@ -19,6 +19,10 @@ const RefreshTokensSchema = {
         bsonType: "date",
         description: "Token creation date",
       },
+      updatedAt: {
+        bsonType: "date",
+        description: "Token updation date",
+      },
     },
   },
 };

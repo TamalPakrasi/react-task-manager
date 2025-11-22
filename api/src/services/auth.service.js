@@ -20,6 +20,8 @@ class Auth {
   #pass = "";
   #file = null;
 
+  #user = null;
+
   #profilePictureUrl = null;
   #profilePicturePublicId = null;
 
@@ -32,9 +34,9 @@ class Auth {
     this.#file = file;
   }
 
-  #generateAccessToken(userID) {
-    const token = jwt.sign({ id: userID }, ACCESS_TOKEN_SECRET, {
-      expiresIn: "30m",
+  #generateAccessToken() {
+    const token = jwt.sign({ id: this.#user.userId }, ACCESS_TOKEN_SECRET, {
+      expiresIn: "15m",
     });
     if (!token) {
       throwAuthError("Failed to generate tokens", 500);
@@ -42,8 +44,8 @@ class Auth {
     return token;
   }
 
-  async #generateRefreshToken(userID) {
-    const token = jwt.sign({ id: userID }, REFRESH_TOKEN_SECRET, {
+  async #generateRefreshToken() {
+    const token = jwt.sign({ id: this.#user.userId }, REFRESH_TOKEN_SECRET, {
       expiresIn: "14d",
     });
 
@@ -60,9 +62,9 @@ class Auth {
     };
   }
 
-  async #generateHashedPass() {
+  async #generateHashedPass(pass) {
     try {
-      const hash = await bcrypt.hash(this.#pass, this.#salt_rounds);
+      const hash = await bcrypt.hash(pass, this.#salt_rounds);
       return hash;
     } catch (error) {
       throwAuthError("Failed to hash password", 500);
@@ -74,14 +76,16 @@ class Auth {
     return user;
   }
 
-  async #login(userId) {
-    const access_token = this.#generateAccessToken(userId);
+  async #login() {
+    if (!this.#user) return;
+
+    const access_token = this.#generateAccessToken();
 
     const { refresh_token, hashToken, expiresAt } =
-      await this.#generateRefreshToken(userId);
+      await this.#generateRefreshToken();
 
     await TokensModel.store({
-      userId,
+      userId: this.#user.userId,
       token: hashToken,
       expiresAt,
     });
@@ -94,11 +98,12 @@ class Auth {
         token: refresh_token,
         expiry: expiresAt,
       },
+      user: this.#user,
     };
   }
 
   async #create() {
-    const hashPass = await this.#generateHashedPass();
+    const hashPass = await this.#generateHashedPass(this.#pass);
 
     const newUser = await UsersModel.create({
       username: this.#username,
@@ -108,7 +113,9 @@ class Auth {
       profileImagePublicId: this.#profilePicturePublicId,
     });
 
-    return await this.#login(newUser.userId);
+    this.#user = newUser;
+
+    return await this.#login();
   }
 
   async register() {
@@ -124,8 +131,7 @@ class Auth {
 
     // if user is present log in user
     if (user) {
-      this.#login();
-      return;
+      throwAuthError("User Already Exists", 409);
     }
 
     // if file exists file uploading

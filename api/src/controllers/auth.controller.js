@@ -8,7 +8,7 @@ export const register = async (req, res, next) => {
   try {
     const file = req.file;
 
-    const { access_token, refresh_token } = await authSevice({
+    const { access_token, refresh_token, user } = await authSevice({
       ...req.body,
       file,
     }).register();
@@ -24,6 +24,7 @@ export const register = async (req, res, next) => {
       {
         message: "User Registered and Logged In Successfully",
         token: access_token.token,
+        user,
       },
       201
     );
