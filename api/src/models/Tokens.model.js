@@ -61,3 +61,16 @@ export const get = async (userId) => {
     throwDBError("Failed to retrieve refresh token");
   }
 };
+
+// delete a hashed token from db
+export const revoke = async (userId) => {
+  try {
+    const RefreshTokens = getCollection("refreshTokens");
+
+    const res = await RefreshTokens.deleteOne({ userId: new ObjectId(userId) });
+
+    return res.deletedCount === 1;
+  } catch (error) {
+    throwDBError("Failed to log out User");
+  }
+};

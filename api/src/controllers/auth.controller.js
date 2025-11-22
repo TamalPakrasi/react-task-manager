@@ -3,7 +3,7 @@ import { NODE_ENV } from "../config/env/env.js";
 
 // @desc    POST register new user
 // @route   POST /api/auth/register
-// @access  public
+// @access  public (guest only)
 export const register = async (req, res, next) => {
   try {
     const file = req.file;
@@ -35,5 +35,20 @@ export const register = async (req, res, next) => {
 
 // @desc    POST loggin in existing user
 // @route   POST /api/auth/login
-// @access  public
+// @access  public (guest only)
 export const login = async (req, res, next) => {};
+
+// @desc    POST loggin out an authenticated user
+// @route   POST /api/auth/logout
+// @access  private (auth user)
+export const logout = async (req, res, next) => {
+  try {
+    console.log(req.user);
+    await authSevice().logout(req.user._id);
+
+    res.setHeader("Set-Header", "refresh_token= ; Max-Age=0");
+    res.sendJSON({ message: "User Logged Out Successfully" }, 200);
+  } catch (error) {
+    next(error);
+  }
+};

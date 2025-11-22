@@ -5,6 +5,8 @@ const parseBody = (req, res, next) => {
     return next();
   }
 
+  if (!req.headers["content-type"]) return next();
+
   // For regular json based payload
   if (req.headers["content-type"].includes("application/json")) {
     let data = "";

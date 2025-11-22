@@ -16,14 +16,14 @@ const guest = async (req, res, next) => {
       return await next();
     }
     // verfiying jwt
-    const payload = jwt.verify(refresh_token, REFRESH_TOKEN_SECRET);
+    const decoded = jwt.verify(refresh_token, REFRESH_TOKEN_SECRET);
 
-    if (!payload || !payload.id) {
+    if (!decoded || !decoded.id) {
       return await next();
     }
 
     // verifying in the db
-    const hashToken = await TokensModel.get(payload.id);
+    const hashToken = await TokensModel.get(decoded.id);
     if (!hashToken || !hashToken.token) {
       return await next();
     }

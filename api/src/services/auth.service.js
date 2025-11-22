@@ -27,11 +27,13 @@ class Auth {
 
   #salt_rounds = 10;
 
-  constructor({ username, email, password, file }) {
-    this.#username = username;
-    this.#email = email;
-    this.#pass = password;
-    this.#file = file;
+  constructor(obj) {
+    const { username, email, password, file } = obj || {};
+
+    this.#username = username || "";
+    this.#email = email || "";
+    this.#pass = password || "";
+    this.#file = file || null;
   }
 
   #generateAccessToken() {
@@ -153,6 +155,13 @@ class Auth {
 
     // create new user
     return await this.#create();
+  }
+
+  async logout(userId) {
+    const isLoggedOut = await TokensModel.revoke(userId);
+    if (!isLoggedOut) {
+      throwAuthError("Failed to Log out", 500);
+    }
   }
 }
 

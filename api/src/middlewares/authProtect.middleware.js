@@ -2,9 +2,9 @@ import jwt from "jsonwebtoken";
 import { ACCESS_TOKEN_SECRET } from "../config/env/env.js";
 import throwAuthError from "../utils/errors/Auth.error.js";
 
-import { findUserById } from "../models/Users.model.js";
+import * as UsersModel from "../models/Users.model.js";
 
-const authProtect = (req, res, next) => {
+const authProtect = async (req, res, next) => {
   const authHeader = req.headers["authorization"] ?? "";
   const token = authHeader.startsWith("Bearer")
     ? authHeader.replace("Bearer", "").trim()
@@ -23,13 +23,13 @@ const authProtect = (req, res, next) => {
 
     const { id } = decoded;
 
-    const user = findUserById(id);
+    const user = await UsersModel.findUserById(id);
 
     req.user = user;
 
-    next();
+    await next();
   } catch (error) {
-    next(error);
+    await next(error);
   }
 };
 
