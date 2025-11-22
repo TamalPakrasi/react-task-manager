@@ -1,0 +1,2 @@
+[2025-11-22T14:32:28.400Z] POST /api/auth/register - STATUS:201 - TIME:8402.24ms
+[2025-11-22T14:34:22.836Z] POST /api/auth/logout - STATUS:200 - TIME:206.24ms

@@ -10,6 +10,7 @@ import throwAuthError from "../utils/errors/Auth.error.js";
 
 import ValidationService from "./validation.service.js";
 import UplaodService from "./Upload.service.js";
+import MailService from "./mail.service.js";
 
 import * as UsersModel from "../models/Users.model.js";
 import * as TokensModel from "../models/Tokens.model.js";
@@ -91,6 +92,16 @@ class Auth {
       expiresAt,
     });
 
+    await MailService.sendMail({
+      to: this.#user.email,
+      subject: "Login Successfull",
+      template: "login",
+      variables: {
+        name: this.#user.username,
+        loginTime: new Date().toString(),
+      },
+    });
+
     return {
       access_token: {
         token: access_token,
@@ -115,6 +126,15 @@ class Auth {
     });
 
     this.#user = newUser;
+
+    await MailService.sendMail({
+      to: this.#user.email,
+      subject: "Welcome to Task Manager App | Registration Successfull",
+      template: "welcome",
+      variables: {
+        name: this.#user.username,
+      },
+    });
 
     return await this.#sendAuthToken();
   }
