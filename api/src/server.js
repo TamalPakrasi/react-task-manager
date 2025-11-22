@@ -8,6 +8,7 @@ import run from "./utils/run.js";
 
 // middlewares
 import logger from "./middlewares/Logger.middleware.js";
+import parseParams from "./middlewares/parseParams.middleware.js";
 import parseBody from "./middlewares/parseBody.middleware.js";
 import parseCookies from "./middlewares/parseCookies.middleware.js";
 
@@ -28,6 +29,8 @@ const cors = corsify({
   "Access-Control-Allow-Credentials": "true",
 });
 
+const globals = [logger, parseParams, parseBody, parseCookies];
+
 const server = http.createServer(
   cors(async (req, res) => {
     res.sendJSON = function (message, statusCode = 200) {
@@ -41,15 +44,20 @@ const server = http.createServer(
       );
     };
 
-    if (req.url.endsWith("/")) req.url = req.url.slice(0, -1);
+    await run(
+      req,
+      res,
+      ...[
+        ...globals,
+        async (req, res) => {
+          if (!req.url.startsWith("/api/")) {
+            return res.sendJSON({ route: req.url, message: "Not Found" }, 404);
+          }
 
-    await run(req, res, logger, parseBody, parseCookies, async (req, res) => {
-      if (!req.url.startsWith("/api/")) {
-        return res.sendJSON({ route: req.url, message: "Not Found" }, 404);
-      }
-
-      await router(req, res);
-    });
+          await router(req, res);
+        },
+      ]
+    );
   })
 );
 
