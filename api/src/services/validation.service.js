@@ -20,6 +20,22 @@ class Validation {
       throwValidationError(errors.join(", "));
     }
   }
+
+  static validateLogInCredentials(email, pass) {
+    const errors = [];
+
+    if (!/^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/.test(email)) {
+      errors.push("Invalid Email");
+    }
+
+    if (!pass || !pass.trim()) {
+      errors.push("Invalid Password");
+    }
+
+    if (errors.length > 0) {
+      throwValidationError(errors.join(", "));
+    }
+  }
 }
 
 export default Validation;

@@ -37,7 +37,7 @@ class Auth {
   }
 
   #generateAccessToken() {
-    const token = jwt.sign({ id: this.#user.userId }, ACCESS_TOKEN_SECRET, {
+    const token = jwt.sign({ id: this.#user._id }, ACCESS_TOKEN_SECRET, {
       expiresIn: "15m",
     });
     if (!token) {
@@ -47,7 +47,7 @@ class Auth {
   }
 
   async #generateRefreshToken() {
-    const token = jwt.sign({ id: this.#user.userId }, REFRESH_TOKEN_SECRET, {
+    const token = jwt.sign({ id: this.#user._id }, REFRESH_TOKEN_SECRET, {
       expiresIn: "14d",
     });
 
@@ -78,16 +78,15 @@ class Auth {
     return user;
   }
 
-  async #login() {
+  async #sendAuthToken() {
     if (!this.#user) return;
-
     const access_token = this.#generateAccessToken();
 
     const { refresh_token, hashToken, expiresAt } =
       await this.#generateRefreshToken();
 
     await TokensModel.store({
-      userId: this.#user.userId,
+      userId: this.#user._id,
       token: hashToken,
       expiresAt,
     });
@@ -117,7 +116,7 @@ class Auth {
 
     this.#user = newUser;
 
-    return await this.#login();
+    return await this.#sendAuthToken();
   }
 
   async register() {
@@ -155,6 +154,22 @@ class Auth {
 
     // create new user
     return await this.#create();
+  }
+
+  async login() {
+    // credential validation
+    ValidationService.validateLogInCredentials(this.#email, this.#pass);
+
+    // check email existance
+    const user = await this.#checkEmailExists();
+
+    if (!user) {
+      throwAuthError("User not found - Please Register", 404);
+    }
+
+    this.#user = user;
+
+    return await this.#sendAuthToken();
   }
 
   async logout(userId) {
