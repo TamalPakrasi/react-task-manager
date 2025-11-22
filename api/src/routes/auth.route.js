@@ -7,6 +7,7 @@ import * as auth from "../controllers/auth.controller.js";
 import isImage from "../middlewares/isImage.middleware.js";
 import guest from "../middlewares/guest.middleware.js";
 import authProtect from "../middlewares/authProtect.middleware.js";
+import hasRefreshToken from "../middlewares/hasRefreshToken.middleware.js";
 
 const routes = async (req, res) => {
   if (req.api === "register" && req.method === "POST") {
@@ -19,6 +20,10 @@ const routes = async (req, res) => {
 
   if (req.api === "logout" && req.method === "POST") {
     return await run(req, res, authProtect, auth.logout);
+  }
+
+  if (req.api === "refresh" && req.method === "POST") {
+    return await run(req, res, hasRefreshToken, auth.refresh);
   }
 
   return res.sendJSON({ message: "Route or Method is invalid" }, 400);

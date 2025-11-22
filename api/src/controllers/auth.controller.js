@@ -28,7 +28,7 @@ export const register = async (req, res, next) => {
       201
     );
   } catch (error) {
-    next(error);
+    await next(error);
   }
 };
 
@@ -57,7 +57,7 @@ export const login = async (req, res, next) => {
       200
     );
   } catch (error) {
-    next(error);
+    await next(error);
   }
 };
 
@@ -74,6 +74,37 @@ export const logout = async (req, res, next) => {
     );
     res.sendJSON({ message: "User Logged Out Successfully" }, 200);
   } catch (error) {
-    next(error);
+    await next(error);
+  }
+};
+
+// @desc    POST Issuing new tokens for authenticate user
+// @route   POST /api/auth/refresh
+// @access  private (auth user)
+export const refresh = async (req, res, next) => {
+  try {
+    const { id } = req.user;
+
+    const { access_token, refresh_token, user } = await authSevice().refresh(
+      id
+    );
+
+    res.setHeader(
+      "Set-Cookie",
+      `refresh_token=${
+        refresh_token.token
+      }; HttpOnly; Secure; SameSite=None; Expires=${refresh_token.expiry.toUTCString()}; path=/`
+    );
+
+    res.sendJSON(
+      {
+        message: "Token Refreshed Successfully",
+        token: access_token.token,
+        user,
+      },
+      200
+    );
+  } catch (error) {
+    await next(error);
   }
 };

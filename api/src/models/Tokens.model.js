@@ -2,22 +2,29 @@ import { ObjectId } from "mongodb";
 import { getCollection } from "../config/db/conn.js";
 import throwDBError from "../utils/errors/Database.error.js";
 
-// store refresh token
-export const store = async ({ userId, token, expiresAt }) => {
+// store or update refresh token
+export const storeOrUpdate = async ({ userId, token, expiresAt }) => {
   try {
     const RefreshTokens = getCollection("refreshTokens");
 
-    await RefreshTokens.insertOne({
-      userId: new ObjectId(userId),
-      token,
-      expiresAt,
-      createdAt: new Date(),
-      updatedAt: new Date(),
-    });
+    await RefreshTokens.updateOne(
+      { userId: new ObjectId(userId) },
+      {
+        $set: {
+          token,
+          expiresAt,
+          updatedAt: new Date(),
+        },
+        $setOnInsert: {
+          createdAt: new Date(),
+        },
+      },
+      { upsert: true }
+    );
     return;
   } catch (error) {
     console.log(error);
-    throwDBError("Failed to store refresh token");
+    throwDBError("Failed to store or update refresh token");
   }
 };
 

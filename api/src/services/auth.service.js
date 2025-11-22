@@ -85,7 +85,7 @@ class Auth {
     const { refresh_token, hashToken, expiresAt } =
       await this.#generateRefreshToken();
 
-    await TokensModel.store({
+    await TokensModel.storeOrUpdate({
       userId: this.#user._id,
       token: hashToken,
       expiresAt,
@@ -177,6 +177,13 @@ class Auth {
     if (!isLoggedOut) {
       throwAuthError("Failed to Log out", 500);
     }
+  }
+
+  async refresh(userId) {
+    const user = await UsersModel.findUserById(userId);
+
+    this.#user = user;
+    return await this.#sendAuthToken();
   }
 }
 
