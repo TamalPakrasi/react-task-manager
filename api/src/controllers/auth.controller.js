@@ -1,4 +1,5 @@
 import authSevice from "../services/auth.service.js";
+import MailService from "../services/mail.service.js";
 
 // @desc    POST register new user
 // @route   POST /api/auth/register
@@ -19,6 +20,8 @@ export const register = async (req, res, next) => {
       }; HttpOnly; Secure; SameSite=None; Expires=${refresh_token.expiry.toUTCString()}; path=/`
     );
 
+    const loginTime = new Date().toString();
+
     res.sendJSON(
       {
         message: "User Registered and Logged In Successfully",
@@ -27,6 +30,17 @@ export const register = async (req, res, next) => {
       },
       201
     );
+
+    MailService.sendMail({
+      to: user.email,
+      subject: "Login Successfull",
+      template: "login",
+      variables: {
+        name: user.username,
+        loginTime,
+      },
+    });
+    return;
   } catch (error) {
     await next(error);
   }
@@ -48,6 +62,8 @@ export const login = async (req, res, next) => {
       }; HttpOnly; Secure; SameSite=None; Expires=${refresh_token.expiry.toUTCString()}; path=/`
     );
 
+    const loginTime = new Date().toString();
+
     res.sendJSON(
       {
         message: "User Logged In Successfully",
@@ -56,6 +72,17 @@ export const login = async (req, res, next) => {
       },
       200
     );
+
+    MailService.sendMail({
+      to: user.email,
+      subject: "Login Successfull",
+      template: "login",
+      variables: {
+        name: user.username,
+        loginTime,
+      },
+    });
+    return;
   } catch (error) {
     await next(error);
   }
@@ -72,7 +99,7 @@ export const logout = async (req, res, next) => {
       "Set-Cookie",
       "refresh_token=; path=/; HttpOnly; Expires=Thu, 01 Jan 1970 00:00:00 GMT"
     );
-    res.sendJSON({ message: "User Logged Out Successfully" }, 200);
+    return res.sendJSON({ message: "User Logged Out Successfully" }, 200);
   } catch (error) {
     await next(error);
   }
@@ -96,7 +123,7 @@ export const refresh = async (req, res, next) => {
       }; HttpOnly; Secure; SameSite=None; Expires=${refresh_token.expiry.toUTCString()}; path=/`
     );
 
-    res.sendJSON(
+    return res.sendJSON(
       {
         message: "Token Refreshed Successfully",
         token: access_token.token,
