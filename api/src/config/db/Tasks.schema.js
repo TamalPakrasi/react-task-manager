@@ -27,7 +27,7 @@ const TasksSchema = {
       },
       assignedTo: {
         bsonType: "objectId",
-        description: "AssignedTo must be an ObjectId",
+        description: "AssignedTo must be an ObjectId", // refer _id in users collection
       },
       createdBy: {
         bsonType: "objectId",

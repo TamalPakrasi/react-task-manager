@@ -5,12 +5,15 @@ import {
   REFRESH_TOKEN_SECRET,
 } from "../config/env/env.js";
 
+// error throwing functions
 import throwUploadError from "../utils/errors/Upload.error.js";
 import throwAuthError from "../utils/errors/Auth.error.js";
 
+// other services
 import ValidationService from "./validation.service.js";
 import UplaodService from "./Upload.service.js";
 
+// models
 import * as UsersModel from "../models/Users.model.js";
 import * as TokensModel from "../models/Tokens.model.js";
 

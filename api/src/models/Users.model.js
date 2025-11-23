@@ -11,10 +11,7 @@ export const findUserById = async (id) => {
         $match: { _id: new ObjectId(id) },
       },
       {
-        $project: {
-          password: 0,
-          updatedAt: 0,
-        },
+        $unset: ["password", "updatedAt"],
       },
       {
         $limit: 1,
@@ -41,12 +38,7 @@ export const findUserByEmail = async (email) => {
       {
         $match: { email },
       },
-      {
-        $project: {
-          password: 0,
-          updatedAt: 0,
-        },
-      },
+      { $unset: ["password", "updatedAt"] },
       {
         $limit: 1,
       },
@@ -92,5 +84,74 @@ export const create = async ({
   } catch (error) {
     console.log(error);
     throwDBError("Failed to create new user");
+  }
+};
+
+// checking all users with role = member (non-admins)
+export const findMembers = async () => {
+  try {
+    const Users = getCollection("users");
+
+    const pipeline = [
+      {
+        $match: {
+          role: { $eq: "member" },
+        },
+      },
+
+      {
+        $lookup: {
+          from: "tasks",
+          let: { userId: "$_id" },
+          pipeline: [
+            {
+              $match: {
+                $expr: { $eq: ["$assignedTo", "$$userId"] },
+              },
+            },
+            {
+              $group: {
+                _id: null,
+                pending: {
+                  $sum: { $cond: [{ $eq: ["$status", "Pending"] }, 1, 0] },
+                },
+                inProgress: {
+                  $sum: { $cond: [{ $eq: ["$status", "In Progress"] }, 1, 0] },
+                },
+                completed: {
+                  $sum: { $cond: [{ $eq: ["$status", "Completed"] }, 1, 0] },
+                },
+              },
+            },
+          ],
+          as: "taskCounts",
+        },
+      },
+
+      {
+        $unwind: {
+          path: "$taskCounts",
+          preserveNullAndEmptyArrays: true,
+        },
+      },
+
+      {
+        $addFields: {
+          pendingCount: { $ifNull: ["$taskCounts.pending", 0] },
+          inProgressCount: { $ifNull: ["$taskCounts.inProgress", 0] },
+          completedCount: { $ifNull: ["$taskCounts.completed", 0] },
+        },
+      },
+
+      {
+        $unset: ["password", "taskCounts", "updatedAt"],
+      },
+    ];
+
+    const res = await Users.aggregate(pipeline).toArray();
+
+    return res;
+  } catch (error) {
+    throwDBError("Failed to get users");
   }
 };

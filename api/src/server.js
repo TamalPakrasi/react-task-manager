@@ -33,13 +33,20 @@ const globals = [logger, parseParams, parseBody, parseCookies];
 
 const server = http.createServer(
   cors(async (req, res) => {
-    res.sendJSON = function (message, statusCode = 200) {
+    res.sendJSON = function (statusCode = 200, message, ...payload) {
       this.statusCode = statusCode;
       this.setHeader("Content-Type", "application/json");
       this.end(
         JSON.stringify({
           statusCode,
-          data: message,
+          status: statusCode >= 400 ? "Failed" : "Success",
+          message,
+          data:
+            payload.length === 0
+              ? null
+              : payload.length === 1
+              ? payload[0]
+              : payload,
         })
       );
     };

@@ -3,7 +3,7 @@ import jwt from "jsonwebtoken";
 import bcrypt from "bcrypt";
 
 import * as TokensModel from "../models/Tokens.model.js";
-import throwAuthError from "../utils/errors/Auth.error.js";
+import throwAccessDeniedError from "../utils/errors/AccessDenied.error.js";
 
 const guest = async (req, res, next) => {
   try {
@@ -35,7 +35,7 @@ const guest = async (req, res, next) => {
       return await next();
     }
 
-    throwAuthError("User is already authenticated", 403);
+    throwAccessDeniedError("User Is Already Authenticated");
   } catch (error) {
     await next(error);
   }

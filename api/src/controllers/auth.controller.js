@@ -22,14 +22,10 @@ export const register = async (req, res, next) => {
 
     const loginTime = new Date().toString();
 
-    res.sendJSON(
-      {
-        message: "User Registered and Logged In Successfully",
-        token: access_token.token,
-        user,
-      },
-      201
-    );
+    res.sendJSON(201, "User Registered and Logged In Successfully", {
+      token: access_token.token,
+      user,
+    });
 
     if (user.role !== "admin" && !user.email.endsWith("@demo.com")) {
       MailService.sendMail({
@@ -66,14 +62,10 @@ export const login = async (req, res, next) => {
 
     const loginTime = new Date().toString();
 
-    res.sendJSON(
-      {
-        message: "User Logged In Successfully",
-        token: access_token.token,
-        user,
-      },
-      200
-    );
+    res.sendJSON(200, "User Logged In Successfully", {
+      token: access_token.token,
+      user,
+    });
 
     if (user.role !== "admin" && !user.email.endsWith("@demo.com")) {
       MailService.sendMail({
@@ -103,7 +95,7 @@ export const logout = async (req, res, next) => {
       "Set-Cookie",
       "refresh_token=; path=/; HttpOnly; Expires=Thu, 01 Jan 1970 00:00:00 GMT"
     );
-    return res.sendJSON({ message: "User Logged Out Successfully" }, 200);
+    return res.sendJSON(200, "User Logged Out Successfully");
   } catch (error) {
     await next(error);
   }
@@ -127,14 +119,10 @@ export const refresh = async (req, res, next) => {
       }; HttpOnly; Secure; SameSite=None; Expires=${refresh_token.expiry.toUTCString()}; path=/`
     );
 
-    return res.sendJSON(
-      {
-        message: "Token Refreshed Successfully",
-        token: access_token.token,
-        user,
-      },
-      200
-    );
+    return res.sendJSON(200, "Token Refreshed Successfully", {
+      token: access_token.token,
+      user,
+    });
   } catch (error) {
     await next(error);
   }

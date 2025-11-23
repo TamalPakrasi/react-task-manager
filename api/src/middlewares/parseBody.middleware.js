@@ -30,9 +30,9 @@ const parseBody = (req, res, next) => {
       }
     });
 
-    req.on("error", () => {
-      console.error("Error Parsing JSON Body");
-      res.sendJSON({ message: "Something went wrong" }, 500);
+    req.on("error", (error) => {
+      console.error("Error Parsing JSON Body", error);
+      next(error);
     });
   }
 
@@ -70,9 +70,9 @@ const parseBody = (req, res, next) => {
 
     busboy.on("finish", () => next());
 
-    busboy.on("error", (err) => {
-      console.error(err);
-      res.sendJSON({ message: "Something went wrong" }, 500);
+    busboy.on("error", (error) => {
+      console.error("Error parsing body", error);
+      next(error);
     });
 
     req.pipe(busboy);
