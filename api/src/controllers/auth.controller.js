@@ -31,15 +31,17 @@ export const register = async (req, res, next) => {
       201
     );
 
-    MailService.sendMail({
-      to: user.email,
-      subject: "Login Successfull",
-      template: "login",
-      variables: {
-        name: user.username,
-        loginTime,
-      },
-    });
+    if (user.role !== "admin" && !user.email.endsWith("@demo.com")) {
+      MailService.sendMail({
+        to: user.email,
+        subject: "Login Successfull",
+        template: "login",
+        variables: {
+          name: user.username,
+          loginTime,
+        },
+      });
+    }
     return;
   } catch (error) {
     await next(error);
@@ -73,15 +75,17 @@ export const login = async (req, res, next) => {
       200
     );
 
-    MailService.sendMail({
-      to: user.email,
-      subject: "Login Successfull",
-      template: "login",
-      variables: {
-        name: user.username,
-        loginTime,
-      },
-    });
+    if (user.role !== "admin" && !user.email.endsWith("@demo.com")) {
+      MailService.sendMail({
+        to: user.email,
+        subject: "Login Successfull",
+        template: "login",
+        variables: {
+          name: user.username,
+          loginTime,
+        },
+      });
+    }
     return;
   } catch (error) {
     await next(error);
