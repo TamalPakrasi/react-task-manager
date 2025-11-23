@@ -155,3 +155,11 @@ export const findMembers = async () => {
     throwDBError("Failed to get users");
   }
 };
+
+// deleting existing user
+export const deleteUser = async (id) => {
+  try {
+  } catch (error) {
+    throwDBError("Failed to delete user");
+  }
+};

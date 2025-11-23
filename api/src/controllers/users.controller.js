@@ -40,4 +40,15 @@ export const getUserById = async (req, res, next) => {
 // @desc    DELETE delete a single user using id
 // @route   DELETE /api/users?id=<userId>
 // @access  private (admin only)
-export const deleteUser = async (req, res, next) => {};
+export const deleteUser = async (req, res, next) => {
+  try {
+    const { id } = req.query;
+    const { _id: userId } = req.user;
+
+    await usersService(userId).delete(id);
+
+    return res.sendJSON(200, `User With Id (${id}) Is Deleted Successfully`);
+  } catch (error) {
+    next(error);
+  }
+};

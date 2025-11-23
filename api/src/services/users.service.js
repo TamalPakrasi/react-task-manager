@@ -23,6 +23,14 @@ class Users {
 
     return await UsersModel.findUserById(id);
   }
+
+  async delete(id) {
+    if (id === this.#userId) {
+      throwBadRequestError("Deleting your own user ID is not permitted.");
+    }
+
+    await UsersModel.deleteUser(id);
+  }
 }
 
 const usersService = () => new Users();
