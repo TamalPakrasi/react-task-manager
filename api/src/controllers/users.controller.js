@@ -20,7 +20,22 @@ export const getUsers = async (req, res, next) => {
 // @desc    GET get a single user using id
 // @route   GET /api/users?id=<userId>
 // @access  private (auth user)
-export const getUserById = async (req, res, next) => {};
+export const getUserById = async (req, res, next) => {
+  try {
+    const { id } = req.query;
+    const { _id: userId } = req.user;
+
+    const user = await usersService(userId).getOneById(id);
+
+    return res.sendJSON(
+      200,
+      `User With Id (${id}) Is Found Successfully`,
+      user
+    );
+  } catch (error) {
+    await next(error);
+  }
+};
 
 // @desc    DELETE delete a single user using id
 // @route   DELETE /api/users?id=<userId>
