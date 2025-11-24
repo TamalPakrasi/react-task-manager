@@ -3,6 +3,7 @@ import validationService from "./validation.service.js";
 
 // models
 import * as TasksModel from "../models/Tasks.model.js";
+import * as UsersModel from "../models/Users.model.js";
 
 class Tasks {
   // #title = "";
@@ -16,6 +17,8 @@ class Tasks {
 
   async create(payload) {
     validationService.validateTasksCredentials(payload);
+
+    await UsersModel.checkUsersExist(payload.assignedTo);
 
     return await TasksModel.create({
       ...payload,

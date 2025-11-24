@@ -1,4 +1,5 @@
 import throwValidationError from "../utils/errors/validation.error.js";
+import { ObjectId } from "mongodb";
 
 class Validation {
   static validateRegistrationCredentials(username, email, pass) {
@@ -37,12 +38,25 @@ class Validation {
     }
   }
 
+  static validateUserId(id) {
+    if (!(ObjectId.isValid(id) && String(new ObjectId(id)) === id)) {
+      throwValidationError("Invalid User Id");
+    }
+  }
+
   static validateTasksCredentials(obj) {
     const errors = [];
     const date = new Date(obj?.dueDate);
 
     if (!Array.isArray(obj?.assignedTo))
       errors.push("Assigned To Must Be An Array");
+
+    for (const id of obj.assignedTo) {
+      if (!(ObjectId.isValid(id) && String(new ObjectId(id)) === id)) {
+        errors.push("Invalid Assign Id");
+        break;
+      }
+    }
 
     if (typeof obj?.title.trim() !== "string" && obj?.title.trim().length > 0)
       errors.push("Invalid Title");
@@ -59,7 +73,7 @@ class Validation {
     if (isNaN(date.getTime())) errors.push("Invalid Due Date");
 
     if (obj?.attachments !== null && !Array.isArray(obj?.attachments))
-      errors.push("m Must Be An Array Or NULL");
+      errors.push("Attachments Must Be An Array Or NULL");
 
     if (obj?.taskCheckList !== null && !Array.isArray(obj?.taskCheckList))
       errors.push("Task Checklist Must Be An Array Or NULL");

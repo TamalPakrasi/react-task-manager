@@ -153,3 +153,22 @@ export const deleteUser = async (id) => {
     throwDBError("Failed to delete user");
   }
 };
+
+// checking user existance
+export const checkUsersExist = async (ids) => {
+  try {
+    const Users = getCollection("users");
+
+    const objectIds = ids.map((id) => new ObjectId(id));
+
+    const res = await Users.find({
+      _id: { $in: objectIds },
+    }).toArray();
+
+    if (res.length !== ids.length) {
+      throw new Error("One or more assigned users do not exist");
+    }
+  } catch (error) {
+    throwDBError(error.message);
+  }
+};
