@@ -37,7 +37,7 @@ const routes = async (req, res) => {
     );
   }
 
-  return res.sendJSON({ message: "Route or Method is invalid" }, 400);
+  return res.sendJSON(400, "Route or Method is invalid");
 };
 
 export default routes;

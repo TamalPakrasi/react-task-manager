@@ -40,7 +40,7 @@ const TasksSchema = {
         },
         description: "Attachments must be array of strings",
       },
-      todoCheckList: {
+      taskCheckList: {
         bsonType: "array",
         items: {
           bsonType: "object",
