@@ -28,3 +28,93 @@ export const create = async (payload) => {
     throwDBError("Failed to create new tasks");
   }
 };
+
+// finding tasks
+export const find = async ({ status, assignedTo = null }) => {
+  try {
+    const Tasks = getCollection("tasks");
+
+    const oid = new ObjectId(assignedTo);
+
+    const pipeline = [];
+
+    if (assignedTo && ObjectId.isValid(assignedTo)) {
+      pipeline.push({
+        $match: {
+          assignedTo: { $in: [oid] },
+        },
+      });
+    }
+
+    if (status) {
+      pipeline.push({
+        $match: {
+          status: { $eq: status },
+        },
+      });
+    }
+
+    pipeline.push({
+      $lookup: {
+        from: "users",
+        localField: "assignedTo",
+        foreignField: "_id",
+        as: "assignedTo",
+        pipeline: [{ $project: { username: 1, email: 1, profileImageUrl: 1 } }],
+      },
+    });
+
+    const res = await Tasks.aggregate(pipeline).toArray();
+
+    return res;
+  } catch (error) {
+    console.error(error);
+    throwDBError("Failed To Fetch Tasks");
+  }
+};
+
+// counting
+export const count = async ({ role, assignedTo }) => {
+  try {
+    const Tasks = getCollection("tasks");
+
+    const pipeline = [];
+
+    if (role === "member") {
+      pipeline.push({
+        $match: {
+          assignedTo: { $in: [new ObjectId(assignedTo)] },
+        },
+      });
+    }
+
+    pipeline.push(
+      ...[
+        {
+          $group: {
+            _id: null,
+            all: { $sum: 1 },
+            pending: {
+              $sum: { $cond: [{ $eq: ["$status", "Pending"] }, 1, 0] },
+            },
+            inProgress: {
+              $sum: { $cond: [{ $eq: ["$status", "In Progress"] }, 1, 0] },
+            },
+            completed: {
+              $sum: { $cond: [{ $eq: ["$status", "Completed"] }, 1, 0] },
+            },
+          },
+        },
+        {
+          $unset: ["_id"],
+        },
+      ]
+    );
+
+    const res = await Tasks.aggregate(pipeline).toArray();
+
+    return res[0] || { all: 0, pending: 0, inProgress: 0, completed: 0 };
+  } catch (error) {
+    throwDBError("Failed to count Tasks");
+  }
+};

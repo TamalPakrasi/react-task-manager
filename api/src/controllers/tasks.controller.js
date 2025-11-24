@@ -21,9 +21,28 @@ export const updateTaskStatus = async (req, res, next) => {};
 export const updateTaskCheckList = async (req, res, next) => {};
 
 // @desc    GET get tasks
-// @route   GET /api/tasks
+// @route   GET /api/tasks or /api/tasks?status=<pending | in_progress | completed>
 // @access  private (auth user)
-export const getTasks = async (req, res, next) => {};
+export const getTasks = async (req, res, next) => {
+  try {
+    const { status } = req.query;
+
+    const [tasks, statusSummary] = await tasksService().getAll({
+      assignedTo: req.user._id,
+      role: req.user.role,
+      sts: status,
+    });
+
+    return res.sendJSON(
+      200,
+      "Tasks Fetched Successfully",
+      tasks,
+      statusSummary
+    );
+  } catch (error) {
+    await next(error);
+  }
+};
 
 // @desc    GET get a specific task
 // @route   GET /api/tasks?id=<id>

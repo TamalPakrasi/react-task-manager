@@ -6,14 +6,41 @@ import * as TasksModel from "../models/Tasks.model.js";
 import * as UsersModel from "../models/Users.model.js";
 
 class Tasks {
-  // #title = "";
-  // #description = "";
-  // #priority = "";
-  // #dueDate = null;
-  // #assignedTo = [];
-  // #createdBy = null;
-  // #attachments = [];
-  // #taskCheckList = [];
+  #getFormatedStatus(sts) {
+    let status = null;
+
+    const possibleStatuses = {
+      pending: "Pending",
+      in_progress: "In Progress",
+      completed: "Completed",
+    };
+
+    if (sts in possibleStatuses) {
+      status = possibleStatuses[sts];
+    }
+
+    return status;
+  }
+
+  async getAll({ assignedTo, role, sts = null }) {
+    const status = this.#getFormatedStatus(sts);
+
+    let tasks;
+
+    if (role === "admin") {
+      tasks = await TasksModel.find({ status });
+    } else {
+      tasks = await TasksModel.find({ status, assignedTo });
+    }
+
+    const statusSummary = await TasksModel.count({
+      role: role === "admin" ? null : "member",
+      assignedTo,
+    });
+
+    console.log([{ tasks: tasks }, { statusSummary: statusSummary }]);
+    return [{ tasks: tasks }, { statusSummary: statusSummary }];
+  }
 
   async create(payload) {
     validationService.validateTasksCredentials(payload);
