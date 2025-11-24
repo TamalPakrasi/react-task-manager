@@ -26,7 +26,7 @@ const parseBody = (req, res, next) => {
         next();
       } catch (err) {
         console.error("Invalid JSON");
-        res.sendJSON({ message: "Invalid JSON" }, 400);
+        next(err);
       }
     });
 

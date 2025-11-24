@@ -44,7 +44,7 @@ const allowedEndPoints = [
 
 const commons = [hasRefreshToken, authProtect];
 
-const badRoute = () => res.sendJSON(400, "Route or Method is invalid");
+const badRoute = (res) => res.sendJSON(400, "Route or Method is invalid");
 
 const routes = async (req, res) => {
   const hasId = Boolean(req.query.id);
@@ -57,17 +57,17 @@ const routes = async (req, res) => {
 
   if (req.api === "") req.api = "default";
 
-  if (!allowedEndPoints.includes(req.api)) return badRoute();
+  if (!allowedEndPoints.includes(req.api)) return badRoute(res);
 
   const list = endPoints[String(hasId)];
 
-  if (!(req.method in list)) return badRoute();
+  if (!(req.method in list)) return badRoute(res);
 
-  const routes = list[req.method];
+  const handlers = list[req.method];
 
-  if (!(req.api in routes)) return badRoute();
+  if (!(req.api in handlers)) return badRoute(res);
 
-  return await run(req, res, ...[...middlewares, routes[req.api]]);
+  return await run(req, res, ...[...middlewares, handlers[req.api]]);
 };
 
 export default routes;

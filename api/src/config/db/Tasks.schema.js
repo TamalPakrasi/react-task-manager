@@ -1,7 +1,14 @@
 const TasksSchema = {
   $jsonSchema: {
     bsonType: "object",
-    required: ["title", "dueDate", "todoCheckList"],
+    required: [
+      "title",
+      "dueDate",
+      "taskCheckList",
+      "assignedTo",
+      "status",
+      "priority",
+    ],
     properties: {
       title: {
         bsonType: "string",
@@ -26,22 +33,25 @@ const TasksSchema = {
         description: "Due Date is required and must be a date",
       },
       assignedTo: {
-        bsonType: "objectId",
-        description: "AssignedTo must be an ObjectId", // refer _id in users collection
+        bsonType: "array",
+        items: {
+          bsonType: "objectId",
+        },
+        description: "AssignedTo must be an array of object ids", // refer _id in users collection
       },
       createdBy: {
         bsonType: "objectId",
         description: "CreatedBy must be an ObjectId",
       },
       attachments: {
-        bsonType: "array",
+        bsonType: ["array", "null"],
         items: {
           bsonType: "string",
         },
         description: "Attachments must be array of strings",
       },
       taskCheckList: {
-        bsonType: "array",
+        bsonType: ["array", "null"],
         items: {
           bsonType: "object",
           required: ["text"],

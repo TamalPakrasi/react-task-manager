@@ -54,22 +54,12 @@ export const findUserByEmail = async (email) => {
 };
 
 // creating new user in db
-export const create = async ({
-  username,
-  email,
-  password,
-  profileImageUrl,
-  profileImagePublicId,
-}) => {
+export const create = async (payload) => {
   try {
     const Users = getCollection("users");
 
     const newUser = {
-      username,
-      email,
-      password,
-      profileImageUrl,
-      profileImagePublicId,
+      ...payload,
       role: "member",
       joinedAt: new Date(),
       updatedAt: new Date(),
@@ -80,7 +70,7 @@ export const create = async ({
     delete newUser.password;
     delete newUser.updatedAt;
 
-    return newUser;
+    return { ...newUser, _id: res.insertedId };
   } catch (error) {
     console.log(error);
     throwDBError("Failed to create new user");
@@ -106,7 +96,7 @@ export const findMembers = async () => {
           pipeline: [
             {
               $match: {
-                $expr: { $eq: ["$assignedTo", "$$userId"] },
+                $expr: { $in: ["$$userId", "$assignedTo"] },
               },
             },
             {

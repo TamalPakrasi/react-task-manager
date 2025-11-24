@@ -7,7 +7,7 @@ class ValidationError extends CustomError {
 }
 
 const throwValidationError = (message = "Invalid Credentials") => {
-  throw new ValidationError(message, 400);
+  throw new ValidationError(`Validation Error - ${message}`, 400);
 };
 
 export default throwValidationError;

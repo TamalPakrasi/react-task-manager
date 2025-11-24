@@ -1,3 +1,5 @@
+import tasksService from "../services/tasks.service.js";
+
 // @desc    GET get dashboard data
 // @route   GET /api/tasks/dashboard-data
 // @access  private (auth user)
@@ -33,12 +35,23 @@ export const getTaskById = async (req, res, next) => {};
 // @access  private (auth user)
 export const updateTask = async (req, res, next) => {};
 
-// @desc    PUT delete a task
-// @route   PUT /api/tasks?id=<id>
+// @desc    DELETE delete a task
+// @route   DELETE /api/tasks?id=<id>
 // @access  private (admin only)
 export const deleteTask = async (req, res, next) => {};
 
-// @desc    PUT create a task
-// @route   PUT /api/tasks?id=<id>
+// @desc    POST create a task
+// @route   POST /api/tasks
 // @access  private (admin only)
-export const createTask = async (req, res, next) => {};
+export const createTask = async (req, res, next) => {
+  try {
+    const task = await tasksService().create({
+      ...req.body,
+      createdBy: req.user._id,
+    });
+
+    return res.sendJSON(201, "Task Created Successfully", task);
+  } catch (error) {
+    await next(error);
+  }
+};

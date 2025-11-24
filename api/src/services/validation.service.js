@@ -36,6 +36,36 @@ class Validation {
       throwValidationError(errors.join(", "));
     }
   }
+
+  static validateTasksCredentials(obj) {
+    const errors = [];
+    const date = new Date(obj?.dueDate);
+
+    if (!Array.isArray(obj?.assignedTo))
+      errors.push("Assigned To Must Be An Array");
+
+    if (typeof obj?.title.trim() !== "string" && obj?.title.trim().length > 0)
+      errors.push("Invalid Title");
+
+    if (
+      typeof obj?.description.trim() !== "string" &&
+      obj?.description.trim().length > 0
+    )
+      errors.push("Invalid Description");
+
+    if (!["low", "medium", "high"].includes(obj?.priority))
+      errors.push("Invalid Priority");
+
+    if (isNaN(date.getTime())) errors.push("Invalid Due Date");
+
+    if (obj?.attachments !== null && !Array.isArray(obj?.attachments))
+      errors.push("m Must Be An Array Or NULL");
+
+    if (obj?.taskCheckList !== null && !Array.isArray(obj?.taskCheckList))
+      errors.push("Task Checklist Must Be An Array Or NULL");
+
+    if (errors.length > 0) throwValidationError(errors.join(", "));
+  }
 }
 
 export default Validation;
