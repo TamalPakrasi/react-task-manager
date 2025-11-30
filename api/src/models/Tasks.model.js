@@ -164,8 +164,21 @@ export const update = async ({ id, payload }) => {
       { $set: payload }
     );
 
-    return res.matchedCount !== 0 && res.modifiedCount !== 0;
+    return res.matchedCount > 0 && res.modifiedCount > 0;
   } catch (error) {
     throwDBError("Failed To Update Task");
+  }
+};
+
+// delete tasks
+export const deleteTask = async (id) => {
+  try {
+    const Tasks = await getCollection("tasks");
+
+    const res = await Tasks.deleteOne({ _id: new ObjectId(id) });
+
+    return res.deletedCount > 0;
+  } catch (error) {
+    await next(error);
   }
 };

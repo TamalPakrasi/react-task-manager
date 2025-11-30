@@ -77,7 +77,17 @@ export const updateTask = async (req, res, next) => {
 // @desc    DELETE delete a task
 // @route   DELETE /api/tasks?id=<id>
 // @access  private (admin only)
-export const deleteTask = async (req, res, next) => {};
+export const deleteTask = async (req, res, next) => {
+  try {
+    const { id } = req.query;
+
+    await tasksService().delete(id);
+
+    return res.sendJSON(200, `Task Deleted Successfully`);
+  } catch (error) {
+    await next(error);
+  }
+};
 
 // @desc    POST create a task
 // @route   POST /api/tasks

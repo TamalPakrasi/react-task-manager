@@ -81,12 +81,22 @@ class Tasks {
     });
 
     if (!isUpdated) {
-      throwBadRequestError("Tasks Does Not Exist");
+      throwBadRequestError(`Tasks With Id (${id}) Does Not Exist`);
     }
 
     const res = await TasksModel.findById(id);
 
     return res;
+  }
+
+  async delete(id) {
+    validationService.validateUserId(id);
+
+    const res = await TasksModel.deleteTask(id);
+
+    if (!res) {
+      throwBadRequestError(`Tasks With Id (${id}) Does Not Exist`);
+    }
   }
 }
 
