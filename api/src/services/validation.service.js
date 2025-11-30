@@ -80,6 +80,49 @@ class Validation {
 
     if (errors.length > 0) throwValidationError(errors.join(", "));
   }
+
+  static validateUpdatedTasks(obj) {
+    const errors = [];
+
+    if ("title" in obj) {
+      if (typeof obj.title.trim() !== "string" && obj.title.trim().length > 0) {
+        errors.push("Invalid Title");
+      }
+    }
+
+    if ("description" in obj) {
+      if (
+        typeof obj.description.trim() !== "string" &&
+        obj.description.trim().length > 0
+      )
+        errors.push("Invalid Description");
+    }
+
+    if ("priority" in obj) {
+      if (!["low", "medium", "high"].includes(obj.priority))
+        errors.push("Invalid Priority");
+    }
+
+    if ("dueDate" in obj) {
+      const date = new Date(obj.dueDate);
+      if (isNaN(date.getTime())) errors.push("Invalid Due Date");
+    }
+
+    if ("taskCheckList" in obj) {
+      if (obj.taskCheckList !== null && !Array.isArray(obj.taskCheckList))
+        errors.push("Task Checklist Must Be An Array Or NULL");
+    }
+
+    if ("attachments" in obj) {
+      if (obj?.attachments !== null && !Array.isArray(obj?.attachments))
+        errors.push("Attachments Must Be An Array Or NULL");
+    }
+
+    if ("assignedTo" in obj) {
+      if (!Array.isArray(obj?.assignedTo))
+        errors.push("Assigned To Must Be An Array");
+    }
+  }
 }
 
 export default Validation;

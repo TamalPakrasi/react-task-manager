@@ -64,6 +64,30 @@ class Tasks {
 
     return res;
   }
+
+  async update(id, payload) {
+    validationService.validateUserId(id);
+
+    validationService.validateUpdatedTasks(payload);
+
+    if ("priority" in payload) {
+      payload.priority =
+        payload.priority[0].toUpperCase() + payload.priority.slice(1);
+    }
+
+    const isUpdated = await TasksModel.update({
+      id,
+      payload: { ...payload, updatedAt: new Date() },
+    });
+
+    if (!isUpdated) {
+      throwBadRequestError("Tasks Does Not Exist");
+    }
+
+    const res = await TasksModel.findById(id);
+
+    return res;
+  }
 }
 
 const tasksService = () => new Tasks();

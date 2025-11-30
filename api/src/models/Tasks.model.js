@@ -153,3 +153,19 @@ export const findById = async (id) => {
     throwDBError("Failed To Fetch task By Id");
   }
 };
+
+// update tasks
+export const update = async ({ id, payload }) => {
+  try {
+    const Tasks = getCollection("tasks");
+
+    const res = await Tasks.updateOne(
+      { _id: new ObjectId(id) },
+      { $set: payload }
+    );
+
+    return res.matchedCount !== 0 && res.modifiedCount !== 0;
+  } catch (error) {
+    throwDBError("Failed To Update Task");
+  }
+};
