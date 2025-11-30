@@ -118,3 +118,38 @@ export const count = async ({ role, assignedTo }) => {
     throwDBError("Failed to count Tasks");
   }
 };
+
+// finding by id
+export const findById = async (id) => {
+  try {
+    const Tasks = getCollection("tasks");
+
+    const pipeline = [
+      {
+        $match: {
+          _id: { $eq: new ObjectId(id) },
+        },
+      },
+      {
+        $limit: 1,
+      },
+      {
+        $lookup: {
+          from: "users",
+          localField: "assignedTo",
+          foreignField: "_id",
+          as: "assignedTo",
+          pipeline: [
+            { $project: { username: 1, email: 1, profileImageUrl: 1 } },
+          ],
+        },
+      },
+    ];
+
+    const res = await Tasks.aggregate(pipeline).toArray();
+
+    return res[0] || null;
+  } catch (error) {
+    throwDBError("Failed To Fetch task By Id");
+  }
+};

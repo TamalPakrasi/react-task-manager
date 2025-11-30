@@ -47,7 +47,17 @@ export const getTasks = async (req, res, next) => {
 // @desc    GET get a specific task
 // @route   GET /api/tasks?id=<id>
 // @access  private (auth user)
-export const getTaskById = async (req, res, next) => {};
+export const getTaskById = async (req, res, next) => {
+  try {
+    const { id } = req.query;
+
+    const task = await tasksService().getById(id);
+
+    return res.sendJSON(200, `Task With Id (${id}) Fetched Successfilly`, task);
+  } catch (error) {
+    await next(error);
+  }
+};
 
 // @desc    PUT update a task
 // @route   PUT /api/tasks?id=<id>

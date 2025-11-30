@@ -39,7 +39,7 @@ class Validation {
   }
 
   static validateUserId(id) {
-    if (!(ObjectId.isValid(id) && String(new ObjectId(id)) === id)) {
+    if (!ObjectId.isValid(id)) {
       throwValidationError("Invalid User Id");
     }
   }
@@ -52,7 +52,7 @@ class Validation {
       errors.push("Assigned To Must Be An Array");
 
     for (const id of obj.assignedTo) {
-      if (!(ObjectId.isValid(id) && String(new ObjectId(id)) === id)) {
+      if (!ObjectId.isValid(id)) {
         errors.push("Invalid Assign Id");
         break;
       }

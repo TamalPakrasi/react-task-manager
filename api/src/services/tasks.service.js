@@ -4,6 +4,7 @@ import validationService from "./validation.service.js";
 // models
 import * as TasksModel from "../models/Tasks.model.js";
 import * as UsersModel from "../models/Users.model.js";
+import throwBadRequestError from "../utils/errors/BadRequest.error.js";
 
 class Tasks {
   #getFormatedStatus(sts) {
@@ -38,7 +39,6 @@ class Tasks {
       assignedTo,
     });
 
-    console.log([{ tasks: tasks }, { statusSummary: statusSummary }]);
     return [{ tasks: tasks }, { statusSummary: statusSummary }];
   }
 
@@ -51,6 +51,18 @@ class Tasks {
       ...payload,
       dueDate: new Date(payload.dueDate),
     });
+  }
+
+  async getById(id) {
+    validationService.validateUserId(id);
+
+    const res = await TasksModel.findById(id);
+
+    if (!res) {
+      throwBadRequestError(`No Task With Id ($id) Is Found`);
+    }
+
+    return res;
   }
 }
 
