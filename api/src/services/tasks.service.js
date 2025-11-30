@@ -13,11 +13,16 @@ class Tasks {
     const possibleStatuses = {
       pending: "Pending",
       in_progress: "In Progress",
+      "in progress": "In Progress",
       completed: "Completed",
     };
 
     if (sts in possibleStatuses) {
       status = possibleStatuses[sts];
+    } else if (typeof sts === "string" && sts.length > 0) {
+      throwBadRequestError(
+        "status must be pending or in progress or completed"
+      );
     }
 
     return status;
@@ -97,6 +102,28 @@ class Tasks {
     if (!res) {
       throwBadRequestError(`Tasks With Id (${id}) Does Not Exist`);
     }
+  }
+
+  async updateStatus({ id, userId, role, status = "pending", progress = 0 }) {
+    const sts = this.#getFormatedStatus(status);
+
+    validationService.validateUserId(id);
+
+    const isUpdated = await TasksModel.updateStatusAndProgress({
+      id,
+      assignedTo: role !== "admin" ? userId : null,
+      status: sts,
+      progress: sts === "Completed" ? 100 : sts === "Pending" ? 0 : progress,
+      updatedAt: new Date(),
+    });
+
+    if (!isUpdated) {
+      throwBadRequestError("Invalid Credentials");
+    }
+
+    const res = await TasksModel.findById(id);
+
+    return res;
   }
 }
 

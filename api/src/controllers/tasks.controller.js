@@ -13,7 +13,23 @@ export const getUserDashboardData = async (req, res, next) => {};
 // @desc    PUT update task status of a specific task
 // @route   PUT /api/tasks/status?id=<id>
 // @access  private (auth user)
-export const updateTaskStatus = async (req, res, next) => {};
+export const updateTaskStatus = async (req, res, next) => {
+  try {
+    const { id } = req.query;
+    const { _id: userId, role } = req.user;
+
+    const updatedTask = await tasksService().updateStatus({
+      id,
+      userId,
+      role,
+      ...req.body,
+    });
+
+    return res.sendJSON(200, "Task Status Updated", updatedTask);
+  } catch (error) {
+    await next(error);
+  }
+};
 
 // @desc    PUT update task checklist of a specific task
 // @route   PUT /api/tasks/todo?id=<id>

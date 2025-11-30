@@ -182,3 +182,36 @@ export const deleteTask = async (id) => {
     await next(error);
   }
 };
+
+// updating task status and progress
+export const updateStatusAndProgress = async ({
+  id,
+  assignedTo,
+  status,
+  progress,
+  updatedAt,
+}) => {
+  try {
+    const Tasks = getCollection("tasks");
+
+    const filter = {
+      _id: { $eq: new ObjectId(id) },
+    };
+
+    if (assignedTo) {
+      filter.assignedTo = { $in: [new ObjectId(assignedTo)] };
+    }
+
+    const res = await Tasks.updateOne(filter, {
+      $set: {
+        status,
+        progress,
+        updatedAt,
+      },
+    });
+
+    return res.matchedCount > 0 && res.modifiedCount > 0;
+  } catch (error) {
+    throwDBError("Failed to update status");
+  }
+};
