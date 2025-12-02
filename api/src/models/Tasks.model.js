@@ -202,16 +202,46 @@ export const updateStatusAndProgress = async ({
       filter.assignedTo = { $in: [new ObjectId(assignedTo)] };
     }
 
-    const res = await Tasks.updateOne(filter, {
-      $set: {
-        status,
-        progress,
-        updatedAt,
+    const res = await Tasks.updateOne(filter, [
+      {
+        $set: {
+          status,
+          progress,
+          updatedAt,
+        },
       },
-    });
+      {
+        $set: {
+          taskCheckList: {
+            $cond: [
+              { $eq: ["$progress", 100] },
+              {
+                $map: {
+                  input: "$taskCheckList",
+                  as: "item",
+                  in: {
+                    $mergeObjects: ["$$item", { completed: true }],
+                  },
+                },
+              },
+              {
+                $map: {
+                  input: "$taskCheckList",
+                  as: "item",
+                  in: {
+                    $mergeObjects: ["$$item", { completed: false }],
+                  },
+                },
+              },
+            ],
+          },
+        },
+      },
+    ]);
 
     return res.matchedCount > 0 && res.modifiedCount > 0;
   } catch (error) {
+    console.dir(error, { depth: null });
     throwDBError("Failed to update status");
   }
 };

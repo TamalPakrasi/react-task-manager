@@ -34,7 +34,13 @@ export const updateTaskStatus = async (req, res, next) => {
 // @desc    PUT update task checklist of a specific task
 // @route   PUT /api/tasks/todo?id=<id>
 // @access  private (auth user)
-export const updateTaskCheckList = async (req, res, next) => {};
+export const updateTaskCheckList = async (req, res, next) => {
+  try {
+    const { id } = req.query;
+  } catch (error) {
+    await next(error);
+  }
+};
 
 // @desc    GET get tasks
 // @route   GET /api/tasks or /api/tasks?status=<pending | in_progress | completed>
