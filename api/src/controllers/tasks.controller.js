@@ -1,15 +1,5 @@
 import tasksService from "../services/tasks.service.js";
 
-// @desc    GET get dashboard data
-// @route   GET /api/tasks/dashboard-data
-// @access  private (auth user)
-export const getDashboradData = async (req, res, next) => {};
-
-// @desc    GET get user dashboard data
-// @route   GET /api/tasks/user-dashboard-data
-// @access  private (auth user)
-export const getUserDashboardData = async (req, res, next) => {};
-
 // @desc    PUT update task status of a specific task
 // @route   PUT /api/tasks/status?id=<id>
 // @access  private (auth user)

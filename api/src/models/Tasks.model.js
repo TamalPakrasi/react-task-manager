@@ -338,3 +338,142 @@ export const updateTaskCheckListAndProgress = async ({
     throwDBError("Failed to update task checklist");
   }
 };
+
+// getting statistics
+export const getStats = async (assignedTo) => {
+  try {
+    const Tasks = getCollection("tasks");
+
+    const pipeline = [];
+
+    if (assignedTo) {
+      pipeline.push({
+        $match: { assignedTo: { $in: [new ObjectId(assignedTo)] } },
+      });
+    }
+
+    pipeline.push(
+      ...[
+        {
+          $group: {
+            _id: null,
+            overDueTasks: {
+              $sum: {
+                $cond: [
+                  {
+                    $and: [
+                      { $ne: ["$status", "Completed"] },
+                      { $lt: ["$dueDate", new Date()] },
+                    ],
+                  },
+                  1,
+                  0,
+                ],
+              },
+            },
+            totalTasks: { $sum: 1 },
+            completedTasks: {
+              $sum: { $cond: [{ $eq: ["$status", "Completed"] }, 1, 0] },
+            },
+            inProgressTasks: {
+              $sum: { $cond: [{ $eq: ["$status", "In Progress"] }, 1, 0] },
+            },
+            pendingTasks: {
+              $sum: { $cond: [{ $eq: ["$status", "Pending"] }, 1, 0] },
+            },
+            lowPriority: {
+              $sum: { $cond: [{ $eq: ["$priority", "Low"] }, 1, 0] },
+            },
+            mediumPriority: {
+              $sum: { $cond: [{ $eq: ["$priority", "Medium"] }, 1, 0] },
+            },
+            highPriority: {
+              $sum: { $cond: [{ $eq: ["$priority", "High"] }, 1, 0] },
+            },
+          },
+        },
+        {
+          $project: {
+            _id: 0,
+            overDueTasks: 1,
+            status: {
+              all: "$totalTasks",
+              Completed: "$completedTasks",
+              "In Progress": "$inProgressTasks",
+              Pending: "$pendingTasks",
+            },
+            priority: {
+              Low: "$lowPriority",
+              Medium: "$mediumPriority",
+              High: "$highPriority",
+            },
+          },
+        },
+      ]
+    );
+
+    const res = await Tasks.aggregate(pipeline).toArray();
+
+    return (
+      res[0] || {
+        overDueTasks: 0,
+        status: {
+          all: 0,
+          Pending: 0,
+          "In Progress": 0,
+          Completed: 0,
+        },
+        priority: {
+          Low: 0,
+          Medium: 0,
+          High: 0,
+        },
+      }
+    );
+  } catch (error) {
+    throwDBError("Failed To Fetch Statistics");
+  }
+};
+
+// getting lastest tasks
+export const getLatest = async (limit = 10, assignedTo) => {
+  try {
+    const Tasks = getCollection("tasks");
+
+    const pipeline = [];
+
+    if (assignedTo) {
+      pipeline.push({
+        $match: { assignedTo: { $in: [new ObjectId(assignedTo)] } },
+      });
+    }
+
+    pipeline.push(
+      ...[
+        {
+          $sort: {
+            createdAt: -1,
+          },
+        },
+        {
+          $limit: limit,
+        },
+        {
+          $project: {
+            title: 1,
+            status: 1,
+            priority: 1,
+            dueDate: 1,
+            createdAt: 1,
+          },
+        },
+      ]
+    );
+
+    const res = await Tasks.aggregate(pipeline).toArray();
+
+    return res || null;
+  } catch (error) {
+    throwDBError(error.message || "Failed To Fetch Latest Posts");
+  }
+};

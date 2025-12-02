@@ -2,6 +2,7 @@ import authRoutes from "./routes/auth.route.js";
 import profileRoutes from "./routes/profile.route.js";
 import usersRoutes from "./routes/users.route.js";
 import tasksRoutes from "./routes/tasks.route.js";
+import dashboardRoutes from "./routes/dashboard.route.js";
 import reportsRoutes from "./routes/reports.route.js";
 
 const router = async (req, res) => {
@@ -21,6 +22,9 @@ const router = async (req, res) => {
       break;
     case "tasks":
       await tasksRoutes(req, res);
+      break;
+    case "dashboard":
+      await dashboardRoutes(req, res);
       break;
     case "reports":
       await reportsRoutes(req, res);
