@@ -159,6 +159,10 @@ export const update = async ({ id, payload }) => {
   try {
     const Tasks = getCollection("tasks");
 
+    if ("assignedTo" in payload) {
+      payload.assignedTo = payload.assignedTo.map((id) => new ObjectId(id));
+    }
+
     const res = await Tasks.updateOne(
       { _id: new ObjectId(id) },
       { $set: payload }
@@ -474,6 +478,20 @@ export const getLatest = async (limit = 10, assignedTo) => {
 
     return res || null;
   } catch (error) {
-    throwDBError(error.message || "Failed To Fetch Latest Posts");
+    throwDBError("Failed To Fetch Latest Posts");
+  }
+};
+
+// deleting user from assigned to
+export const deleteMemberFromTasks = async (assignedTo) => {
+  try {
+    const Tasks = getCollection("tasks");
+
+    await Tasks.updateMany(
+      { assignedTo: new ObjectId(assignedTo) },
+      { $pull: { assignedTo: new ObjectId(assignedTo) } }
+    );
+  } catch (error) {
+    throwDBError("Failed to delete user from tasks");
   }
 };

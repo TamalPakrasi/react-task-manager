@@ -149,8 +149,15 @@ export const findMembers = async () => {
 // deleting existing user
 export const deleteUser = async (id) => {
   try {
+    const Users = getCollection("users");
+
+    const res = await Users.deleteOne({ _id: new ObjectId(id) });
+
+    if (res.deletedCount === 0) {
+      throw new Error("User Not Found");
+    }
   } catch (error) {
-    throwDBError("Failed to delete user");
+    throwDBError(error.message || "Failed to delete user");
   }
 };
 

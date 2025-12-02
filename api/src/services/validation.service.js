@@ -114,13 +114,19 @@ class Validation {
     }
 
     if ("attachments" in obj) {
-      if (obj?.attachments !== null && !Array.isArray(obj?.attachments))
+      if (obj.attachments !== null && !Array.isArray(obj.attachments))
         errors.push("Attachments Must Be An Array Or NULL");
     }
 
     if ("assignedTo" in obj) {
-      if (!Array.isArray(obj?.assignedTo))
+      if (!Array.isArray(obj.assignedTo))
         errors.push("Assigned To Must Be An Array");
+
+      for (const assignedTo of obj.assignedTo) {
+        if (!ObjectId.isValid(assignedTo)) {
+          throwValidationError("Invalid User Id");
+        }
+      }
     }
   }
 }

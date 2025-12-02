@@ -1,7 +1,5 @@
-import bcrypt from "bcrypt";
-
 // models
-// import * as TasksModel from "../models/Tasks.model.js";
+import * as TasksModel from "../models/Tasks.model.js";
 import * as UsersModel from "../models/Users.model.js";
 
 import throwBadRequestError from "../utils/errors/BadRequest.error.js";
@@ -37,6 +35,7 @@ class Users {
 
     validationService.validateUserId(id);
 
+    await TasksModel.deleteMemberFromTasks(id);
     await UsersModel.deleteUser(id);
   }
 }
