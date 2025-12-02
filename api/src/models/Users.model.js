@@ -102,6 +102,7 @@ export const findMembers = async () => {
             {
               $group: {
                 _id: null,
+                all: { $sum: 1 },
                 pending: {
                   $sum: { $cond: [{ $eq: ["$status", "Pending"] }, 1, 0] },
                 },
@@ -127,6 +128,7 @@ export const findMembers = async () => {
 
       {
         $addFields: {
+          allCount: "$taskCounts.all",
           pendingCount: { $ifNull: ["$taskCounts.pending", 0] },
           inProgressCount: { $ifNull: ["$taskCounts.inProgress", 0] },
           completedCount: { $ifNull: ["$taskCounts.completed", 0] },

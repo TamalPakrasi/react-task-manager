@@ -34,14 +34,12 @@ export const find = async ({ status, assignedTo = null }) => {
   try {
     const Tasks = getCollection("tasks");
 
-    const oid = new ObjectId(assignedTo);
-
     const pipeline = [];
 
     if (assignedTo && ObjectId.isValid(assignedTo)) {
       pipeline.push({
         $match: {
-          assignedTo: { $in: [oid] },
+          assignedTo: { $in: [new ObjectId(assignedTo)] },
         },
       });
     }
@@ -54,15 +52,24 @@ export const find = async ({ status, assignedTo = null }) => {
       });
     }
 
-    pipeline.push({
-      $lookup: {
-        from: "users",
-        localField: "assignedTo",
-        foreignField: "_id",
-        as: "assignedTo",
-        pipeline: [{ $project: { username: 1, email: 1, profileImageUrl: 1 } }],
-      },
-    });
+    pipeline.push(
+      ...[
+        {
+          $lookup: {
+            from: "users",
+            localField: "assignedTo",
+            foreignField: "_id",
+            as: "assignedTo",
+            pipeline: [
+              { $project: { username: 1, email: 1, profileImageUrl: 1 } },
+            ],
+          },
+        },
+        {
+          $unset: ["updatedAt"],
+        },
+      ]
+    );
 
     const res = await Tasks.aggregate(pipeline).toArray();
 
