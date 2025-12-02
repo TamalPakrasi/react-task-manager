@@ -125,6 +125,25 @@ class Tasks {
 
     return res;
   }
+
+  async updateTaskCheckList({ id, userId, role, taskCheckList = [] }) {
+    validationService.validateUserId(id);
+
+    const isUpdated = await TasksModel.updateTaskCheckListAndProgress({
+      id,
+      assignedTo: role !== "admin" ? userId : null,
+      taskCheckList,
+      updatedAt: new Date(),
+    });
+
+    if (!isUpdated) {
+      throwBadRequestError("Invalid Credentials");
+    }
+
+    const res = await TasksModel.findById(id);
+
+    return res;
+  }
 }
 
 const tasksService = () => new Tasks();

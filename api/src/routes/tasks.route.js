@@ -16,7 +16,7 @@ const endPoints = {
     PUT: {
       default: tasks.updateTask,
       status: tasks.updateTaskStatus,
-      todo: tasks.updateTaskCheckList,
+      task: tasks.updateTaskCheckList,
     },
     DELETE: {
       default: tasks.deleteTask,
@@ -38,7 +38,7 @@ const allowedEndPoints = [
   "dashboard-data",
   "user-dashboard-data",
   "status",
-  "todo",
+  "task",
   "default",
 ];
 

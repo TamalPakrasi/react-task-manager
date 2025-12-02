@@ -245,3 +245,96 @@ export const updateStatusAndProgress = async ({
     throwDBError("Failed to update status");
   }
 };
+
+// updating task checklist and progress
+export const updateTaskCheckListAndProgress = async ({
+  id,
+  assignedTo,
+  taskCheckList,
+  updatedAt,
+}) => {
+  try {
+    const Tasks = getCollection("tasks");
+
+    const filter = {
+      _id: { $eq: new ObjectId(id) },
+    };
+
+    if (assignedTo) {
+      filter.assignedTo = { $in: [new ObjectId(assignedTo)] };
+    }
+
+    const updateProgress = {
+      $round: [
+        {
+          $multiply: [
+            {
+              $divide: [
+                {
+                  $size: {
+                    $filter: {
+                      input: "$taskCheckList",
+                      as: "item",
+                      cond: {
+                        $eq: ["$$item.completed", true],
+                      },
+                    },
+                  },
+                },
+                { $size: "$taskCheckList" },
+              ],
+            },
+            100,
+          ],
+        },
+      ],
+    };
+
+    const res = await Tasks.updateOne(filter, [
+      {
+        $set: {
+          taskCheckList,
+          updatedAt,
+        },
+      },
+      {
+        $set: {
+          progress: {
+            $cond: [
+              { $gt: [{ $size: "$taskCheckList" }, 0] },
+              updateProgress,
+              0,
+            ],
+          },
+        },
+      },
+      {
+        $set: {
+          status: {
+            $switch: {
+              branches: [
+                {
+                  case: {
+                    $eq: ["$progress", 100],
+                  },
+                  then: "Completed",
+                },
+                {
+                  case: {
+                    $gt: ["$progress", 0],
+                  },
+                  then: "In Progress",
+                },
+              ],
+              default: "Pending",
+            },
+          },
+        },
+      },
+    ]);
+
+    return res.matchedCount > 0 && res.modifiedCount > 0;
+  } catch (error) {
+    throwDBError("Failed to update task checklist");
+  }
+};

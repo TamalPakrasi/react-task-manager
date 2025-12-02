@@ -32,11 +32,25 @@ export const updateTaskStatus = async (req, res, next) => {
 };
 
 // @desc    PUT update task checklist of a specific task
-// @route   PUT /api/tasks/todo?id=<id>
+// @route   PUT /api/tasks/task?id=<id>
 // @access  private (auth user)
 export const updateTaskCheckList = async (req, res, next) => {
   try {
     const { id } = req.query;
+    const { _id, role } = req.user;
+
+    const updatedTask = await tasksService().updateTaskCheckList({
+      id,
+      userId: _id,
+      role,
+      ...req.body,
+    });
+
+    return res.sendJSON(
+      200,
+      "Task Checklist Updated Successfully",
+      updatedTask
+    );
   } catch (error) {
     await next(error);
   }
