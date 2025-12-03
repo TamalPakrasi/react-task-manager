@@ -1,3 +1,4 @@
-import AuthLoader from "./AuthLoader";
+import Loader from "./Loader";
+import Form from "./Form";
 
-export { AuthLoader };
+export { Loader, Form };

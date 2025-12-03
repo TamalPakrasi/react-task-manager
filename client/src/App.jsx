@@ -2,26 +2,26 @@ import { lazy } from "react";
 import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
 
 // Layouts
-import AuthLayout from "./layouts/AuthLayout";
-import MainLayout from "./layouts/MainLayout";
+import AuthLayout from "@layouts/AuthLayout";
+import MainLayout from "@layouts/MainLayout";
 
 // Route Protector
-import PrivateRoute from "./routes/PrivateRoute";
+import PrivateRoute from "@routes/PrivateRoute";
 
 // Auth Pages
-const Login = lazy(() => import("./pages/Auth/Login"));
-const Register = lazy(() => import("./pages/Auth/Register"));
+const Login = lazy(() => import("@pages/Auth/Login"));
+const Register = lazy(() => import("@pages/Auth/Register"));
 
 // Admin Pages
-const AdminDashBorad = lazy(() => import("./pages/Admin/Dashboard"));
-const ManageTasks = lazy(() => import("./pages/Admin/ManageTasks"));
-const CreateTasks = lazy(() => import("./pages/Admin/CreateTask"));
-const ManageUsers = lazy(() => import("./pages/Admin/ManageUsers"));
+const AdminDashBorad = lazy(() => import("@pages/Admin/Dashboard"));
+const ManageTasks = lazy(() => import("@pages/Admin/ManageTasks"));
+const CreateTasks = lazy(() => import("@pages/Admin/CreateTask"));
+const ManageUsers = lazy(() => import("@pages/Admin/ManageUsers"));
 
 // User Pages
-const UserDashBorad = lazy(() => import("./pages/Users/Dashboard"));
-const MyTasks = lazy(() => import("./pages/Users/MyTasks"));
-const ViewTaskDetails = lazy(() => import("./pages/Users/ViewTaskDetails"));
+const UserDashBorad = lazy(() => import("@pages/Users/Dashboard"));
+const MyTasks = lazy(() => import("@pages/Users/MyTasks"));
+const ViewTaskDetails = lazy(() => import("@pages/Users/ViewTaskDetails"));
 
 function App() {
   return (

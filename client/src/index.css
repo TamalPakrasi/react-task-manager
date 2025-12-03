@@ -1,0 +1,16 @@
+@import "tailwindcss";
+@plugin "daisyui" {
+  themes: nord;
+}
+
+@layer base {
+  #root {
+    @apply min-h-[100dvh] flex justify-center items-center relative;
+  }
+}
+
+@layer utilities {
+  .shadow-full {
+    box-shadow: 0 0 35px rgba(0, 0, 0, 0.4);
+  }
+}
