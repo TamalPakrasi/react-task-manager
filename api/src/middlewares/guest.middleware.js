@@ -16,9 +16,15 @@ const guest = async (req, res, next) => {
       return await next();
     }
     // verfiying jwt
-    const decoded = jwt.verify(refresh_token, REFRESH_TOKEN_SECRET);
+    let decoded;
 
-    if (!decoded || !decoded.id) {
+    try {
+      decoded = jwt.verify(refresh_token, REFRESH_TOKEN_SECRET);
+    } catch (error) {
+      return await next();
+    }
+
+    if (!decoded?.id) {
       return await next();
     }
 

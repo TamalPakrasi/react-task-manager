@@ -15,9 +15,15 @@ const authProtect = async (req, res, next) => {
       throwAuthError("Unauthorized - token not found", 401);
     }
 
-    const decoded = jwt.verify(token, ACCESS_TOKEN_SECRET);
+    // verfiying jwt
+    let decoded;
+    try {
+      decoded = jwt.verify(token, ACCESS_TOKEN_SECRET);
+    } catch (error) {
+      throwAuthError("Unauthorized - Invalid or expired token", 401);
+    }
 
-    if (!decoded || !decoded.id) {
+    if (!decoded?.id) {
       throwAuthError("Unauthorized - Invalid or expired token", 401);
     }
 

@@ -18,9 +18,14 @@ const hasRefreshToken = async (req, res, next) => {
     }
 
     // verfiying jwt
-    const decoded = jwt.verify(refresh_token, REFRESH_TOKEN_SECRET);
+    let decoded;
+    try {
+      decoded = jwt.verify(refresh_token, REFRESH_TOKEN_SECRET);
+    } catch (error) {
+      throwAccessDeniedError("Only Logged In Members Can Access This");
+    }
 
-    if (!decoded || !decoded.id) {
+    if (!decoded?.id) {
       throwAccessDeniedError("Only Logged In Members Can Access This");
     }
 
