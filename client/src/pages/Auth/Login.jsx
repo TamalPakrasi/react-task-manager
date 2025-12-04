@@ -6,14 +6,16 @@ import { Form, EmailPass } from "@components";
 function Login() {
   const { formDispatch } = useOutletContext();
 
+  const defaultState = [
+    { name: "email", value: "", required: true },
+    { name: "password", value: "", required: true },
+  ];
+
   useEffect(() => {
     formDispatch({
       type: "REGISTER_FIELDS",
       payload: {
-        fields: [
-          { name: "email", value: "", required: true },
-          { name: "password", value: "", required: true },
-        ],
+        fields: defaultState,
       },
     });
 
@@ -24,7 +26,7 @@ function Login() {
 
   return (
     <>
-      <Form name="Log in" mode="login">
+      <Form name="Log in" mode="login" defaultState={defaultState}>
         <EmailPass />
       </Form>
 

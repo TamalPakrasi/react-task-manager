@@ -7,7 +7,6 @@ export const initFormState = {
     isLoading: false,
     isError: false,
   },
-  hasError: false,
 };
 
 const form = (state, action) => {
@@ -28,51 +27,49 @@ const form = (state, action) => {
         fields: newFields,
       };
 
-    case "UPDATE_FIELD": {
+    case "UPDATE_FIELD":
       const { name, value } = action.payload;
 
       const updatedFields = {
         ...state.fields,
         [name]: {
-          ...(state.fields[name] || { errors: null }),
+          ...state.fields[name],
           value,
         },
       };
 
-      const errors = validation({
-        field: name,
-        value,
-      });
+      const errors = Object.entries(
+        validation({
+          field: name,
+          value,
+        })
+      );
 
-      if (Object.keys(errors).length > 0) {
-        return {
-          ...state,
-          hasError: true,
-          fields: Object.entries(updatedFields).reduce((acc, [field, obj]) => {
-            acc[field] = {
-              ...obj,
-              error: errors[field] || null,
-            };
-            return acc;
-          }, {}),
-        };
+      if (errors.length > 0) {
+        errors.forEach(([field, err]) => {
+          updatedFields[field].error = err;
+        });
+      } else {
+        updatedFields[name].error = null;
       }
 
-      return {
-        ...state,
-        hasError: false,
-        fields: {
-          ...updatedFields,
-          [name]: {
-            ...updatedFields[name],
-            error: null,
-          },
-        },
-      };
-    }
+      return { ...state, fields: updatedFields };
 
     case "RESET":
       return initFormState;
+
+    case "RESET_FIELDS":
+      return {
+        ...state,
+        fields: action.payload.fields.reduce((acc, curr) => {
+          acc[curr.name] = {
+            value: curr.value,
+            required: curr.required,
+            error: null,
+          };
+          return acc;
+        }, {}),
+      };
     default:
       break;
   }

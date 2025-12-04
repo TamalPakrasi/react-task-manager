@@ -1,7 +1,7 @@
 import useForm from "@hooks/useForm";
 
-function Form({ children, name, mode }) {
-  const { handleSubmit } = useForm(mode);
+function Form({ children, name, mode, defaultState }) {
+  const { handleSubmit } = useForm({ mode, defaultState });
 
   return (
     <form className="auth-form shadow-full" onSubmit={handleSubmit}>

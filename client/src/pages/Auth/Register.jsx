@@ -8,16 +8,18 @@ function Register() {
 
   const { fields } = formState;
 
+  const defaultState = [
+    { name: "username", value: "", required: true },
+    { name: "email", value: "", required: true },
+    { name: "password", value: "", required: true },
+    { name: "profilePic", value: null, required: false },
+  ];
+
   useEffect(() => {
     formDispatch({
       type: "REGISTER_FIELDS",
       payload: {
-        fields: [
-          { name: "username", value: "", required: true },
-          { name: "email", value: "", required: true },
-          { name: "password", value: "", required: true },
-          { name: "profilePic", value: null, required: false },
-        ],
+        fields: defaultState,
       },
     });
 
@@ -28,7 +30,7 @@ function Register() {
 
   return (
     <>
-      <Form name="Register" mode="register">
+      <Form name="Register" mode="register" defaultState={defaultState}>
         {/* Username */}
         <label className="form-control w-full">
           <div className="label">
