@@ -1,40 +1,40 @@
-import React from "react";
+import { useEffect } from "react";
+import { useOutletContext, Link } from "react-router-dom";
 
-import { Form } from "@components";
+import { Form, EmailPass } from "@components";
 
 function Login() {
-  const handleChange = (e) => {}
+  const { formDispatch } = useOutletContext();
+
+  useEffect(() => {
+    formDispatch({
+      type: "REGISTER_FIELDS",
+      payload: {
+        fields: [
+          { name: "email", value: "", required: true },
+          { name: "password", value: "", required: true },
+        ],
+      },
+    });
+
+    return () => {
+      formDispatch({ type: "RESET" });
+    };
+  }, []);
 
   return (
-    <Form name="Log in">
-      {/* Email */}
-      <label className="form-control w-full">
-        <div className="label">
-          <span className="label-text">Email</span>
-        </div>
-        <input
-          type="email"
-          name="email"
-          placeholder="Enter email"
-          className="input input-bordered w-full"
-          onChange={handleChange}
-        />
-      </label>
+    <>
+      <Form name="Log in" mode="login">
+        <EmailPass />
+      </Form>
 
-      {/* Password */}
-      <label className="form-control w-full">
-        <div className="label">
-          <span className="label-text">Password</span>
-        </div>
-        <input
-          type="password"
-          name="password"
-          placeholder="Enter password"
-          className="input input-bordered w-full"
-          onChange={handleChange}
-        />
-      </label>
-    </Form>
+      <p className="mt-4 font-medium">
+        Don't have an account?{" "}
+        <Link to="/auth/register" className="text-primary select-none">
+          Register
+        </Link>
+      </p>
+    </>
   );
 }
 

@@ -1,15 +1,10 @@
-import api from "@utils/axiosInstance";
+import useForm from "@hooks/useForm";
 
-import { useOutletContext } from "react-router-dom";
-
-function Form({ children, name }) {
-  const { handleSubmit } = useOutletContext();
+function Form({ children, name, mode }) {
+  const { handleSubmit } = useForm(mode);
 
   return (
-    <form
-      className="card w-full max-w-md bg-base-100 shadow-full p-6 space-y-4"
-      onSubmit={handleSubmit}
-    >
+    <form className="auth-form shadow-full" onSubmit={handleSubmit}>
       <h2 className="text-2xl font-bold text-center">{name}</h2>
 
       {/* All Form will render here */}

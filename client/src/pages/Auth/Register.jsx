@@ -1,69 +1,87 @@
-import React from "react";
+import { useEffect } from "react";
+import { useOutletContext, Link } from "react-router-dom";
 
-import { Form } from "@components";
-
-import { useOutletContext } from "react-router-dom";
+import { Form, EmailPass } from "@components";
 
 function Register() {
-  const handleChange = (e) => {};
+  const { handleChange, formDispatch, formState } = useOutletContext();
+
+  const { fields } = formState;
+
+  useEffect(() => {
+    formDispatch({
+      type: "REGISTER_FIELDS",
+      payload: {
+        fields: [
+          { name: "username", value: "", required: true },
+          { name: "email", value: "", required: true },
+          { name: "password", value: "", required: true },
+          { name: "profilePic", value: null, required: false },
+        ],
+      },
+    });
+
+    return () => {
+      formDispatch({ type: "RESET" });
+    };
+  }, []);
 
   return (
-    <Form name="Register">
-      {/* Username */}
-      <label className="form-control w-full">
-        <div className="label">
-          <span className="label-text">Username</span>
-        </div>
-        <input
-          type="text"
-          name="username"
-          placeholder="Enter username"
-          className="input input-bordered w-full"
-          onChange={handleChange}
-        />
-      </label>
+    <>
+      <Form name="Register" mode="register">
+        {/* Username */}
+        <label className="form-control w-full">
+          <div className="label">
+            <span className="label-text">Username</span>
+          </div>
+          <input
+            type="text"
+            name="username"
+            placeholder="Enter username"
+            value={fields?.username?.value || ""}
+            className={`input ${
+              fields?.username?.error ? "border-red-500 outline-red-500" : ""
+            } w-full`}
+            onChange={handleChange}
+          />
+          {fields?.username?.error && (
+            <div className="text-red-500 text-sm mt-1">
+              {fields.username.error}
+            </div>
+          )}
+        </label>
 
-      {/* Email */}
-      <label className="form-control w-full">
-        <div className="label">
-          <span className="label-text">Email</span>
-        </div>
-        <input
-          type="email"
-          name="email"
-          placeholder="Enter email"
-          className="input input-bordered w-full"
-          onChange={handleChange}
-        />
-      </label>
+        <EmailPass />
 
-      {/* Password */}
-      <label className="form-control w-full">
-        <div className="label">
-          <span className="label-text">Password</span>
-        </div>
-        <input
-          type="password"
-          name="password"
-          placeholder="Enter password"
-          className="input input-bordered w-full"
-          onChange={handleChange}
-        />
-      </label>
+        {/* Profile Picture */}
+        <label className="form-control w-full">
+          <div className="label">
+            <span className="label-text">
+              Profile Picture <span className="text-sm">(optional)</span>
+            </span>
+          </div>
+          <input
+            type="file"
+            name="profilePic"
+            className="file-input file-input-bordered w-full"
+            onChange={handleChange}
+            accept="image/*"
+          />
+          {fields?.profilePic?.error && (
+            <div className="text-red-500 text-sm mt-1">
+              {fields.profilePic.error}
+            </div>
+          )}
+        </label>
+      </Form>
 
-      {/* Profile Picture */}
-      <label className="form-control w-full">
-        <div className="label">
-          <span className="label-text">Profile Picture</span>
-        </div>
-        <input
-          type="file"
-          name="profilePic"
-          className="file-input file-input-bordered w-full"
-          onChange={handleChange}
-        />
-      </label>
-    </Form>
+      <p className="mt-4 font-medium">
+        Already have an account?{" "}
+        <Link to="/auth/login" className="text-primary select-none">
+          Log In
+        </Link>
+      </p>
+    </>
   );
 }
 
