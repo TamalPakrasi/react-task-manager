@@ -11,20 +11,17 @@ export const initFormState = {
 
 const form = (state, action) => {
   switch (action.type) {
-    case "REGISTER_FIELDS":
-      const newFields = { ...state.fields };
-
-      action.payload.fields.forEach(({ name, value, required }) => {
-        newFields[name] = {
-          value,
-          required,
-          error: null,
-        };
-      });
-
+    case "REGISTER_NEW_FIELDS":
       return {
         ...state,
-        fields: newFields,
+        fields: action.payload.fields.reduce((acc, curr) => {
+          acc[curr.name] = {
+            value: curr.value,
+            required: curr.required,
+            error: null,
+          };
+          return acc;
+        }, {}),
       };
 
     case "UPDATE_FIELD":
@@ -38,38 +35,17 @@ const form = (state, action) => {
         },
       };
 
-      const errors = Object.entries(
-        validation({
-          field: name,
-          value,
-        })
-      );
+      const error = validation({
+        field: name,
+        value,
+      });
 
-      if (errors.length > 0) {
-        errors.forEach(([field, err]) => {
-          updatedFields[field].error = err;
-        });
-      } else {
-        updatedFields[name].error = null;
-      }
+      updatedFields[name].error = error.length > 0 ? error : null;
 
       return { ...state, fields: updatedFields };
 
     case "RESET":
       return initFormState;
-
-    case "RESET_FIELDS":
-      return {
-        ...state,
-        fields: action.payload.fields.reduce((acc, curr) => {
-          acc[curr.name] = {
-            value: curr.value,
-            required: curr.required,
-            error: null,
-          };
-          return acc;
-        }, {}),
-      };
     default:
       break;
   }

@@ -31,7 +31,11 @@ const useForm = ({ mode, defaultState }) => {
       }
 
       e.target.reset();
-      formDispatch({ type: "RESET_FIELDS", payload: { fields: defaultState } });
+
+      formDispatch({
+        type: "REGISTER_NEW_FIELDS",
+        payload: { fields: defaultState },
+      });
     } catch (err) {
       error(err.message);
     }
