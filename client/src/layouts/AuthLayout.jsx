@@ -5,7 +5,7 @@ import { Loader } from "@components";
 
 import formReducer, { initFormState } from "@reducers/form.reducer";
 
-import ToastProvider from "@lib/ToastProvider";
+import GuestRoute from "@routes/GuestRoute";
 
 function AuthLayout() {
   const [formState, formDispatch] = useReducer(formReducer, initFormState);
@@ -29,11 +29,11 @@ function AuthLayout() {
   );
 
   return (
-    <ToastProvider>
+    <GuestRoute>
       <Suspense fallback={<Loader size="lg" />}>
         <Outlet context={context} />
       </Suspense>
-    </ToastProvider>
+    </GuestRoute>
   );
 }
 

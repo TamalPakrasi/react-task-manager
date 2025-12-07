@@ -1,7 +1,14 @@
 import React from "react";
-import { Outlet } from "react-router-dom";
+import { Outlet, Navigate } from "react-router-dom";
 
-function PrivateRoute({ allowedRoles }) {
+import { useAuthContext } from "@contexts/Auth/context";
+
+function PrivateRoute({ allowedRole }) {
+  const { user } = useAuthContext();
+
+  if (user.role !== allowedRole)
+    return <Navigate to={`/${user.role}/dashboard`} />;
+
   return <Outlet />;
 }
 

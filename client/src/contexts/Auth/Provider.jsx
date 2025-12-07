@@ -9,7 +9,12 @@ function Provider({ children }) {
 
   return (
     <AuthContext.Provider
-      value={{ token: state.token, user: state.user, authDispatch: dispatch }}
+      value={{
+        token: state.token,
+        user: state.user,
+        isAuthenticated: state.isAuthenticated,
+        authDispatch: dispatch,
+      }}
     >
       {children}
     </AuthContext.Provider>

@@ -1,4 +1,4 @@
-import { publicApi, privateApi } from "@utils/axiosInstance";
+import { publicApi, privateApi } from "@network/axiosInstance";
 
 const useAxios = (isPrivate = false) => {
   const axiosInstance = isPrivate ? privateApi : publicApi;

@@ -10,11 +10,18 @@ const authReducer = (state, action) => {
       return {
         token: action.payload.token,
         user: action.payload.user,
-        isAuthenticated: true,
+        isAuthenticated:
+          action.payload.token.length > 0 && action.payload.user !== null,
       };
 
     case "LOGOUT":
       return authInitState;
+
+    case "REFRESH":
+      return {
+        ...state,
+        token: action.payload.new_token,
+      };
 
     default:
       return state;

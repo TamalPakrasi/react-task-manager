@@ -3,7 +3,7 @@ import { useOutletContext, Link } from "react-router-dom";
 
 import { Form, EmailPass } from "@components";
 
-import apiPaths from "@utils/apiPaths";
+import apiPaths from "@network/apiPaths";
 
 function Register() {
   const { handleChange, formDispatch, formState } = useOutletContext();

@@ -17,6 +17,7 @@ export default defineConfig({
       "@reducers": path.resolve(__dirname, "./src/reducers"),
       "@hooks": path.resolve(__dirname, "./src/hooks"),
       "@lib": path.resolve(__dirname, "./src/lib"),
+      "@network": path.resolve(__dirname, "./src/network"),
     },
   },
 });

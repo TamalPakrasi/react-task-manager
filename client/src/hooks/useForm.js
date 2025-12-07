@@ -1,4 +1,4 @@
-import { useOutletContext } from "react-router-dom";
+import { useNavigate, useOutletContext } from "react-router-dom";
 
 import { useAuthContext } from "@contexts/Auth/context";
 import jsonToFormdata from "@utils/jsonToFormdata";
@@ -33,6 +33,8 @@ const useForm = ({ api, defaultState }) => {
 
   const { post } = useAxios(false);
 
+  const navigate = useNavigate();
+
   const handleSubmit = async (e) => {
     e.preventDefault();
 
@@ -61,12 +63,7 @@ const useForm = ({ api, defaultState }) => {
 
       success(message);
 
-      e.target.reset();
-
-      formDispatch({
-        type: "REGISTER_NEW_FIELDS",
-        payload: { fields: defaultState },
-      });
+      navigate(`/${data.user.role}/dashboard`);
     } catch (err) {
       error(err.message);
     }

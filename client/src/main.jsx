@@ -5,8 +5,13 @@ import "@/index.css";
 // auth context
 import AuthContextProvider from "@contexts/Auth/Provider";
 
+// toast
+import ToastProvider from "@lib/ToastProvider";
+
 createRoot(document.getElementById("root")).render(
   <AuthContextProvider>
-    <App />
+    <ToastProvider>
+      <App />
+    </ToastProvider>
   </AuthContextProvider>
 );
