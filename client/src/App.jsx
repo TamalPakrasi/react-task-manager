@@ -44,7 +44,7 @@ function App() {
             <Route path="dashboard" element={<AdminDashBorad />} />
             <Route path="tasks" element={<ManageTasks />} />
             <Route path="create-tasks" element={<CreateTasks />} />
-            <Route path="users" element={<ManageUsers />} />
+            <Route path="members" element={<ManageUsers />} />
           </Route>
 
           {/* User Routes */}

@@ -1,17 +1,17 @@
 import { useEffect } from "react";
-import { useNavigate } from "react-router-dom";
 
 import { privateApi } from "./axiosInstance";
 import apiPaths from "./apiPaths";
 
 import { useAuthContext } from "@contexts/Auth/context";
 import useAxios from "@hooks/useAxios";
+import useLogout from "@hooks/useLogout";
 
 function AxiosInterceptor() {
   const { authDispatch, token } = useAuthContext();
-  const { post } = useAxios();
+  const { post } = useAxios(true);
 
-  const navigate = useNavigate();
+  const { handleLogout } = useLogout();
 
   useEffect(() => {
     const reqInterceptor = privateApi.interceptors.request.use((config) => {
@@ -27,13 +27,17 @@ function AxiosInterceptor() {
       async (err) => {
         const originalRequest = err.config;
 
+        if (originalRequest.url.includes(apiPaths.refresh)) {
+          await handleLogout();
+          return Promise.reject(err);
+        }
+
         if (err.response?.status === 401 && !originalRequest._retry) {
           originalRequest._retry = true;
 
           try {
             const { data } = await post({
               api: apiPaths.refresh,
-              data: null,
             });
 
             authDispatch({
@@ -46,11 +50,8 @@ function AxiosInterceptor() {
             originalRequest.headers.Authorization = `Bearer ${data.token}`;
             return privateApi(originalRequest);
           } catch (error) {
-            authDispatch({
-              type: "LOGOUT",
-            });
+            await handleLogout();
 
-            navigate("/auth/login");
             return Promise.reject(error);
           }
         }

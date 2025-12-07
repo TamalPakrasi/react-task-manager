@@ -175,10 +175,21 @@ class Auth {
     return await this.#sendAuthToken();
   }
 
-  async logout(userId) {
-    const isLoggedOut = await TokensModel.revoke(userId);
-    if (!isLoggedOut) {
-      throwAuthError("Failed to Log out", 500);
+  async logout(token) {
+    if (token) {
+      let decoded;
+      try {
+        decoded = jwt.verify(token, REFRESH_TOKEN_SECRET);
+      } catch (error) {
+        throwAuthError("Failed to Log out", 500);
+      }
+
+      ValidationService.validateUserId(decoded.id);
+
+      const isLoggedOut = await TokensModel.revoke(decoded.id);
+      if (!isLoggedOut) {
+        throwAuthError("Failed to Log out", 500);
+      }
     }
   }
 

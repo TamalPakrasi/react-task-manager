@@ -89,7 +89,9 @@ export const login = async (req, res, next) => {
 // @access  private (auth user)
 export const logout = async (req, res, next) => {
   try {
-    await authSevice().logout(req.user._id);
+    const token = req.cookies?.refresh_token;
+
+    await authSevice().logout(token);
 
     res.setHeader(
       "Set-Cookie",

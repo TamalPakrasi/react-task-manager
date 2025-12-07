@@ -6,6 +6,7 @@
 @layer base {
   #root {
     @apply min-h-[100dvh] flex flex-col justify-center items-center relative;
+    font-family: "Manrope", sans-serif;
   }
 }
 

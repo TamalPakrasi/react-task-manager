@@ -1,3 +1,5 @@
+import { LogIn, UserPlus } from "lucide-react";
+
 import useForm from "@hooks/useForm";
 
 function Form({ children, name, api, defaultState }) {
@@ -10,7 +12,10 @@ function Form({ children, name, api, defaultState }) {
       {/* All Form will render here */}
       {children}
 
-      <button className="btn btn-primary w-full mt-4">{name}</button>
+      <button className="btn btn-primary w-full mt-4">
+        {name === "Register" ? <UserPlus size={20} /> : <LogIn size={20} />}
+        {name}
+      </button>
     </form>
   );
 }

@@ -6,7 +6,6 @@ import * as auth from "../controllers/auth.controller.js";
 // middlewares
 import isImage from "../middlewares/isImage.middleware.js";
 import guest from "../middlewares/guest.middleware.js";
-import authProtect from "../middlewares/authProtect.middleware.js";
 import hasRefreshToken from "../middlewares/hasRefreshToken.middleware.js";
 
 const routes = async (req, res) => {
@@ -19,7 +18,7 @@ const routes = async (req, res) => {
   }
 
   if (req.api === "logout" && req.method === "POST") {
-    return await run(req, res, authProtect, auth.logout);
+    return await run(req, res, auth.logout);
   }
 
   if (req.api === "refresh" && req.method === "POST") {
