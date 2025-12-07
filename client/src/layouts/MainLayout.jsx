@@ -1,11 +1,19 @@
 import { Suspense } from "react";
 import { Outlet } from "react-router-dom";
 
+// components
+import { Loader } from "@components";
+
+//protect
+import Protect from "@/routes/Protect";
+
 function MainLayout() {
   return (
-    <Suspense fallback={<div>Loading...</div>}>
-      <Outlet />
-    </Suspense>
+    <Protect>
+      <Suspense fallback={<Loader size="lg" />}>
+        <Outlet />
+      </Suspense>
+    </Protect>
   );
 }
 

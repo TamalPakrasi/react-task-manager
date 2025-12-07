@@ -6,6 +6,8 @@ function EmailPass() {
   const [show, setShow] = useState(false);
   const { formState, handleChange } = useOutletContext();
 
+  console.log(formState);
+
   const { fields } = formState;
 
   return (

@@ -13,7 +13,7 @@ function Login() {
 
   useEffect(() => {
     formDispatch({
-      type: "REGISTER_FIELDS",
+      type: "REGISTER_NEW_FIELDS",
       payload: {
         fields: defaultState,
       },
