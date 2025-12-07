@@ -3,6 +3,8 @@ import { useOutletContext, Link } from "react-router-dom";
 
 import { Form, EmailPass } from "@components";
 
+import apiPaths from "@utils/apiPaths";
+
 function Login() {
   const { formDispatch } = useOutletContext();
 
@@ -26,7 +28,7 @@ function Login() {
 
   return (
     <>
-      <Form name="Log in" mode="login" defaultState={defaultState}>
+      <Form name="Log in" api={apiPaths.login} defaultState={defaultState}>
         <EmailPass />
       </Form>
 

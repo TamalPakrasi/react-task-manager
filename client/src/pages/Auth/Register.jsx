@@ -3,6 +3,8 @@ import { useOutletContext, Link } from "react-router-dom";
 
 import { Form, EmailPass } from "@components";
 
+import apiPaths from "@utils/apiPaths";
+
 function Register() {
   const { handleChange, formDispatch, formState } = useOutletContext();
 
@@ -30,7 +32,7 @@ function Register() {
 
   return (
     <>
-      <Form name="Register" mode="register" defaultState={defaultState}>
+      <Form name="Register" api={apiPaths.register} defaultState={defaultState}>
         {/* Username */}
         <label className="form-control w-full">
           <div className="label">

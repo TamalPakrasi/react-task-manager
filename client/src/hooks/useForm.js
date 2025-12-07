@@ -1,10 +1,37 @@
 import { useOutletContext } from "react-router-dom";
 
-import useAlert from "./useAlert";
+import { useAuthContext } from "@contexts/Auth/context";
+import jsonToFormdata from "@utils/jsonToFormdata";
 
-const useForm = ({ mode, defaultState }) => {
+import useAlert from "./useAlert";
+import useAxios from "./useAxios";
+
+const validate = (fields) => {
+  const hasError = Object.values(fields).some((obj) => obj.error);
+
+  if (hasError) {
+    throw new Error("Submission failed - Validation Errors");
+  }
+
+  const requiredFields = Object.values(fields).filter((obj) => obj.required);
+
+  const isAllFilled =
+    requiredFields.length > 0 &&
+    requiredFields.every((obj) => obj.value !== "" && obj.value !== null);
+
+  if (!isAllFilled) {
+    throw new Error("Submission failed - Fill all required fields");
+  }
+};
+
+const useForm = ({ api, defaultState }) => {
   const { formState, formDispatch } = useOutletContext();
-  const { error } = useAlert();
+
+  const { authDispatch } = useAuthContext();
+
+  const { error, success } = useAlert();
+
+  const { post } = useAxios(false);
 
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -12,23 +39,27 @@ const useForm = ({ mode, defaultState }) => {
     const { fields } = formState;
 
     try {
-      const hasError = Object.values(fields).some((obj) => obj.error);
+      validate(fields);
 
-      if (hasError) {
-        throw new Error("Submission failed - Validation Errors");
-      }
+      const { data, message } = await post({
+        api,
+        data: jsonToFormdata(fields),
+        config: {
+          headers: {
+            "Content-Type": "multipart/form-data",
+          },
+        },
+      });
 
-      const requiredFields = Object.values(fields).filter(
-        (obj) => obj.required
-      );
+      authDispatch({
+        type: "LOGIN",
+        payload: {
+          token: data.token,
+          user: data.user,
+        },
+      });
 
-      const isAllFilled =
-        requiredFields.length > 0 &&
-        requiredFields.every((obj) => obj.value !== "" && obj.value !== null);
-
-      if (!isAllFilled) {
-        throw new Error("Submission failed - Fill all required fields");
-      }
+      success(message);
 
       e.target.reset();
 
