@@ -6,4 +6,6 @@ import DrawerMenu from "./DrawerMenu";
 
 import Avatar from "./Avatar";
 
-export { Loader, Form, EmailPass, DrawerMenu, Avatar };
+import Card from "./Card";
+
+export { Loader, Form, EmailPass, DrawerMenu, Avatar, Card };

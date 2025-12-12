@@ -8,8 +8,8 @@ function DashboardLayout({ children }) {
   return (
     <div className="drawer lg:drawer-open">
       <input id="dashbord_drawer" type="checkbox" className="drawer-toggle" />
-      <div className="drawer-content flex flex-col items-center justify-center">
-        {children}
+      <div className="drawer-content py-10 px-7">
+        <main>{children}</main>
         <label
           htmlFor="dashbord_drawer"
           className="btn drawer-button btn-ghost lg:hidden fixed top-1 left-1"
@@ -17,7 +17,7 @@ function DashboardLayout({ children }) {
           <PanelLeftOpen size={20} color="black" />
         </label>
       </div>
-      <div className="drawer-side">
+      <div className="drawer-side border-r border-base-300">
         <label
           htmlFor="dashbord_drawer"
           aria-label="close sidebar"
