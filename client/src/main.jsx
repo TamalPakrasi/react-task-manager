@@ -8,6 +8,8 @@ import AuthContextProvider from "@contexts/Auth/Provider";
 // toast
 import ToastProvider from "@lib/ToastProvider";
 
+import "@lib/charts";
+
 createRoot(document.getElementById("root")).render(
   <AuthContextProvider>
     <ToastProvider>

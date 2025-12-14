@@ -6,13 +6,13 @@ import { DrawerMenu, Avatar } from "@components";
 
 function DashboardLayout({ children }) {
   return (
-    <div className="drawer lg:drawer-open">
+    <div className="drawer lg:drawer-open max-w-dvw">
       <input id="dashbord_drawer" type="checkbox" className="drawer-toggle" />
-      <div className="drawer-content py-10 px-7">
-        <main>{children}</main>
+      <div className="drawer-content py-10">
+        <main className="mt-7 lg:mt-0 md:max-w-9/10 mx-auto">{children}</main>
         <label
           htmlFor="dashbord_drawer"
-          className="btn drawer-button btn-ghost lg:hidden fixed top-1 left-1"
+          className="btn drawer-button btn-ghost lg:hidden absolute top-1 left-1"
         >
           <PanelLeftOpen size={20} color="black" />
         </label>
