@@ -1,40 +1,65 @@
-import React from "react";
+import { useReducer, useEffect } from "react";
 import { Link } from "react-router-dom";
 import { Bar, Doughnut } from "react-chartjs-2";
 import { ArrowRight } from "lucide-react";
 
-import { Card } from "@components";
+import { Card, Loader, ErrorState } from "@components";
 
 import { useAuthContext } from "@contexts/Auth/context";
+import useAxios from "@hooks/useAxios";
 
 import formatDate from "@utils/formatDate";
+import { getStatusClass, getPriorityClass } from "@utils/getTaskClasses";
+
+import memberReducer, { memberInitState } from "@reducers/member.reducer";
+
+import formatCreatedAt from "@utils/formateCreatedAt";
 
 function Dashboard() {
   const { user } = useAuthContext();
+  const { get } = useAxios(true);
 
-  const taskDist = {
-    labels: ["Pending", "In Progress", "Completed"],
-    datasets: [
-      {
-        label: "Task Distribution",
-        data: [33, 33, 34],
-        backgroundColor: ["#5c1d70cc", "#0969b0cc", "#22c55e"],
-        borderWidth: 1,
-      },
-    ],
+  const [dashboardState, dashboardDispatch] = useReducer(
+    memberReducer,
+    memberInitState
+  );
+
+  const getUserDashboardData = async () => {
+    dashboardDispatch({ type: "START_FETCHING" });
+
+    try {
+      const { data } = await get({ api: "/dashboard/summary" });
+
+      dashboardDispatch({ type: "SET_DATA", payload: { data } });
+    } catch (error) {
+      dashboardDispatch({
+        type: "SET_ERROR",
+        payload: { error: error.message },
+      });
+    } finally {
+      dashboardDispatch({ type: "STOP_FETCHING" });
+    }
   };
 
-  const taskPrio = {
-    labels: ["Low", "Medium", "High"],
-    datasets: [
-      {
-        label: "Priority",
-        data: [12, 19, 3, 5, 2, 8],
-        backgroundColor: ["#22c55e", "#f59e0b", "#e11d48"],
-        borderRadius: 6,
-      },
-    ],
-  };
+  useEffect(() => {
+    getUserDashboardData();
+  }, []);
+
+  if (dashboardState.isLoading)
+    return (
+      <div className="loader">
+        <Loader />
+      </div>
+    );
+
+  if (dashboardState.isError)
+    return (
+      <ErrorState
+        title="Something Went Wrong"
+        desc={dashboardState.error}
+        onRetry={async () => await getUserDashboardData()}
+      />
+    );
 
   return (
     <div className="grid md:grid-cols-2 gap-8">
@@ -47,135 +72,159 @@ function Dashboard() {
         <div className="stats stats-vertical md:stats-horizontal pt-5 text-center">
           <div className="stat">
             <div className="stat-title">Total Posts</div>
-            <div className="stat-value">31K</div>
+            <div className="stat-value">{dashboardState.data.stats.all}</div>
           </div>
 
           <div className="stat">
             <div className="stat-title">Pending Tasks</div>
-            <div className="stat-value">4,200</div>
+            <div className="stat-value">
+              {dashboardState.data.stats.Pending}
+            </div>
           </div>
 
           <div className="stat">
             <div className="stat-title">In Progress</div>
-            <div className="stat-value">1,200</div>
+            <div className="stat-value">
+              {dashboardState.data.stats["In Progress"]}
+            </div>
           </div>
 
           <div className="stat">
             <div className="stat-title">Completed Tasks</div>
-            <div className="stat-value">1,200</div>
+            <div className="stat-value">
+              {dashboardState.data.stats.Completed}
+            </div>
           </div>
         </div>
       </Card>
 
-      <Card>
-        <h4 className="text-lg font-semibold">Task Distribution</h4>
-        <div className="h-60 mt-4">
-          <Doughnut data={taskDist} />
-        </div>
-      </Card>
+      {dashboardState.data.stats.all > 0 ? (
+        <>
+          <Card>
+            <h4 className="text-lg font-semibold">Task Distribution</h4>
+            <div className="h-60 mt-4">
+              <Doughnut
+                data={{
+                  labels: ["Pending", "In Progress", "Completed"],
+                  datasets: [
+                    {
+                      label: "Task Distribution",
+                      data: [
+                        dashboardState.data.dist.Pending,
+                        dashboardState.data.dist["In Progress"],
+                        dashboardState.data.dist.Completed,
+                      ],
+                      backgroundColor: ["#5c1d70cc", "#0969b0cc", "#22c55e"],
+                      borderWidth: 1,
+                    },
+                  ],
+                }}
+              />
+            </div>
+          </Card>
 
-      <Card>
-        <h4 className="text-lg font-semibold">Task Priority Levels</h4>
-        <div className="h-60 mt-4">
-          <Bar
-            data={taskPrio}
-            options={{
-              plugins: {
-                legend: {
-                  display: false,
-                },
-              },
-              scales: {
-                y: {
-                  beginAtZero: true,
-                  ticks: {
-                    stepSize: 10,
+          <Card>
+            <h4 className="text-lg font-semibold">Task Priority Levels</h4>
+            <div className="h-60 mt-4">
+              <Bar
+                data={{
+                  labels: ["Low", "Medium", "High"],
+                  datasets: [
+                    {
+                      label: "Priority",
+                      data: [
+                        dashboardState.data.priority.Low,
+                        dashboardState.data.priority.Medium,
+                        dashboardState.data.priority.High,
+                      ],
+                      backgroundColor: ["#22c55e", "#f59e0b", "#e11d48"],
+                      borderRadius: 6,
+                    },
+                  ],
+                }}
+                options={{
+                  plugins: {
+                    legend: {
+                      display: false,
+                    },
                   },
-                  grid: {
-                    display: false,
+                  scales: {
+                    y: {
+                      beginAtZero: true,
+                      ticks: {
+                        stepSize: 10,
+                      },
+                      grid: {
+                        display: false,
+                      },
+                    },
+                    x: {
+                      grid: {
+                        display: false,
+                      },
+                    },
                   },
-                },
-                x: {
-                  grid: {
-                    display: false,
-                  },
-                },
-              },
-            }}
-          />
-        </div>
-      </Card>
+                }}
+              />
+            </div>
+          </Card>
 
-      <Card className="md:col-span-2 relative">
-        <h4 className="text-lg font-semibold">Recent Tasks</h4>
+          <Card className="md:col-span-2 relative">
+            <h4 className="text-lg font-semibold">Recent Tasks</h4>
 
-        <div className="overflow-x-auto mt-4">
-          <table className="table">
-            {/* head */}
-            <thead>
-              <tr>
-                <th>Name</th>
-                <th>Status</th>
-                <th>Priority</th>
-                <th>Created On</th>
-              </tr>
-            </thead>
-            <tbody>
-              <tr>
-                <td>Cy Ganderton</td>
-                <td>
-                  <div className="badge badge-outline text-[#5c1d70cc] badge-sm">
-                    Pending
-                  </div>
-                </td>
-                <td>
-                  <div className="badge badge-outline text-green-600 badge-sm">
-                    Low
-                  </div>
-                </td>
-                <td>12 September, 2025</td>
-              </tr>
+            <div className="overflow-x-auto mt-4">
+              <table className="table">
+                {/* head */}
+                <thead>
+                  <tr>
+                    <th>Name</th>
+                    <th>Status</th>
+                    <th>Priority</th>
+                    <th>Created On</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  {dashboardState.data.tasks.map((task) => (
+                    <tr key={task._id}>
+                      <td>{task.title}</td>
+                      <td>
+                        <div
+                          className={`badge badge-outline ${getStatusClass(
+                            task.status
+                          )} badge-sm`}
+                        >
+                          {task.status}
+                        </div>
+                      </td>
+                      <td>
+                        <div
+                          className={`badge badge-outline ${getPriorityClass(
+                            task.priority
+                          )} badge-sm`}
+                        >
+                          {task.priority}
+                        </div>
+                      </td>
+                      <td>{formatCreatedAt(task.createdAt)}</td>
+                    </tr>
+                  ))}
+                </tbody>
+              </table>
+            </div>
 
-              <tr>
-                <td>Hart Hagerty</td>
-                <td>
-                  <div className="badge badge-outline text-[#0969b0cc] badge-sm">
-                    In Progress
-                  </div>
-                </td>
-                <td>
-                  <div className="badge badge-outline text-[#f59e0b] badge-sm">
-                    Medium
-                  </div>
-                </td>
-                <td>12 September, 2025</td>
-              </tr>
-
-              <tr>
-                <td>Brice Swyre</td>
-                <td>
-                  <div className="badge badge-outline text-green-600 badge-sm">
-                    Completed
-                  </div>
-                </td>
-                <td>
-                  <div className="badge badge-outline text-[#e11d48] badge-sm">
-                    High
-                  </div>
-                </td>
-                <td>12 June, 2025</td>
-              </tr>
-            </tbody>
-          </table>
-        </div>
-
-        <Link
-          to="/member/tasks"
-          className="btn border border-gray-400 absolute top-4.5 right-3 focus:outline-0"
-        >
-          See All <ArrowRight />
-        </Link>
-      </Card>
+            <Link
+              to="/member/tasks"
+              className="btn border border-gray-400 absolute top-4.5 right-3 focus:outline-0"
+            >
+              See All <ArrowRight />
+            </Link>
+          </Card>
+        </>
+      ) : (
+        <p className="text-center col-span-2 text-xl font-semibold">
+          No Task is Assigned
+        </p>
+      )}
     </div>
   );
 }

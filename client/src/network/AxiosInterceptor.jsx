@@ -14,10 +14,9 @@ function AxiosInterceptor() {
   const { handleLogout } = useLogout();
 
   useEffect(() => {
+    if (!token) return;
     const reqInterceptor = privateApi.interceptors.request.use((config) => {
-      if (token) {
-        config.headers.Authorization = `Bearer ${token}`;
-      }
+      config.headers.Authorization = `Bearer ${token}`;
 
       return config;
     });
@@ -64,7 +63,7 @@ function AxiosInterceptor() {
       privateApi.interceptors.request.eject(reqInterceptor);
       privateApi.interceptors.response.eject(resInterceptor);
     };
-  }, []);
+  }, [token]);
 
   return null;
 }

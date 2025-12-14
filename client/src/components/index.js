@@ -8,4 +8,6 @@ import Avatar from "./Avatar";
 
 import Card from "./Card";
 
-export { Loader, Form, EmailPass, DrawerMenu, Avatar, Card };
+import ErrorState from "./ErrorState";
+
+export { Loader, Form, EmailPass, DrawerMenu, Avatar, Card, ErrorState };

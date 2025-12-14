@@ -11,9 +11,9 @@ import ToastProvider from "@lib/ToastProvider";
 import "@lib/charts";
 
 createRoot(document.getElementById("root")).render(
-  <AuthContextProvider>
-    <ToastProvider>
+  <ToastProvider>
+    <AuthContextProvider>
       <App />
-    </ToastProvider>
-  </AuthContextProvider>
+    </AuthContextProvider>
+  </ToastProvider>
 );

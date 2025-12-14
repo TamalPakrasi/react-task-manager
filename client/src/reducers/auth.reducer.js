@@ -2,6 +2,7 @@ export const authInitState = {
   token: "",
   user: null,
   isAuthenticated: false,
+  isLoading: false,
 };
 
 const authReducer = (state, action) => {
@@ -13,6 +14,12 @@ const authReducer = (state, action) => {
         isAuthenticated:
           action.payload.token.length > 0 && action.payload.user !== null,
       };
+
+    case "START_REFRESHING":
+      return { ...state, isLoading: true };
+
+    case "STOP_REFRESHING":
+      return { ...state, isLoading: false };
 
     case "LOGOUT":
       return authInitState;

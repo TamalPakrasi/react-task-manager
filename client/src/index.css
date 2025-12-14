@@ -14,11 +14,19 @@
   .auth-form {
     @apply card w-[95dvw] max-w-md bg-base-100 p-6 space-y-4;
   }
+
+  .loader {
+    @apply w-dvw h-dvh fixed top-0 left-0 z-9999 flex justify-center items-center bg-base-100;
+  }
 }
 
 @layer utilities {
   .shadow-full {
     box-shadow: 0 0 35px rgba(0, 0, 0, 0.4);
+  }
+
+  .flex-center {
+    @apply flex justify-center items-center;
   }
 }
 

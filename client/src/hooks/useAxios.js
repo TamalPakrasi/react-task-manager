@@ -13,7 +13,17 @@ const useAxios = (isPrivate = false) => {
     }
   };
 
-  return { post };
+  const get = async ({ api, config = {} }) => {
+    try {
+      const res = await axiosInstance.get(api, config);
+
+      return res.data;
+    } catch (error) {
+      throw error;
+    }
+  };
+
+  return { post, get };
 };
 
 export default useAxios;
