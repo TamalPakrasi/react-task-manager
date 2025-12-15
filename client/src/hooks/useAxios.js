@@ -9,7 +9,9 @@ const useAxios = (isPrivate = false) => {
 
       return res.data;
     } catch (error) {
-      throw error;
+      throw new Error(
+        `${error.response.data.statusCode} - ${error.response.data.message}`
+      );
     }
   };
 
