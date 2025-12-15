@@ -38,7 +38,7 @@ export const findUserByEmail = async (email) => {
       {
         $match: { email },
       },
-      { $unset: ["password", "updatedAt"] },
+      { $unset: ["updatedAt"] },
       {
         $limit: 1,
       },

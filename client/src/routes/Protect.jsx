@@ -3,14 +3,9 @@ import { Navigate } from "react-router-dom";
 import { useAuthContext } from "@contexts/Auth/context";
 
 function Protect({ children }) {
-  const { isAuthenticated, token } = useAuthContext();
+  const { isAuthenticated } = useAuthContext();
 
-  if (!isAuthenticated) {
-    console.log(token);
-    return <Navigate to="/auth/login" />;
-  }
-
-  return children;
+  return isAuthenticated ? children : <Navigate to="/auth/login" />;
 }
 
 export default Protect;

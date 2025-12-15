@@ -3,12 +3,17 @@ import { getCollection } from "../config/db/conn.js";
 import throwDBError from "../utils/errors/Database.error.js";
 
 // store or update refresh token
-export const storeOrUpdate = async ({ userId, token, expiresAt }) => {
+export const storeOrUpdate = async ({
+  userId,
+  token,
+  expiresAt,
+  userAgent,
+}) => {
   try {
     const RefreshTokens = getCollection("refreshTokens");
 
     await RefreshTokens.updateOne(
-      { userId: new ObjectId(userId) },
+      { userId: new ObjectId(userId), userAgent },
       {
         $set: {
           token,
@@ -70,11 +75,14 @@ export const get = async (userId) => {
 };
 
 // delete a hashed token from db
-export const revoke = async (userId) => {
+export const revoke = async (userId, userAgent) => {
   try {
     const RefreshTokens = getCollection("refreshTokens");
 
-    const res = await RefreshTokens.deleteOne({ userId: new ObjectId(userId) });
+    const res = await RefreshTokens.deleteOne({
+      userId: new ObjectId(userId),
+      userAgent,
+    });
 
     return res.deletedCount === 1;
   } catch (error) {

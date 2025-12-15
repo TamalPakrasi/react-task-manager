@@ -62,8 +62,8 @@ function Dashboard() {
     );
 
   return (
-    <div className="grid md:grid-cols-2 gap-8">
-      <Card className="md:col-span-2">
+    <div className="flex flex-col gap-8 w-full">
+      <Card>
         <h2 className="text-2xl font-semibold">
           Good Morning! {user.username}
         </h2>
@@ -100,76 +100,78 @@ function Dashboard() {
 
       {dashboardState.data.stats.all > 0 ? (
         <>
-          <Card>
-            <h4 className="text-lg font-semibold">Task Distribution</h4>
-            <div className="h-60 mt-4">
-              <Doughnut
-                data={{
-                  labels: ["Pending", "In Progress", "Completed"],
-                  datasets: [
-                    {
-                      label: "Task Distribution",
-                      data: [
-                        dashboardState.data.dist.Pending,
-                        dashboardState.data.dist["In Progress"],
-                        dashboardState.data.dist.Completed,
-                      ],
-                      backgroundColor: ["#5c1d70cc", "#0969b0cc", "#22c55e"],
-                      borderWidth: 1,
-                    },
-                  ],
-                }}
-              />
-            </div>
-          </Card>
-
-          <Card>
-            <h4 className="text-lg font-semibold">Task Priority Levels</h4>
-            <div className="h-60 mt-4">
-              <Bar
-                data={{
-                  labels: ["Low", "Medium", "High"],
-                  datasets: [
-                    {
-                      label: "Priority",
-                      data: [
-                        dashboardState.data.priority.Low,
-                        dashboardState.data.priority.Medium,
-                        dashboardState.data.priority.High,
-                      ],
-                      backgroundColor: ["#22c55e", "#f59e0b", "#e11d48"],
-                      borderRadius: 6,
-                    },
-                  ],
-                }}
-                options={{
-                  plugins: {
-                    legend: {
-                      display: false,
-                    },
-                  },
-                  scales: {
-                    y: {
-                      beginAtZero: true,
-                      ticks: {
-                        stepSize: 10,
+          <div className="flex flex-col gap-8 md:gap-4 md:flex-row max-w-full">
+            <Card className="md:w-1/2">
+              <h4 className="text-lg font-semibold">Task Distribution</h4>
+              <div className="h-60 mt-4">
+                <Doughnut
+                  data={{
+                    labels: ["Pending", "In Progress", "Completed"],
+                    datasets: [
+                      {
+                        label: "Task Distribution",
+                        data: [
+                          dashboardState.data.dist.Pending,
+                          dashboardState.data.dist["In Progress"],
+                          dashboardState.data.dist.Completed,
+                        ],
+                        backgroundColor: ["#5c1d70cc", "#0969b0cc", "#22c55e"],
+                        borderWidth: 1,
                       },
-                      grid: {
+                    ],
+                  }}
+                />
+              </div>
+            </Card>
+
+            <Card className="md:w-1/2">
+              <h4 className="text-lg font-semibold">Task Priority Levels</h4>
+              <div className="h-60 mt-4">
+                <Bar
+                  data={{
+                    labels: ["Low", "Medium", "High"],
+                    datasets: [
+                      {
+                        label: "Priority",
+                        data: [
+                          dashboardState.data.priority.Low,
+                          dashboardState.data.priority.Medium,
+                          dashboardState.data.priority.High,
+                        ],
+                        backgroundColor: ["#22c55e", "#f59e0b", "#e11d48"],
+                        borderRadius: 6,
+                      },
+                    ],
+                  }}
+                  options={{
+                    plugins: {
+                      legend: {
                         display: false,
                       },
                     },
-                    x: {
-                      grid: {
-                        display: false,
+                    scales: {
+                      y: {
+                        beginAtZero: true,
+                        ticks: {
+                          stepSize: 10,
+                        },
+                        grid: {
+                          display: false,
+                        },
+                      },
+                      x: {
+                        grid: {
+                          display: false,
+                        },
                       },
                     },
-                  },
-                }}
-              />
-            </div>
-          </Card>
+                  }}
+                />
+              </div>
+            </Card>
+          </div>
 
-          <Card className="md:col-span-2 relative">
+          <Card className="relative">
             <h4 className="text-lg font-semibold">Recent Tasks</h4>
 
             <div className="overflow-x-auto mt-4">

@@ -20,4 +20,14 @@ export default defineConfig({
       "@network": path.resolve(__dirname, "./src/network"),
     },
   },
+  server: {
+    host: true,
+    allowedHosts: ["darby-congregational-lael.ngrok-free.dev"],
+    proxy: {
+      "/api": {
+        target: "http://localhost:5000",
+        changeOrigin: true,
+      },
+    },
+  },
 });

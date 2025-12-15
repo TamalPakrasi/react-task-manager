@@ -1,7 +1,7 @@
 const RefreshTokensSchema = {
   $jsonSchema: {
     bsonType: "object",
-    required: ["userId", "token", "expiresAt"],
+    required: ["userId", "token", "userAgent", "expiresAt"],
     properties: {
       userId: {
         bsonType: "objectId",
@@ -10,6 +10,10 @@ const RefreshTokensSchema = {
       token: {
         bsonType: "string",
         description: "Hashed refresh token",
+      },
+      userAgent: {
+        bsonType: "string",
+        description: "User Device Info",
       },
       expiresAt: {
         bsonType: "date",

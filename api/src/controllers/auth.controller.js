@@ -8,10 +8,12 @@ export const register = async (req, res, next) => {
   try {
     const file = req.file;
 
+    const userAgent = req.headers["user-agent"];
+
     const { access_token, refresh_token, user } = await authSevice({
       ...req.body,
       file,
-    }).register();
+    }).register(userAgent);
 
     res.setHeader(
       "Set-Cookie",
@@ -49,9 +51,10 @@ export const register = async (req, res, next) => {
 // @access  public (guest only)
 export const login = async (req, res, next) => {
   try {
+    const userAgent = req.headers["user-agent"];
     const { access_token, refresh_token, user } = await authSevice({
       ...req.body,
-    }).login();
+    }).login(userAgent);
 
     res.setHeader(
       "Set-Cookie",
@@ -91,7 +94,9 @@ export const logout = async (req, res, next) => {
   try {
     const token = req.cookies?.refresh_token;
 
-    await authSevice().logout(token);
+    const userAgent = req.headers["user-agent"];
+
+    await authSevice().logout(token, userAgent);
 
     res.setHeader(
       "Set-Cookie",

@@ -14,7 +14,7 @@ function Provider({ children }) {
 
   const { post } = useAxios(true);
 
-  const { error, success } = useAlert();
+  const { success } = useAlert();
 
   useEffect(() => {
     const tryRefetch = async () => {
@@ -30,7 +30,7 @@ function Provider({ children }) {
 
         success("Welcome Back");
       } catch (err) {
-        error("We couldn’t verify your session. Please Log in again");
+        // error("We couldn’t verify your session. Please Log in again");
       } finally {
         dispatch({ type: "STOP_REFRESHING" });
       }

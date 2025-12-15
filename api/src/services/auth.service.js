@@ -76,13 +76,23 @@ class Auth {
     }
   }
 
+  async #verifyHashedPass() {
+    try {
+      const isMatch = await bcrypt.compare(this.#pass, this.#user.password);
+      return isMatch;
+    } catch (error) {
+      throwAuthError("Failed to Verify Password", 500);
+    }
+  }
+
   async #checkEmailExists() {
     const user = await UsersModel.findUserByEmail(this.#email);
     return user;
   }
 
-  async #sendAuthToken() {
+  async #sendAuthToken(userAgent) {
     if (!this.#user) return;
+    delete this.#user.password;
     const access_token = this.#generateAccessToken();
 
     const { refresh_token, hashToken, expiresAt } =
@@ -92,6 +102,7 @@ class Auth {
       userId: this.#user._id,
       token: hashToken,
       expiresAt,
+      userAgent,
     });
 
     return {
@@ -106,7 +117,7 @@ class Auth {
     };
   }
 
-  async #create() {
+  async #create(userAgent) {
     const hashPass = await this.#generateHashedPass(this.#pass);
 
     const newUser = await UsersModel.create({
@@ -119,10 +130,10 @@ class Auth {
 
     this.#user = newUser;
 
-    return await this.#sendAuthToken();
+    return await this.#sendAuthToken(userAgent);
   }
 
-  async register() {
+  async register(userAgent) {
     // credential validation
     ValidationService.validateRegistrationCredentials(
       this.#username,
@@ -156,10 +167,10 @@ class Auth {
     }
 
     // create new user
-    return await this.#create();
+    return await this.#create(userAgent);
   }
 
-  async login() {
+  async login(userAgent) {
     // credential validation
     ValidationService.validateLogInCredentials(this.#email, this.#pass);
 
@@ -172,10 +183,14 @@ class Auth {
 
     this.#user = user;
 
-    return await this.#sendAuthToken();
+    if (!(await this.#verifyHashedPass())) {
+      throwAuthError("Invalid Email or Password", 400);
+    }
+
+    return await this.#sendAuthToken(userAgent);
   }
 
-  async logout(token) {
+  async logout(token, userAgent) {
     if (token) {
       let decoded;
       try {
@@ -186,7 +201,7 @@ class Auth {
 
       ValidationService.validateUserId(decoded.id);
 
-      const isLoggedOut = await TokensModel.revoke(decoded.id);
+      const isLoggedOut = await TokensModel.revoke(decoded.id, userAgent);
       if (!isLoggedOut) {
         throwAuthError("Failed to Log out", 500);
       }
