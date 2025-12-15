@@ -24,7 +24,7 @@ const validate = (fields) => {
   }
 };
 
-const useForm = ({ api, defaultState }) => {
+const useForm = ({ api }) => {
   const { formState, formDispatch } = useOutletContext();
 
   const { authDispatch } = useAuthContext();
@@ -38,10 +38,14 @@ const useForm = ({ api, defaultState }) => {
   const handleSubmit = async (e) => {
     e.preventDefault();
 
-    const { fields } = formState;
+    const { fields, submit } = formState;
+
+    if (submit.isSubmitting) return;
 
     try {
       validate(fields);
+
+      formDispatch({ type: "START_SUBMITTING" });
 
       const { data, message } = await post({
         api,
@@ -66,6 +70,8 @@ const useForm = ({ api, defaultState }) => {
       navigate(`/${data.user.role}/dashboard`);
     } catch (err) {
       error(err.message);
+    } finally {
+      formDispatch({ type: "STOP_SUBMITTING" });
     }
   };
 

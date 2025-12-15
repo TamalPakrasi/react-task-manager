@@ -39,6 +39,8 @@ function AxiosInterceptor() {
               api: apiPaths.refresh,
             });
 
+            console.log(data);
+
             authDispatch({
               type: "REFRESH",
               payload: {

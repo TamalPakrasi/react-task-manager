@@ -115,9 +115,12 @@ export const refresh = async (req, res, next) => {
   try {
     const { id } = req.user;
 
-    const { access_token, refresh_token, user } = await authSevice().refresh(
-      id
-    );
+    const userAgent = req.headers["user-agent"];
+
+    const { access_token, refresh_token, user } = await authSevice().refresh({
+      userId: id,
+      userAgent,
+    });
 
     res.setHeader(
       "Set-Cookie",

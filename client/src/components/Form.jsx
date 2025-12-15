@@ -1,9 +1,12 @@
 import { LogIn, UserPlus } from "lucide-react";
+import { useOutletContext } from "react-router-dom";
 
 import useForm from "@hooks/useForm";
 
-function Form({ children, name, api, defaultState }) {
-  const { handleSubmit } = useForm({ api, defaultState });
+function Form({ children, name, api }) {
+  const { handleSubmit } = useForm({ api });
+
+  const { formState } = useOutletContext();
 
   return (
     <form className="auth-form shadow-full" onSubmit={handleSubmit}>
@@ -12,9 +15,18 @@ function Form({ children, name, api, defaultState }) {
       {/* All Form will render here */}
       {children}
 
-      <button className="btn btn-primary w-full mt-4">
-        {name === "Register" ? <UserPlus size={20} /> : <LogIn size={20} />}
-        {name}
+      <button
+        className="btn btn-primary w-full mt-4"
+        disabled={formState.submit.isSubmitting}
+      >
+        {formState.submit.isSubmitting ? (
+          "Submitting..."
+        ) : (
+          <>
+            {name === "Register" ? <UserPlus size={20} /> : <LogIn size={20} />}
+            {name}
+          </>
+        )}
       </button>
     </form>
   );

@@ -208,11 +208,11 @@ class Auth {
     }
   }
 
-  async refresh(userId) {
+  async refresh({ userId, userAgent }) {
     const user = await UsersModel.findUserById(userId);
 
     this.#user = user;
-    return await this.#sendAuthToken();
+    return await this.#sendAuthToken(userAgent);
   }
 }
 

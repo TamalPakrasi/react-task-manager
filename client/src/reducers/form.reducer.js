@@ -4,12 +4,11 @@ export const initFormState = {
   fields: {},
   submit: {
     success: false,
-    isLoading: false,
-    isError: false,
+    isSubmitting: false,
   },
 };
 
-const form = (state, action) => {
+const reducer = (state, action) => {
   switch (action.type) {
     case "REGISTER_NEW_FIELDS":
       return {
@@ -46,9 +45,19 @@ const form = (state, action) => {
 
     case "RESET":
       return initFormState;
+
+    case "START_SUBMITTING":
+      return {
+        ...state,
+        submit: { success: false, isSubmitting: true },
+      };
+
+    case "STOP_SUBMITTING":
+      return { ...state, submit: { ...state.submit, isSubmitting: false } };
+
     default:
       break;
   }
 };
 
-export default form;
+export default reducer;

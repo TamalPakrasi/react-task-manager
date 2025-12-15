@@ -28,7 +28,7 @@ function Login() {
 
   return (
     <>
-      <Form name="Log in" api={apiPaths.login} defaultState={defaultState}>
+      <Form name="Log in" api={apiPaths.login}>
         <EmailPass />
       </Form>
 

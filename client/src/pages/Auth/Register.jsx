@@ -32,7 +32,7 @@ function Register() {
 
   return (
     <>
-      <Form name="Register" api={apiPaths.register} defaultState={defaultState}>
+      <Form name="Register" api={apiPaths.register}>
         {/* Username */}
         <label className="form-control w-full">
           <div className="label">
