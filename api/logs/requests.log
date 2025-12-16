@@ -1267,3 +1267,5 @@
 [2025-12-16T17:28:27.079Z] GET /api/dashboard/summary - STATUS:200 - TIME:572.86ms
 [2025-12-16T17:28:29.799Z] GET /api/dashboard/summary - STATUS:200 - TIME:728.39ms
 [2025-12-16T17:29:22.141Z] GET /api/dashboard/summary - STATUS:200 - TIME:1439.77ms
+[2025-12-16T17:30:08.527Z] GET /api/dashboard/summary - STATUS:200 - TIME:504.09ms
+[2025-12-16T17:30:31.002Z] GET /api/dashboard/summary - STATUS:200 - TIME:535.20ms

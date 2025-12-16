@@ -7,7 +7,7 @@ import Card from "./Card";
 function Task() {
   return (
     <Link to="/member/task-details/1">
-      <Card className="border-l-4 border-l-primary shadow-lg">
+      <Card className="shadow-lg">
         <div className="flex gap-3">
           <div className="badge badge-sm badge-soft badge-primary">Pending</div>
           <div className="badge badge-sm badge-soft badge-error">
