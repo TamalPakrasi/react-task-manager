@@ -29,7 +29,7 @@ function DashboardLayout({ children }) {
           className="drawer-overlay h-dvh"
         ></label>
 
-        <nav className="menu gap-3 items-center bg-base-200 h-dvh w-80 p-4">
+        <nav className="menu gap-3 items-center bg-base-200 h-dvh w-65 p-4">
           <h2 className="text-xl font-bold self-baseline">Task Manager</h2>
 
           <Avatar />
