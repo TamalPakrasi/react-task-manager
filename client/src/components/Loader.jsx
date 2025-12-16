@@ -1,9 +1,11 @@
 import React from "react";
 
-function Loader({ size = "lg" }) {
+function Loader({ size = "lg", className = "loader" }) {
   return (
-    <div className="loader">
-      <span className={`loading loading-spinner loading-${size}`}></span>
+    <div className={className}>
+      <span
+        className={`loading loading-spinner text-primary loading-${size}`}
+      ></span>
     </div>
   );
 }

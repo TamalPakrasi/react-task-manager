@@ -18,6 +18,10 @@
   .loader {
     @apply w-dvw h-dvh fixed top-0 left-0 z-9999 flex justify-center items-center bg-base-100;
   }
+
+  .loader-main {
+    @apply absolute size-full top-0 left-0 z-9999 flex justify-center items-center bg-base-100;
+  }
 }
 
 @layer utilities {

@@ -8,7 +8,7 @@ function DashboardLayout({ children }) {
   return (
     <div className="drawer lg:drawer-open">
       <input id="dashbord_drawer" type="checkbox" className="drawer-toggle" />
-      <div className="drawer-content py-10">
+      <div className="drawer-content py-10 relative">
         <main className="mt-7 max-w-[95dvw] md:max-w-[97%] mx-auto">
           {children}
         </main>
