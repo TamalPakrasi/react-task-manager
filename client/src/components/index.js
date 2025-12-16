@@ -14,6 +14,10 @@ import TasksNav from "./TasksNav";
 
 import Task from "./Task";
 
+import TaskChecklist from "./TaskChecklist";
+
+import Attachments from "./Attachments";
+
 export {
   Loader,
   Form,
@@ -24,4 +28,6 @@ export {
   ErrorState,
   TasksNav,
   Task,
+  TaskChecklist,
+  Attachments,
 };
