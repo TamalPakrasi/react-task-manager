@@ -30,9 +30,11 @@ function AuthLayout() {
 
   return (
     <GuestRoute>
-      <Suspense fallback={<Loader size="lg" />}>
-        <Outlet context={context} />
-      </Suspense>
+      <div className="grow flex-center flex-col">
+        <Suspense fallback={<Loader size="lg" />}>
+          <Outlet context={context} />
+        </Suspense>
+      </div>
     </GuestRoute>
   );
 }

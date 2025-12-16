@@ -45,12 +45,7 @@ function Dashboard() {
     getUserDashboardData();
   }, []);
 
-  if (dashboardState.isLoading)
-    return (
-      <div className="loader">
-        <Loader />
-      </div>
-    );
+  if (dashboardState.isLoading) return <Loader />;
 
   if (dashboardState.isError)
     return (

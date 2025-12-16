@@ -10,4 +10,18 @@ import Card from "./Card";
 
 import ErrorState from "./ErrorState";
 
-export { Loader, Form, EmailPass, DrawerMenu, Avatar, Card, ErrorState };
+import TasksNav from "./TasksNav";
+
+import Task from "./Task";
+
+export {
+  Loader,
+  Form,
+  EmailPass,
+  DrawerMenu,
+  Avatar,
+  Card,
+  ErrorState,
+  TasksNav,
+  Task,
+};

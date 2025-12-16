@@ -201,10 +201,7 @@ class Auth {
 
       ValidationService.validateUserId(decoded.id);
 
-      const isLoggedOut = await TokensModel.revoke(decoded.id, userAgent);
-      if (!isLoggedOut) {
-        throwAuthError("Failed to Log out", 500);
-      }
+      await TokensModel.revoke(decoded.id, userAgent);
     }
   }
 
