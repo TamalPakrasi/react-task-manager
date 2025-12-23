@@ -1,7 +1,7 @@
 export const fetchInitState = {
   isLoading: false,
   isError: false,
-  error: "",
+  errorMsg: "",
   hasFetched: false,
 };
 

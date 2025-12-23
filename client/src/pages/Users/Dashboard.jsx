@@ -11,12 +11,11 @@ import { useFetchContext } from "@contexts/Fetch/context";
 import useAxios from "@hooks/useAxios";
 
 import formatDate from "@utils/formatDate";
+import formatCreatedAt from "@utils/formateCreatedAt";
 import getGreetings from "@utils/getGreetings";
 import { getStatusClass, getPriorityClass } from "@utils/getTaskClasses";
 
 import memberReducer, { memberInitState } from "@reducers/member.reducer";
-
-import formatCreatedAt from "@utils/formateCreatedAt";
 
 function Dashboard() {
   const { user } = useAuthContext();

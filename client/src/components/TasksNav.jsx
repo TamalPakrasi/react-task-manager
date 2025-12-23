@@ -1,4 +1,4 @@
-function TasksNav({ name = "My Tasks", isActive, setIsActive }) {
+function TasksNav({ name = "My Tasks", isActive, setIsActive, statusSummary }) {
   const handleClick = (e) => {
     const btn = e.currentTarget;
 
@@ -29,7 +29,7 @@ function TasksNav({ name = "My Tasks", isActive, setIsActive }) {
                 isActive === "All" ? "badge-primary text-white" : ""
               }`}
             >
-              10
+              {statusSummary.all}
             </div>
           </button>
         </li>
@@ -48,7 +48,7 @@ function TasksNav({ name = "My Tasks", isActive, setIsActive }) {
                 isActive === "Pending" ? "badge-primary text-white" : ""
               }`}
             >
-              10
+              {statusSummary.pending}
             </div>
           </button>
         </li>
@@ -67,7 +67,7 @@ function TasksNav({ name = "My Tasks", isActive, setIsActive }) {
                 isActive === "In Progress" ? "badge-primary text-white" : ""
               }`}
             >
-              10
+              {statusSummary.inProgress}
             </div>
           </button>
         </li>
@@ -86,7 +86,7 @@ function TasksNav({ name = "My Tasks", isActive, setIsActive }) {
                 isActive === "Completed" ? "badge-primary text-white" : ""
               }`}
             >
-              10
+              {statusSummary.completed}
             </div>
           </button>
         </li>
