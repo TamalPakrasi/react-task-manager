@@ -1,30 +1,20 @@
 import React from "react";
 import { SquareArrowOutUpRight } from "lucide-react";
 
-function Attachments() {
+function Attachments({ id, attachments }) {
   return (
     <ul className="list mt-1 gap-4">
-      <li className="list-row bg-base-300">
-        <div className="text-sm font-normal tabular-nums">01</div>
-        <p className="select-none">https://react.dev</p>
-        <button
-          className="cursor-pointer"
-          onClick={() => open("https://react.dev")}
-        >
-          <SquareArrowOutUpRight size={15} />
-        </button>
-      </li>
-
-      <li className="list-row bg-base-300">
-        <div className="text-sm font-normal tabular-nums">01</div>
-        <p className="select-none">https://react.dev</p>
-        <button
-          className="cursor-pointer"
-          onClick={() => open("https://react.dev")}
-        >
-          <SquareArrowOutUpRight size={15} />
-        </button>
-      </li>
+      {attachments.map((value, index) => (
+        <li className="list-row bg-base-300" key={index}>
+          <div className="text-sm font-normal tabular-nums">
+            {(index + 1).toString().padStart(2, "0")}
+          </div>
+          <p className="select-none">{value}</p>
+          <button className="cursor-pointer" onClick={() => open(value)}>
+            <SquareArrowOutUpRight size={15} />
+          </button>
+        </li>
+      ))}
     </ul>
   );
 }

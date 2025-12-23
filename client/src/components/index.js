@@ -37,5 +37,6 @@ export {
   TaskChecklist,
   Attachments,
   Modal,
+  Image,
   AssignedTo,
 };

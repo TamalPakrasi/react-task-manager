@@ -5,6 +5,8 @@ import { Paperclip } from "lucide-react";
 import Card from "./Card";
 import Image from "./Image";
 
+import { useAuthContext } from "@contexts/Auth/context";
+
 import formatCreatedAt from "@utils/formateCreatedAt";
 import {
   getStatusBadgeClass,
@@ -14,6 +16,12 @@ import {
 function Task({ id, task }) {
   const calculateProgress = () =>
     Math.ceil((task.progress * task.taskCheckList.length) / 100);
+
+  const { user } = useAuthContext();
+
+  const userDetails = task.assignedTo.find(({ _id }) => _id === user._id);
+
+  const otherUsers = task.assignedTo.filter(({ _id }) => _id !== user._id);
 
   return (
     <Link to={`/member/task-details/${id}`}>
@@ -74,15 +82,19 @@ function Task({ id, task }) {
 
         <div className="mt-2 flex-between">
           <div className="avatar-group -space-x-4">
-            {task.assignedTo
-              ?.slice(0, 3)
-              .map(({ _id, profileImageUrl = null }) => (
-                <div key={_id} className="avatar">
-                  <div className="w-7">
-                    <Image img={profileImageUrl} />
-                  </div>
+            <div className="avatar">
+              <div className="w-7">
+                <Image img={userDetails.profileImageUrl} />
+              </div>
+            </div>
+
+            {otherUsers?.slice(0, 2).map(({ _id, profileImageUrl = null }) => (
+              <div key={_id} className="avatar">
+                <div className="w-7">
+                  <Image img={profileImageUrl} />
                 </div>
-              ))}
+              </div>
+            ))}
 
             {task.assignedTo.length > 3 && (
               <div className="avatar avatar-placeholder">
