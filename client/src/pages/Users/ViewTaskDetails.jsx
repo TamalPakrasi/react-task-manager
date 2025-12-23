@@ -19,6 +19,7 @@ import { useAuthContext } from "@contexts/Auth/context";
 import useAxios from "@hooks/useAxios";
 
 import formatCreatedAt from "@utils/formateCreatedAt";
+import { getStatusBadgeClass } from "@utils/getTaskClasses";
 
 function ViewTaskDetails() {
   const modalRef = useRef(null);
@@ -76,7 +77,11 @@ function ViewTaskDetails() {
         <Card className="max-w-200">
           <div className="flex-between">
             <h2 className="font-semibold text-base">{task.title}</h2>
-            <div className="badge badge-soft badge-primary whitespace-nowrap">
+            <div
+              className={`badge badge-soft ${getStatusBadgeClass(
+                task.status
+              )} whitespace-nowrap`}
+            >
               {task.status}
             </div>
           </div>
