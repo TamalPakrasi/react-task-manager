@@ -2,6 +2,8 @@ import React from "react";
 
 import { useAuthContext } from "@contexts/Auth/context";
 
+import Image from "./Image";
+
 function Avatar() {
   const { user } = useAuthContext();
 
@@ -9,7 +11,7 @@ function Avatar() {
     <>
       <div className="avatar mt-7">
         <div className="w-24 rounded-full">
-          <img src={user.profileImageUrl ?? "/user.png"} />
+          <Image img={user?.profileImageUrl} />
         </div>
       </div>
 

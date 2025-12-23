@@ -6,6 +6,8 @@ import DrawerMenu from "./DrawerMenu";
 
 import Avatar from "./Avatar";
 
+import Image from "./Image";
+
 import Card from "./Card";
 
 import ErrorState from "./ErrorState";
@@ -17,6 +19,10 @@ import Task from "./Task";
 import TaskChecklist from "./TaskChecklist";
 
 import Attachments from "./Attachments";
+
+import Modal from "./Modal";
+
+import AssignedTo from "./AssignedTo";
 
 export {
   Loader,
@@ -30,4 +36,6 @@ export {
   Task,
   TaskChecklist,
   Attachments,
+  Modal,
+  AssignedTo,
 };
