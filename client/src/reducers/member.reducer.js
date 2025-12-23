@@ -2,6 +2,7 @@ export const memberInitState = {
   isLoading: false,
   isError: false,
   error: "",
+  hasFetched: false,
   data: {
     stats: {
       all: 0,
@@ -26,13 +27,17 @@ export const memberInitState = {
 const memberReducer = (state, action) => {
   switch (action.type) {
     case "START_FETCHING":
-      return { ...state, isLoading: true, isError: false };
+      return { ...state, isLoading: true, isError: false, hasFetched: false };
 
     case "STOP_FETCHING":
-      return { ...state, isLoading: false };
+      return { ...state, isLoading: false, hasFetched: true };
 
     case "SET_ERROR":
-      return { ...state, isError: true, error: action.payload.error };
+      return {
+        ...state,
+        isError: true,
+        error: action.payload.error,
+      };
 
     case "SET_DATA":
       return {

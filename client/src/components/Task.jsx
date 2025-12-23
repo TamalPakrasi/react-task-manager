@@ -50,30 +50,30 @@ function Task() {
         </div>
 
         <div className="mt-2 flex-between">
-          <div class="avatar-group -space-x-4">
-            <div class="avatar">
-              <div class="w-7">
+          <div className="avatar-group -space-x-4">
+            <div className="avatar">
+              <div className="w-7">
                 <img src="https://img.daisyui.com/images/profile/demo/batperson@192.webp" />
               </div>
             </div>
-            <div class="avatar">
-              <div class="w-7">
+            <div className="avatar">
+              <div className="w-7">
                 <img src="https://img.daisyui.com/images/profile/demo/spiderperson@192.webp" />
               </div>
             </div>
-            <div class="avatar">
-              <div class="w-7">
+            <div className="avatar">
+              <div className="w-7">
                 <img src="https://img.daisyui.com/images/profile/demo/averagebulk@192.webp" />
               </div>
             </div>
-            <div class="avatar avatar-placeholder">
-              <div class="bg-neutral text-neutral-content w-7">
+            <div className="avatar avatar-placeholder">
+              <div className="bg-neutral text-neutral-content w-7">
                 <span>+3</span>
               </div>
             </div>
           </div>
 
-          <button class="btn btn-sm btn-primary btn-soft">
+          <button className="btn btn-sm btn-primary btn-soft">
             <Paperclip size={15} /> <span className="text-black">2</span>
           </button>
         </div>

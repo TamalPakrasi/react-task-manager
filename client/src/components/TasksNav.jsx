@@ -1,8 +1,4 @@
-import { useState } from "react";
-
-function TasksNav({ name = "My Tasks" }) {
-  const [isActive, setIsActive] = useState("All");
-
+function TasksNav({ name = "My Tasks", isActive, setIsActive }) {
   const handleClick = (e) => {
     const btn = e.currentTarget;
 
