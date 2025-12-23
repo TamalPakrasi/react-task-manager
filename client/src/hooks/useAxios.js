@@ -25,7 +25,19 @@ const useAxios = (isPrivate = false) => {
     }
   };
 
-  return { post, get };
+  const put = async ({ api, data = null, config = {} }) => {
+    try {
+      const res = await axiosInstance.put(api, data, config);
+
+      return res.data;
+    } catch (error) {
+      throw new Error(
+        `${error.response.data.statusCode} - ${error.response.data.message}`
+      );
+    }
+  };
+
+  return { post, get, put };
 };
 
 export default useAxios;

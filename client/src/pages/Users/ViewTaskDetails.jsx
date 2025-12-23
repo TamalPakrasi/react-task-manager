@@ -1,4 +1,4 @@
-import { useRef, useEffect, useState } from "react";
+import { useRef, useEffect, useReducer } from "react";
 
 import { useParams } from "react-router-dom";
 
@@ -13,6 +13,10 @@ import {
   Image,
 } from "@components";
 
+import taskDetailsReducer, {
+  taskDetailsInitState,
+} from "@reducers/taskDetails.reducer";
+
 import { useFetchContext } from "@contexts/Fetch/context";
 import { useAuthContext } from "@contexts/Auth/context";
 
@@ -24,7 +28,13 @@ import { getStatusBadgeClass } from "@utils/getTaskClasses";
 function ViewTaskDetails() {
   const modalRef = useRef(null);
 
-  const [task, setTask] = useState(null);
+  // const [task, setTask] = useState(null);
+  // const [taskList, setTaskList] = useState([]);
+
+  const [taskState, taskDispatch] = useReducer(
+    taskDetailsReducer,
+    taskDetailsInitState
+  );
 
   const { user } = useAuthContext();
 
@@ -41,7 +51,7 @@ function ViewTaskDetails() {
     try {
       const { data } = await get({ api: `/tasks?id=${id}` });
 
-      setTask(data);
+      taskDispatch({ type: "SET_TASK", payload: { task: data } });
     } catch (error) {
       fetchDispatch({
         type: "SET_ERROR",
@@ -67,40 +77,48 @@ function ViewTaskDetails() {
       />
     );
 
-  if (hasFetched && task) {
-    const userDetails = task.assignedTo.find(({ _id }) => _id === user._id);
+  if (hasFetched && taskState.task) {
+    const userDetails = taskState.task.assignedTo.find(
+      ({ _id }) => _id === user._id
+    );
 
-    const otherUsers = task.assignedTo.filter(({ _id }) => _id !== user._id);
+    const otherUsers = taskState.task.assignedTo.filter(
+      ({ _id }) => _id !== user._id
+    );
 
     return (
       <>
         <Card className="max-w-200">
           <div className="flex-between">
-            <h2 className="font-semibold text-base">{task.title}</h2>
+            <h2 className="font-semibold text-base">{taskState.task.title}</h2>
             <div
               className={`badge badge-soft ${getStatusBadgeClass(
-                task.status
+                taskState.task.status
               )} whitespace-nowrap`}
             >
-              {task.status}
+              {taskState.task.status}
             </div>
           </div>
 
           <div className="mt-3">
             <h4 className="text-xs text-neutral font-medium">Description</h4>
-            <p className="mt-0.5 leading-5 font-semibold">{task.description}</p>
+            <p className="mt-0.5 leading-5 font-semibold">
+              {taskState.task.description}
+            </p>
           </div>
 
           <div className="mt-2 flex-between">
             <div>
               <h4 className="text-xs text-neutral font-medium">Priority</h4>
-              <span className="mt-0.5 font-semibold">{task.priority}</span>
+              <span className="mt-0.5 font-semibold">
+                {taskState.task.priority}
+              </span>
             </div>
 
             <div>
               <h4 className="text-xs text-neutral font-medium">Due Date</h4>
               <span className="mt-0.5 font-semibold">
-                {formatCreatedAt(task.dueDate)}
+                {formatCreatedAt(taskState.task.dueDate)}
               </span>
             </div>
 
@@ -126,10 +144,10 @@ function ViewTaskDetails() {
                     </div>
                   ))}
 
-                {task.assignedTo.length > 3 && (
+                {taskState.task.assignedTo.length > 3 && (
                   <div className="avatar avatar-placeholder">
                     <div className="bg-neutral text-neutral-content w-7">
-                      <span>+{task.assignedTo.length - 3}</span>
+                      <span>+{taskState.task.assignedTo.length - 3}</span>
                     </div>
                   </div>
                 )}
@@ -139,13 +157,21 @@ function ViewTaskDetails() {
 
           <div className="mt-3">
             <h4 className="text-xs text-neutral font-medium">Task Checklist</h4>
-            <TaskChecklist id={task._id} list={task.taskCheckList} />
+            <TaskChecklist
+              taskList={taskState.list}
+              setTaskList={(list = [], status = "Pending") =>
+                taskDispatch({
+                  type: "SET_TASK_LIST",
+                  payload: { list, status },
+                })
+              }
+            />
           </div>
 
-          {task.attachments?.length > 0 && (
+          {taskState.task.attachments?.length > 0 && (
             <div className="mt-3">
               <h4 className="text-xs text-neutral font-medium">Attachments</h4>
-              <Attachments id={task._id} attachments={task.attachments} />
+              <Attachments attachments={taskState.task.attachments} />
             </div>
           )}
         </Card>

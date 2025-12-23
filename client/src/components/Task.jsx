@@ -15,7 +15,7 @@ import {
 
 function Task({ id, task }) {
   const calculateProgress = () =>
-    Math.ceil((task.progress * task.taskCheckList.length) / 100);
+    Math.round((task.progress * task.taskCheckList.length) / 100);
 
   const { user } = useAuthContext();
 

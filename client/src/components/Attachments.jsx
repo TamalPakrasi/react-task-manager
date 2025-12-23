@@ -1,7 +1,7 @@
 import React from "react";
 import { SquareArrowOutUpRight } from "lucide-react";
 
-function Attachments({ id, attachments }) {
+function Attachments({ attachments }) {
   return (
     <ul className="list mt-1 gap-4">
       {attachments.map((value, index) => (
