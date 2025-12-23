@@ -1,10 +1,12 @@
-import React from "react";
+import { useRef } from "react";
 
 import { PanelLeftOpen } from "lucide-react";
 
 import { DrawerMenu, Avatar } from "@components";
 
 function DashboardLayout({ children }) {
+  const drawerButtonRef = useRef(null);
+
   return (
     <div className="drawer lg:drawer-open">
       <input id="dashbord_drawer" type="checkbox" className="drawer-toggle" />
@@ -13,6 +15,7 @@ function DashboardLayout({ children }) {
           {children}
         </main>
         <label
+          ref={drawerButtonRef}
           htmlFor="dashbord_drawer"
           className="btn drawer-button btn-ghost lg:hidden absolute top-1 left-1"
         >
@@ -34,7 +37,7 @@ function DashboardLayout({ children }) {
 
           <Avatar />
 
-          <DrawerMenu />
+          <DrawerMenu drawerButtonRef={drawerButtonRef} />
         </nav>
       </div>
     </div>

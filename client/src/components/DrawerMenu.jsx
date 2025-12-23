@@ -1,4 +1,3 @@
-import React from "react";
 import {
   LayoutDashboard,
   ClipboardCheck,
@@ -73,7 +72,7 @@ const memberLinks = [
   },
 ];
 
-function DrawerMenu() {
+function DrawerMenu({ drawerButtonRef }) {
   const { user } = useAuthContext();
 
   const links = user.role === "member" ? memberLinks : adminLinks;
@@ -86,6 +85,9 @@ function DrawerMenu() {
         <li key={link}>
           <NavLink
             to={link}
+            onClick={() =>
+              drawerButtonRef.current && drawerButtonRef.current.click()
+            }
             className={({ isActive }) =>
               `py-4 ${
                 isActive ? "border-r-3 border-r-primary text-primary" : ""

@@ -20,7 +20,7 @@
   }
 
   .loader-main {
-    @apply absolute size-full top-0 left-0 z-9999 flex justify-center items-center bg-base-100;
+    @apply absolute w-full h-dvh top-0 left-0 z-10 flex justify-center items-center bg-base-100;
   }
 }
 
