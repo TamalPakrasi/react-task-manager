@@ -43,8 +43,6 @@ function MyTasks() {
     try {
       const { data } = await get({ api });
 
-      console.log(data[0].tasks);
-
       tasksDispatch({
         type: "SET_DATA",
         payload: { statusSummary: data[1].statusSummary, tasks: data[0].tasks },
@@ -65,40 +63,43 @@ function MyTasks() {
     getTasks();
   }, [tasksState.isActive]);
 
-  if (isLoading) return <Loader className="loader-main" />;
-
-  if (isError)
-    return (
-      <ErrorState
-        title="Something Went Wrong"
-        desc={errorMsg}
-        onRetry={async () => await getTasks()}
+  return (
+    <>
+      <TasksNav
+        isActive={tasksState.isActive}
+        setIsActive={(value) =>
+          tasksDispatch({
+            type: "SET_IS_ACTIVE",
+            payload: {
+              value,
+            },
+          })
+        }
+        statusSummary={tasksState.statusSummary}
       />
-    );
 
-  if (hasFetched)
-    return (
-      <>
-        <TasksNav
-          isActive={tasksState.isActive}
-          setIsActive={(value) =>
-            tasksDispatch({
-              type: "SET_IS_ACTIVE",
-              payload: {
-                value,
-              },
-            })
-          }
-          statusSummary={tasksState.statusSummary}
+      {isLoading && <Loader className="loader-task" />}
+
+      {isError && (
+        <ErrorState
+          title="Something Went Wrong"
+          desc={errorMsg}
+          onRetry={async () => await getTasks()}
         />
+      )}
 
-        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-8 mt-5">
-          {tasksState.tasks.map(({ _id, ...task }) => (
-            <Task key={_id} id={_id} task={task} />
-          ))}
-        </div>
-      </>
-    );
+      {hasFetched &&
+        (tasksState.tasks.length > 0 ? (
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-8 mt-5">
+            {tasksState.tasks.map(({ _id, ...task }) => (
+              <Task key={_id} id={_id} task={task} />
+            ))}
+          </div>
+        ) : (
+          <p className="mt-5 text-center text-lg font-bold">No Task Found</p>
+        ))}
+    </>
+  );
 }
 
 export default MyTasks;

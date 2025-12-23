@@ -23,21 +23,21 @@ export const getPriorityClass = (priority) => {
 export const getStatusBadgeClass = (status) => {
   switch (status) {
     case "Pending":
-      return "primary";
+      return "badge-primary";
     case "In Progress":
-      return "info";
+      return "badge-info";
     case "Completed":
-      return "success";
+      return "badge-success";
   }
 };
 
 export const getPriorityBadgeClass = (priority) => {
   switch (priority) {
     case "Low":
-      return "success";
+      return "badge-success";
     case "Medium":
-      return "warning";
+      return "badge-warning";
     case "High":
-      return "error";
+      return "badge-error";
   }
 };

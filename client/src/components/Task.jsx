@@ -20,14 +20,14 @@ function Task({ id, task }) {
       <Card className="shadow-lg">
         <div className="flex gap-3">
           <div
-            className={`badge badge-sm badge-soft badge-${getStatusBadgeClass(
+            className={`badge badge-sm badge-soft ${getStatusBadgeClass(
               task.status
             )}`}
           >
             {task.status}
           </div>
           <div
-            className={`badge badge-sm badge-soft badge-${getPriorityBadgeClass(
+            className={`badge badge-sm badge-soft ${getPriorityBadgeClass(
               task.priority
             )}`}
           >

@@ -24,6 +24,10 @@
   .loader-main {
     @apply absolute w-full h-dvh top-0 left-0 z-10 flex justify-center items-center bg-base-100;
   }
+
+  .loader-task {
+    @apply w-full h-100 flex justify-center items-center bg-base-100;
+  }
 }
 
 @layer utilities {
