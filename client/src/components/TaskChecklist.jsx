@@ -1,11 +1,14 @@
 import { useParams } from "react-router-dom";
 
 import useAxios from "@hooks/useAxios";
+import useAlert from "@hooks/useAlert";
 
 function TaskChecklist({ taskList = [], setTaskList }) {
   const { id } = useParams();
 
   const { put } = useAxios(true);
+
+  const { error } = useAlert();
 
   const updateTaskCheckList = async (newTaskList = []) => {
     try {
@@ -15,7 +18,13 @@ function TaskChecklist({ taskList = [], setTaskList }) {
       });
 
       setTaskList(data.taskCheckList, data.status);
-    } catch (error) {}
+    } catch (err) {
+      error(
+        err?.status
+          ? `${err.status} - ${err.message}`
+          : "500 - Internal Server Error"
+      );
+    }
   };
 
   const handleChange = async (oldText) => {
@@ -28,16 +37,16 @@ function TaskChecklist({ taskList = [], setTaskList }) {
 
   return (
     <ul className="mt-0.5 list">
-      {taskList.map(({ text, completed }) => (
+      {taskList.map(({ text, completed }, index) => (
         <li className="list-row px-0" key={text}>
           <input
             type="checkbox"
-            id="wireframe1"
+            id={`task-${index}`}
             className="checkbox size-5"
             checked={completed}
             onChange={async () => await handleChange(text)}
           />
-          <label htmlFor="wireframe1" className="font-semibold">
+          <label htmlFor={`task-${index}`} className="font-semibold">
             {text}
           </label>
         </li>
