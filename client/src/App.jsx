@@ -1,4 +1,4 @@
-import { lazy } from "react";
+import { lazy, useEffect } from "react";
 import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
 
 // Layouts
@@ -27,6 +27,10 @@ const MyTasks = lazy(() => import("@pages/Users/MyTasks"));
 const ViewTaskDetails = lazy(() => import("@pages/Users/ViewTaskDetails"));
 
 function App() {
+  useEffect(() => {
+    document.documentElement.classList.add("scrollbar");
+  }, []);
+
   return (
     <Router>
       <AxiosInterceptor />

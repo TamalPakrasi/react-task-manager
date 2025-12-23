@@ -1,0 +1,9 @@
+[2025-12-23T11:21:07.521Z] GET /api/dashboard/summary - STATUS:401 - TIME:430.19ms
+[2025-12-23T11:21:08.118Z] POST /api/auth/refresh - STATUS:200 - TIME:537.11ms
+[2025-12-23T11:21:08.413Z] GET /api/dashboard/summary - STATUS:401 - TIME:244.97ms
+[2025-12-23T11:21:12.602Z] GET /api/dashboard/summary - STATUS:200 - TIME:484.13ms
+[2025-12-23T11:22:07.284Z] GET /api/dashboard/summary - STATUS:200 - TIME:497.42ms
+[2025-12-23T11:25:12.778Z] GET /api/dashboard/summary - STATUS:200 - TIME:479.08ms
+[2025-12-23T11:25:28.344Z] POST /api/auth/refresh - STATUS:200 - TIME:474.55ms
+[2025-12-23T11:25:29.279Z] GET /api/dashboard/summary - STATUS:200 - TIME:481.52ms
+[2025-12-23T11:26:22.067Z] GET /api/dashboard/summary - STATUS:200 - TIME:481.87ms

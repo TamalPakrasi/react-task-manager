@@ -85,7 +85,31 @@ function ViewTaskDetails() {
       <Modal modalRef={modalRef}>
         <h4 className="text-lg text-neutral font-bold">Assigned To</h4>
 
-        <ul className="mt-7 list">
+        <ul className="mt-7 list max-h-100 scrollbar">
+          <li className="list-row px-0">
+            <AssignedTo />
+          </li>
+          <li className="list-row px-0">
+            <AssignedTo />
+          </li>
+          <li className="list-row px-0">
+            <AssignedTo />
+          </li>
+          <li className="list-row px-0">
+            <AssignedTo />
+          </li>
+          <li className="list-row px-0">
+            <AssignedTo />
+          </li>
+          <li className="list-row px-0">
+            <AssignedTo />
+          </li>
+          <li className="list-row px-0">
+            <AssignedTo />
+          </li>
+          <li className="list-row px-0">
+            <AssignedTo />
+          </li>
           <li className="list-row px-0">
             <AssignedTo />
           </li>

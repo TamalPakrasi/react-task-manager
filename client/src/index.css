@@ -3,6 +3,8 @@
   themes: nord;
 }
 
+@plugin 'tailwind-scrollbar';
+
 @layer base {
   #root {
     @apply min-h-[100dvh] flex flex-col relative;
@@ -35,6 +37,13 @@
 
   .flex-between {
     @apply flex justify-between items-center;
+  }
+
+  .scrollbar {
+    @apply overflow-y-auto
+    scrollbar-thin
+    scrollbar-track-base-200
+    scrollbar-thumb-base-300;
   }
 }
 
