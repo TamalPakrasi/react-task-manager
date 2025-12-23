@@ -196,7 +196,7 @@ function Dashboard() {
                         <td>{task.title}</td>
                         <td>
                           <div
-                            className={`badge badge-outline ${getStatusClass(
+                            className={`badge badge-outline whitespace-nowrap ${getStatusClass(
                               task.status
                             )} badge-sm`}
                           >
