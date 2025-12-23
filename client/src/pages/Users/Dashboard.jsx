@@ -6,6 +6,8 @@ import { ArrowRight } from "lucide-react";
 import { Card, Loader, ErrorState } from "@components";
 
 import { useAuthContext } from "@contexts/Auth/context";
+import { useFetchContext } from "@contexts/Fetch/context";
+
 import useAxios from "@hooks/useAxios";
 
 import formatDate from "@utils/formatDate";
@@ -25,20 +27,23 @@ function Dashboard() {
     memberInitState
   );
 
+  const { isLoading, isError, errorMsg, hasFetched, fetchDispatch } =
+    useFetchContext();
+
   const getUserDashboardData = async () => {
-    dashboardDispatch({ type: "START_FETCHING" });
+    fetchDispatch({ type: "START_FETCHING" });
 
     try {
       const { data } = await get({ api: "/dashboard/summary" });
 
       dashboardDispatch({ type: "SET_DATA", payload: { data } });
     } catch (error) {
-      dashboardDispatch({
+      fetchDispatch({
         type: "SET_ERROR",
         payload: { error: error.message },
       });
     } finally {
-      dashboardDispatch({ type: "STOP_FETCHING" });
+      fetchDispatch({ type: "STOP_FETCHING" });
     }
   };
 
@@ -46,18 +51,18 @@ function Dashboard() {
     getUserDashboardData();
   }, []);
 
-  if (dashboardState.isLoading) return <Loader className="loader-main" />;
+  if (isLoading) return <Loader className="loader-main" />;
 
-  if (dashboardState.isError)
+  if (isError)
     return (
       <ErrorState
         title="Something Went Wrong"
-        desc={dashboardState.error}
+        desc={errorMsg}
         onRetry={async () => await getUserDashboardData()}
       />
     );
 
-  if (dashboardState.hasFetched)
+  if (hasFetched)
     return (
       <div className="flex flex-col gap-8 w-full">
         <Card>

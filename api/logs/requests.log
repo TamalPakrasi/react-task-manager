@@ -30,3 +30,9 @@
 [2025-12-23T11:41:48.703Z] POST /api/auth/refresh - STATUS:200 - TIME:609.57ms
 [2025-12-23T11:41:49.602Z] GET /api/dashboard/summary - STATUS:200 - TIME:526.74ms
 [2025-12-23T11:41:59.402Z] GET /api/dashboard/summary - STATUS:200 - TIME:455.19ms
+[2025-12-23T12:21:36.323Z] GET /api/dashboard/summary - STATUS:401 - TIME:228.86ms
+[2025-12-23T12:21:36.844Z] POST /api/auth/refresh - STATUS:200 - TIME:452.14ms
+[2025-12-23T12:21:37.075Z] GET /api/dashboard/summary - STATUS:401 - TIME:203.07ms
+[2025-12-23T12:21:40.107Z] GET /api/dashboard/summary - STATUS:200 - TIME:459.85ms
+[2025-12-23T12:21:50.696Z] GET /api/dashboard/summary - STATUS:200 - TIME:469.88ms
+[2025-12-23T12:22:13.335Z] GET /api/dashboard/summary - STATUS:200 - TIME:497.12ms

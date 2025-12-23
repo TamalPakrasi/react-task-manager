@@ -4,6 +4,8 @@ import { PanelLeftOpen } from "lucide-react";
 
 import { DrawerMenu, Avatar } from "@components";
 
+import FetchProvider from "@contexts/Fetch/Provider";
+
 function DashboardLayout({ children }) {
   const drawerButtonRef = useRef(null);
 
@@ -12,7 +14,7 @@ function DashboardLayout({ children }) {
       <input id="dashbord_drawer" type="checkbox" className="drawer-toggle" />
       <div className="drawer-content py-10 relative">
         <main className="mt-7 max-w-[95dvw] md:max-w-[97%] mx-auto">
-          {children}
+          <FetchProvider>{children}</FetchProvider>
         </main>
         <label
           ref={drawerButtonRef}
