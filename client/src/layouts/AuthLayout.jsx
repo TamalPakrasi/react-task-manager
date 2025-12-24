@@ -14,7 +14,7 @@ function AuthLayout() {
   const handleChange = useCallback((e) => {
     const { name, value, type, files } = e.target;
 
-    const toSend = type === "file" ? files[0] : value.trim();
+    const toSend = type === "file" ? files[0] : value;
 
     formDispatch({
       type: "UPDATE_FIELD",

@@ -28,9 +28,6 @@ import { getStatusBadgeClass } from "@utils/getTaskClasses";
 function ViewTaskDetails() {
   const modalRef = useRef(null);
 
-  // const [task, setTask] = useState(null);
-  // const [taskList, setTaskList] = useState([]);
-
   const [taskState, taskDispatch] = useReducer(
     taskDetailsReducer,
     taskDetailsInitState
@@ -78,13 +75,20 @@ function ViewTaskDetails() {
     );
 
   if (hasFetched && taskState.task) {
-    const userDetails = taskState.task.assignedTo.find(
-      ({ _id }) => _id === user._id
-    );
+    let userDetails;
 
-    const otherUsers = taskState.task.assignedTo.filter(
-      ({ _id }) => _id !== user._id
-    );
+    if (user.role === "member")
+      userDetails = taskState.task.assignedTo.find(
+        ({ _id }) => _id === user._id
+      );
+
+    const otherUsers =
+      user.role === "member"
+        ? taskState.task.assignedTo.filter(({ _id }) => _id !== user._id)
+        : taskState.task.assignedTo;
+
+    const groupAvatars =
+      user.role === "member" ? otherUsers?.slice(0, 2) : otherUsers?.slice(0.3);
 
     return (
       <>
@@ -128,21 +132,21 @@ function ViewTaskDetails() {
                 className="avatar-group -space-x-3 mt-0.5 cursor-pointer"
                 onClick={() => modalRef.current && modalRef.current.showModal()}
               >
-                <div className="avatar">
-                  <div className="w-7">
-                    <Image img={userDetails.profileImageUrl} />
-                  </div>
-                </div>
-
-                {otherUsers
-                  ?.slice(0, 2)
-                  .map(({ _id, profileImageUrl = null }) => (
-                    <div key={_id} className="avatar">
-                      <div className="w-7">
-                        <Image img={profileImageUrl} />
-                      </div>
+                {userDetails && (
+                  <div className="avatar">
+                    <div className="w-7">
+                      <Image img={userDetails.profileImageUrl} />
                     </div>
-                  ))}
+                  </div>
+                )}
+
+                {groupAvatars.map(({ _id, profileImageUrl = null }) => (
+                  <div key={_id} className="avatar">
+                    <div className="w-7">
+                      <Image img={profileImageUrl} />
+                    </div>
+                  </div>
+                ))}
 
                 {taskState.task.assignedTo.length > 3 && (
                   <div className="avatar avatar-placeholder">

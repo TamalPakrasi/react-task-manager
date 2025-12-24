@@ -210,7 +210,7 @@ function Dashboard() {
               </div>
 
               <Link
-                to="/member/tasks"
+                to="/admin/tasks"
                 className="btn border border-gray-400 absolute top-4.5 right-3 focus:outline-0"
               >
                 See All <ArrowRight />

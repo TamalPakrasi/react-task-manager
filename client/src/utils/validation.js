@@ -3,7 +3,7 @@ const validation = ({ field, value }) => {
 
   switch (field) {
     case "username":
-      if (!/^[A-Za-z]+(?:\s[A-Za-z]+)*$/.test(value))
+      if (!/^[A-Za-z]+(?:\s[A-Za-z]*)*$/.test(value))
         error = "Invalid Username";
       break;
 

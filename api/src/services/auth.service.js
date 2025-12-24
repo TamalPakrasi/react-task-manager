@@ -33,7 +33,7 @@ class Auth {
   constructor(obj) {
     const { username, email, password, file } = obj || {};
 
-    this.#username = username || "";
+    this.#username = username?.trim() || "";
     this.#email = email || "";
     this.#pass = password || "";
     this.#file = file || null;

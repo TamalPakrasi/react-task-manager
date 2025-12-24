@@ -18,13 +18,16 @@ const Register = lazy(() => import("@pages/Auth/Register"));
 // Admin Pages
 const AdminDashBorad = lazy(() => import("@pages/Admin/Dashboard"));
 const ManageTasks = lazy(() => import("@pages/Admin/ManageTasks"));
-const CreateTasks = lazy(() => import("@pages/Admin/CreateTask"));
+const CreateTask = lazy(() => import("@pages/Admin/CreateTask"));
 const ManageUsers = lazy(() => import("@pages/Admin/ManageUsers"));
+const UpdateTask = lazy(() => import("@pages/Admin/updateTask"));
 
-// User Pages
-const UserDashBorad = lazy(() => import("@pages/Users/Dashboard"));
+// member Pages
+const MemberDashBorad = lazy(() => import("@pages/Users/Dashboard"));
 const MyTasks = lazy(() => import("@pages/Users/MyTasks"));
-const ViewTaskDetails = lazy(() => import("@pages/Users/ViewTaskDetails"));
+const ViewMemberTaskDetails = lazy(() =>
+  import("@pages/Users/ViewTaskDetails")
+);
 
 function App() {
   useEffect(() => {
@@ -47,15 +50,19 @@ function App() {
           <Route path="admin" element={<PrivateRoute allowedRole="admin" />}>
             <Route path="dashboard" element={<AdminDashBorad />} />
             <Route path="tasks" element={<ManageTasks />} />
-            <Route path="create-tasks" element={<CreateTasks />} />
+            <Route path="update-task/:id" element={<UpdateTask />} />
+            <Route path="create-tasks" element={<CreateTask />} />
             <Route path="members" element={<ManageUsers />} />
           </Route>
 
           {/* User Routes */}
           <Route path="member" element={<PrivateRoute allowedRole="member" />}>
-            <Route path="dashboard" element={<UserDashBorad />} />
+            <Route path="dashboard" element={<MemberDashBorad />} />
             <Route path="tasks" element={<MyTasks />} />
-            <Route path="task-details/:id" element={<ViewTaskDetails />} />
+            <Route
+              path="task-details/:id"
+              element={<ViewMemberTaskDetails />}
+            />
           </Route>
         </Route>
       </Routes>

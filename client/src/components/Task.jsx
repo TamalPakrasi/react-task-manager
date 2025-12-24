@@ -19,12 +19,27 @@ function Task({ id, task }) {
 
   const { user } = useAuthContext();
 
-  const userDetails = task.assignedTo.find(({ _id }) => _id === user._id);
+  let userDetails;
 
-  const otherUsers = task.assignedTo.filter(({ _id }) => _id !== user._id);
+  if (user.role === "member")
+    userDetails = task.assignedTo.find(({ _id }) => _id === user._id);
+
+  const otherUsers =
+    user.role === "member"
+      ? task.assignedTo.filter(({ _id }) => _id !== user._id)
+      : task.assignedTo;
+
+  const groupAvatars =
+    user.role === "member" ? otherUsers?.slice(0, 2) : otherUsers?.slice(0, 3);
 
   return (
-    <Link to={`/member/task-details/${id}`}>
+    <Link
+      to={
+        user.role === "member"
+          ? `/member/task-details/${id}`
+          : `/admin/update-task/${id}`
+      }
+    >
       <Card className="shadow-lg">
         <div className="flex gap-3">
           <div
@@ -82,13 +97,15 @@ function Task({ id, task }) {
 
         <div className="mt-2 flex-between">
           <div className="avatar-group -space-x-4">
-            <div className="avatar">
-              <div className="w-7">
-                <Image img={userDetails.profileImageUrl} />
+            {userDetails && (
+              <div className="avatar">
+                <div className="w-7">
+                  <Image img={userDetails.profileImageUrl} />
+                </div>
               </div>
-            </div>
+            )}
 
-            {otherUsers?.slice(0, 2).map(({ _id, profileImageUrl = null }) => (
+            {groupAvatars.map(({ _id, profileImageUrl = null }) => (
               <div key={_id} className="avatar">
                 <div className="w-7">
                   <Image img={profileImageUrl} />
