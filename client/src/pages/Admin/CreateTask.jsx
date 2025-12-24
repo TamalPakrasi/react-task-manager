@@ -2,7 +2,7 @@ import { useRef, useReducer, useEffect } from "react";
 
 import { Users, Plus, Trash2, Paperclip } from "lucide-react";
 
-import { Card, Modal, AssignedTo } from "@components";
+import { Card, Modal, AssignedTo, Image } from "@components";
 
 import useAlert from "@hooks/useAlert";
 
@@ -40,12 +40,20 @@ function CreateTask() {
       });
   };
 
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+  };
+
   return (
     <>
       <Card className="max-w-200">
         <h2 className="font-semibold text-lg">Create Task</h2>
 
-        <form className="grid gap-y-6 gap-x-2 grid-cols-1 md:grid-cols-3">
+        <form
+          className="grid gap-y-6 gap-x-2 grid-cols-1 md:grid-cols-3"
+          onSubmit={handleSubmit}
+        >
+          {/* task title */}
           <div className="md:col-span-3">
             <h4 className="text-xs text-neutral font-medium">Title</h4>
             <input
@@ -58,6 +66,7 @@ function CreateTask() {
             />
           </div>
 
+          {/* task description */}
           <div className="md:col-span-3">
             <h4 className="text-xs text-neutral font-medium">Description</h4>
             <textarea
@@ -69,6 +78,7 @@ function CreateTask() {
             ></textarea>
           </div>
 
+          {/* task priority */}
           <div>
             <h4 className="text-xs text-neutral font-medium">Priority</h4>
             <select
@@ -86,29 +96,60 @@ function CreateTask() {
             </select>
           </div>
 
+          {/* task due Date */}
           <div>
             <h4 className="text-xs text-neutral font-medium">Due Date</h4>
             <input
               type="date"
               name="dueDate"
               min={new Date().toISOString().split("T")[0]}
-              value={taskState.data.dueDate.toISOString().split("T")[0]}
+              value={
+                taskState.data.dueDate instanceof Date
+                  ? taskState.data.dueDate.toISOString().split("T")[0]
+                  : ""
+              }
               className="input w-full mt-2"
               onChange={handleChange}
             />
           </div>
 
+          {/* task Assigned to */}
           <div>
             <h4 className="text-xs text-neutral font-medium">Assigned To</h4>
-            <button
-              type="button"
-              className="btn mt-2 btn-sm btn-secondary hover:btn-primary active:btn-primary"
-              onClick={() =>
-                formModalRef.current && formModalRef.current.showModal()
-              }
-            >
-              <Users size={15} /> Add Memebers
-            </button>
+            {taskState.data.assignedTo.length === 0 ? (
+              <button
+                type="button"
+                className="btn mt-2 btn-sm btn-secondary hover:btn-primary active:btn-primary"
+                onClick={() =>
+                  formModalRef.current && formModalRef.current.showModal()
+                }
+              >
+                <Users size={15} /> Add Memebers
+              </button>
+            ) : (
+              <div
+                className="avatar-group -space-x-3 cursor-pointer"
+                onClick={() =>
+                  formModalRef.current && formModalRef.current.showModal()
+                }
+              >
+                {taskState.data.assignedTo?.slice(0, 3).map((id) => (
+                  <div key={id} className="avatar">
+                    <div className="w-7">
+                      <Image img={"/user.png"} />
+                    </div>
+                  </div>
+                ))}
+
+                {taskState.data.assignedTo.length > 3 && (
+                  <div className="avatar avatar-placeholder">
+                    <div className="bg-neutral text-neutral-content w-7">
+                      <span>+{taskState.data.assignedTo.length - 3}</span>
+                    </div>
+                  </div>
+                )}
+              </div>
+            )}
           </div>
 
           {/* Task check list */}
@@ -243,31 +284,64 @@ function CreateTask() {
       <Modal modalRef={formModalRef}>
         <h4 className="text-lg text-neutral font-bold">Select Members</h4>
 
-        <form>
-          <ul className="mt-7 list max-h-100 scrollbar">
-            <li className="list-row px-0">
-              <AssignedTo isForm={true} />
-            </li>
-            <li className="list-row px-0">
-              <AssignedTo isForm={true} />
-            </li>
-            <li className="list-row px-0">
-              <AssignedTo isForm={true} />
-            </li>
-          </ul>
-
-          <div
-            className="py-2 w-full flex justify-end items-center gap-3"
-            onClick={() => formModalRef.current && formModalRef.current.close()}
-          >
-            <button type="button" className="btn btn-sm btn-neutral">
-              Cancel
-            </button>
-            <button type="submit" className="btn btn-sm btn-primary">
-              Done
-            </button>
-          </div>
-        </form>
+        <ul className="mt-7 list max-h-100 scrollbar">
+          <li className="list-row px-0">
+            <AssignedTo
+              isForm={true}
+              add={(id) =>
+                taskDispatch({ type: "ADD_TO_ASSIGNED_TO", payload: { id } })
+              }
+              remove={(id) =>
+                taskDispatch({
+                  type: "REMOVE_FROM_ASSIGNED_TO",
+                  payload: { id },
+                })
+              }
+            />
+          </li>
+          <li className="list-row px-0">
+            <AssignedTo
+              isForm={true}
+              add={(id) =>
+                taskDispatch({ type: "ADD_TO_ASSIGNED_TO", payload: { id } })
+              }
+              remove={(id) =>
+                taskDispatch({
+                  type: "REMOVE_FROM_ASSIGNED_TO",
+                  payload: { id },
+                })
+              }
+            />
+          </li>
+          <li className="list-row px-0">
+            <AssignedTo
+              isForm={true}
+              add={(id) =>
+                taskDispatch({ type: "ADD_TO_ASSIGNED_TO", payload: { id } })
+              }
+              remove={(id) =>
+                taskDispatch({
+                  type: "REMOVE_FROM_ASSIGNED_TO",
+                  payload: { id },
+                })
+              }
+            />
+          </li>
+          <li className="list-row px-0">
+            <AssignedTo
+              isForm={true}
+              add={(id) =>
+                taskDispatch({ type: "ADD_TO_ASSIGNED_TO", payload: { id } })
+              }
+              remove={(id) =>
+                taskDispatch({
+                  type: "REMOVE_FROM_ASSIGNED_TO",
+                  payload: { id },
+                })
+              }
+            />
+          </li>
+        </ul>
       </Modal>
     </>
   );

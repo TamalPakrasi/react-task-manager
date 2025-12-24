@@ -3,7 +3,7 @@ export const createTaskInitState = {
     title: "",
     description: "",
     priority: "",
-    dueDate: new Date(),
+    dueDate: "",
     assignedTo: [],
     taskCheckList: [],
     attachments: [],
@@ -79,6 +79,26 @@ const createTaskReducer = (state, action) => {
       if (name === "dueDate") value = new Date(value);
 
       return { ...state, data: { ...state.data, [name]: value } };
+
+    case "ADD_TO_ASSIGNED_TO":
+      return {
+        ...state,
+        data: {
+          ...state.data,
+          assignedTo: [...state.data.assignedTo, action.payload.id],
+        },
+      };
+
+    case "REMOVE_FROM_ASSIGNED_TO":
+      return {
+        ...state,
+        data: {
+          ...state.data,
+          assignedTo: state.data.assignedTo.filter(
+            (id) => id !== action.payload.id
+          ),
+        },
+      };
   }
 };
 
