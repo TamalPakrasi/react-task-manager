@@ -8,46 +8,33 @@ import { Card, Loader, ErrorState } from "@components";
 import { useAuthContext } from "@contexts/Auth/context";
 import { useFetchContext } from "@contexts/Fetch/context";
 
-import useAxios from "@hooks/useAxios";
+import useGetUserDashboardData from "@hooks/useGetUserDashboardData";
 
 import formatDate from "@utils/formatDate";
 import formatCreatedAt from "@utils/formateCreatedAt";
 import getGreetings from "@utils/getGreetings";
 import { getStatusClass, getPriorityClass } from "@utils/getTaskClasses";
 
-import memberReducer, { memberInitState } from "@reducers/member.reducer";
+import dashboardReducer, {
+  dashboardInitState,
+} from "@reducers/dashboard.reducer";
 
 function Dashboard() {
   const { user } = useAuthContext();
-  const { get } = useAxios(true);
 
   const [dashboardState, dashboardDispatch] = useReducer(
-    memberReducer,
-    memberInitState
+    dashboardReducer,
+    dashboardInitState
   );
 
-  const { isLoading, isError, errorMsg, hasFetched, fetchDispatch } =
-    useFetchContext();
+  const { isLoading, isError, errorMsg, hasFetched } = useFetchContext();
 
-  const getUserDashboardData = async () => {
-    fetchDispatch({ type: "START_FETCHING" });
-
-    try {
-      const { data } = await get({ api: "/dashboard/summary" });
-
-      dashboardDispatch({ type: "SET_DATA", payload: { data } });
-    } catch (error) {
-      fetchDispatch({
-        type: "SET_ERROR",
-        payload: { error: error.message },
-      });
-    } finally {
-      fetchDispatch({ type: "STOP_FETCHING" });
-    }
-  };
+  const { getUserDashboardData } = useGetUserDashboardData();
 
   useEffect(() => {
-    getUserDashboardData();
+    getUserDashboardData().then((data) =>
+      dashboardDispatch({ type: "SET_DATA", payload: { data } })
+    );
   }, []);
 
   if (isLoading) return <Loader className="loader-main" />;
@@ -57,7 +44,10 @@ function Dashboard() {
       <ErrorState
         title="Something Went Wrong"
         desc={errorMsg}
-        onRetry={async () => await getUserDashboardData()}
+        onRetry={async () => {
+          const data = await getUserDashboardData();
+          dashboardDispatch({ type: "SET_DATA", payload: { data } });
+        }}
       />
     );
 

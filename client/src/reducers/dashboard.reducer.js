@@ -1,4 +1,4 @@
-export const memberInitState = {
+export const dashboardInitState = {
   data: {
     stats: {
       all: 0,
@@ -20,7 +20,7 @@ export const memberInitState = {
   },
 };
 
-const memberReducer = (state, action) => {
+const dashboardReducer = (state, action) => {
   switch (action.type) {
     case "SET_DATA":
       return {
@@ -35,4 +35,4 @@ const memberReducer = (state, action) => {
   }
 };
 
-export default memberReducer;
+export default dashboardReducer;
