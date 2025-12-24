@@ -30,7 +30,7 @@ function AssignedTo({
       </div>
 
       <div className="flex flex-col gap-1">
-        {/* <h4
+        <h4
           className={`text-sm text-neutral ${
             id === user._id ? "font-bold" : "font-semibold"
           }`}
@@ -43,9 +43,7 @@ function AssignedTo({
           }`}
         >
           {assignedTo.email}
-        </p> */}
-        <h4 className={`text-sm text-neutral font-semibold`}>Tamal Pakrasi</h4>
-        <p className={`text-xs text-neutral`}>tamalpakrasi8@gmail.com</p>
+        </p>
       </div>
 
       {isForm && (
