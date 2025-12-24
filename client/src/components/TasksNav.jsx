@@ -1,4 +1,10 @@
+import { useAuthContext } from "@contexts/Auth/context";
+
+import { DownloadButton } from "@components";
+
 function TasksNav({ name = "My Tasks", isActive, setIsActive, statusSummary }) {
+  const { user } = useAuthContext();
+
   const handleClick = (e) => {
     const btn = e.currentTarget;
 
@@ -90,6 +96,12 @@ function TasksNav({ name = "My Tasks", isActive, setIsActive, statusSummary }) {
             </div>
           </button>
         </li>
+
+        {user.role === "admin" && (
+          <li>
+            <DownloadButton api="tasks" />
+          </li>
+        )}
       </ul>
     </nav>
   );

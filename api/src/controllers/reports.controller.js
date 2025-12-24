@@ -1,7 +1,7 @@
 import reportsServices from "../services/reports.service.js";
 
 // @desc    GET exporting tasks
-// @route   POST /api/reports/exports/tasks
+// @route   GET /api/reports/exports/tasks
 // @access  Private (admin only)
 export const exportTasks = async (req, res, next) => {
   try {
@@ -26,7 +26,7 @@ export const exportTasks = async (req, res, next) => {
 };
 
 // @desc    GET exporting users data
-// @route   POST /api/reports/exports/users
+// @route   GET /api/reports/exports/users
 // @access  Private (admin only)
 export const exportUsers = async (req, res, next) => {
   try {

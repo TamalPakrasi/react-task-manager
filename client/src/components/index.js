@@ -24,6 +24,8 @@ import Modal from "./Modal";
 
 import AssignedTo from "./AssignedTo";
 
+import DownloadButton from "./DownloadButton";
+
 export {
   Loader,
   Form,
@@ -39,4 +41,5 @@ export {
   Modal,
   Image,
   AssignedTo,
+  DownloadButton,
 };
