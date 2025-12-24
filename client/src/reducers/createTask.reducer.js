@@ -1,15 +1,23 @@
+import validateTask from "@utils/validateTask";
+import { data } from "react-router-dom";
+
 export const createTaskInitState = {
   data: {
-    title: "",
-    description: "",
-    priority: "",
-    dueDate: "",
-    assignedTo: [],
-    taskCheckList: [],
+    title: { value: "", error: null },
+    description: { value: "", error: null },
+    priority: { value: "", error: null },
+    dueDate: { value: "", error: null },
+    assignedTo: { value: [], error: null },
+    taskCheckList: { value: [], error: null },
     attachments: [],
   },
 
-  error: [],
+  submit: {
+    isSubmitting: false,
+    hasValidationErrors: false,
+  },
+
+  errors: [],
 };
 
 const createTaskReducer = (state, action) => {
@@ -17,28 +25,34 @@ const createTaskReducer = (state, action) => {
     case "ADD_TASK_TO_LIST":
       const { task } = action.payload;
 
-      if (state.data.taskCheckList.includes(task)) {
-        return { ...state, error: [...state.error, "Task Already Exists"] };
+      if (state.data.taskCheckList.value.includes(task)) {
+        return { ...state, errors: [...state.errors, "Task Already Exists"] };
       }
 
       return {
         ...state,
-        error: [],
+        errors: [],
         data: {
           ...state.data,
-          taskCheckList: [...state.data.taskCheckList, task],
+          taskCheckList: {
+            ...state.data.taskCheckList,
+            value: [...state.data.taskCheckList.value, task],
+          },
         },
       };
 
     case "REMOVE_TASK_FROM_LIST":
       return {
         ...state,
-        error: [],
+        errors: [],
         data: {
           ...state.data,
-          taskCheckList: state.data.taskCheckList.filter(
-            (task) => task !== action.payload.task
-          ),
+          taskCheckList: {
+            ...state.data.taskCheckList,
+            value: state.data.taskCheckList.value.filter(
+              (task) => task !== action.payload.task
+            ),
+          },
         },
       };
 
@@ -48,13 +62,13 @@ const createTaskReducer = (state, action) => {
       if (state.data.attachments.includes(attachment)) {
         return {
           ...state,
-          error: [...state.error, "Attachement Already Exists"],
+          errors: [...state.errors, "Attachement Already Exists"],
         };
       }
 
       return {
         ...state,
-        error: [],
+        errors: [],
         data: {
           ...state.data,
           attachments: [...state.data.attachments, attachment],
@@ -64,7 +78,7 @@ const createTaskReducer = (state, action) => {
     case "REMOVE_ATTACHMENT":
       return {
         ...state,
-        error: [],
+        errors: [],
         data: {
           ...state.data,
           attachments: state.data.attachments.filter(
@@ -78,14 +92,20 @@ const createTaskReducer = (state, action) => {
 
       if (name === "dueDate") value = new Date(value);
 
-      return { ...state, data: { ...state.data, [name]: value } };
+      return {
+        ...state,
+        data: { ...state.data, [name]: { ...state.data[name], value } },
+      };
 
     case "ADD_TO_ASSIGNED_TO":
       return {
         ...state,
         data: {
           ...state.data,
-          assignedTo: [...state.data.assignedTo, action.payload.id],
+          assignedTo: {
+            ...state.data.assignedTo,
+            value: [...state.data.assignedTo.value, action.payload.id],
+          },
         },
       };
 
@@ -94,11 +114,48 @@ const createTaskReducer = (state, action) => {
         ...state,
         data: {
           ...state.data,
-          assignedTo: state.data.assignedTo.filter(
-            (id) => id !== action.payload.id
-          ),
+          assignedTo: {
+            ...state.data.assignedTo,
+            value: state.data.assignedTo.value.filter(
+              (id) => id !== action.payload.id
+            ),
+          },
         },
       };
+
+    case "VALIDATE":
+      const updatedData = Object.fromEntries(
+        Object.entries(state.data).map(([field, value]) => {
+          const data = value?.value
+            ? { value: value.value, error: null }
+            : value;
+          return [field, data];
+        })
+      );
+
+      const errors = validateTask(state.data);
+
+      if (errors.length > 0) {
+        errors.forEach((error) => {
+          const [field, err] = Object.entries(error).flat();
+          updatedData[field].error = err;
+        });
+      }
+
+      return errors.length > 0
+        ? {
+            ...state,
+            data: updatedData,
+            submit: { ...state.submit, hasValidationErrors: true },
+          }
+        : {
+            ...state,
+            data: updatedData,
+            submit: { isSubmitting: true, hasValidationErrors: false },
+          };
+
+    case "STOP_SUBMITTING":
+      return { ...state, submit: { ...state.submit, isSubmitting: false } };
   }
 };
 

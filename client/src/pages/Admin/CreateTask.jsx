@@ -42,8 +42,8 @@ function CreateTask() {
   );
 
   useEffect(() => {
-    if (taskState.error.length > 0) {
-      errorAlert(taskState.error.join(", "));
+    if (taskState.errors.length > 0) {
+      errorAlert(taskState.errors.join(", "));
     }
   }, [taskState]);
 
@@ -70,15 +70,16 @@ function CreateTask() {
   const handleChange = (e) => {
     const { name, value } = e.target;
 
-    if (value.trim().length > 0)
-      taskDispatch({
-        type: "SET_VALUE",
-        payload: { name, value: value.trim() },
-      });
+    taskDispatch({
+      type: "SET_VALUE",
+      payload: { name, value },
+    });
   };
 
   const handleSubmit = async (e) => {
     e.preventDefault();
+
+    taskDispatch({ type: "VALIDATE" });
   };
 
   const getImageUrl = (id) => {
@@ -112,11 +113,15 @@ function CreateTask() {
               <input
                 type="text"
                 name="title"
-                value={taskState.data.title}
+                value={taskState.data.title.value}
                 placeholder="Enter Task Title..."
                 className={`input w-full mt-2 leading-5 font-medium `}
                 onChange={handleChange}
               />
+
+              {taskState.data.title.error && (
+                <p>{taskState.data.title.error}</p>
+              )}
             </div>
 
             {/* task description */}
@@ -124,7 +129,7 @@ function CreateTask() {
               <h4 className="text-xs text-neutral font-medium">Description</h4>
               <textarea
                 name="description"
-                value={taskState.data.description}
+                value={taskState.data.description.value}
                 placeholder="Enter Task Description..."
                 className={`textarea w-full mt-2 leading-5 font-medium`}
                 onChange={handleChange}
@@ -135,7 +140,7 @@ function CreateTask() {
             <div>
               <h4 className="text-xs text-neutral font-medium">Priority</h4>
               <select
-                value={taskState.data.priority}
+                value={taskState.data.priority.value}
                 name="priority"
                 className={`select w-full mt-2`}
                 onChange={handleChange}
@@ -157,8 +162,8 @@ function CreateTask() {
                 name="dueDate"
                 min={new Date().toISOString().split("T")[0]}
                 value={
-                  taskState.data.dueDate instanceof Date
-                    ? taskState.data.dueDate.toISOString().split("T")[0]
+                  taskState.data.dueDate.value instanceof Date
+                    ? taskState.data.dueDate.value.toISOString().split("T")[0]
                     : ""
                 }
                 className="input w-full mt-2"
@@ -169,7 +174,7 @@ function CreateTask() {
             {/* task Assigned to */}
             <div>
               <h4 className="text-xs text-neutral font-medium">Assigned To</h4>
-              {taskState.data.assignedTo.length === 0 ? (
+              {taskState.data.assignedTo.value.length === 0 ? (
                 <button
                   type="button"
                   className="btn mt-2 btn-sm btn-secondary hover:btn-primary active:btn-primary"
@@ -186,7 +191,7 @@ function CreateTask() {
                     formModalRef.current && formModalRef.current.showModal()
                   }
                 >
-                  {taskState.data.assignedTo?.slice(0, 3).map((id) => (
+                  {taskState.data.assignedTo.value?.slice(0, 3).map((id) => (
                     <div key={id} className="avatar">
                       <div className="w-7">
                         <Image img={getImageUrl(id)} />
@@ -194,7 +199,7 @@ function CreateTask() {
                     </div>
                   ))}
 
-                  {taskState.data.assignedTo.length > 3 && (
+                  {taskState.data.assignedTo.value.length > 3 && (
                     <div className="avatar avatar-placeholder">
                       <div className="bg-neutral text-neutral-content w-7">
                         <span>+{taskState.data.assignedTo.length - 3}</span>
@@ -211,9 +216,9 @@ function CreateTask() {
                 Task Checklist
               </h4>
 
-              {taskState.data.taskCheckList.length > 0 && (
+              {taskState.data.taskCheckList.value.length > 0 && (
                 <ul className="list gap-2 mt-2">
-                  {taskState.data.taskCheckList.map((task, index) => (
+                  {taskState.data.taskCheckList.value.map((task, index) => (
                     <li className="list-row bg-neutral/15" key={task}>
                       {(index + 1).toString().padStart(2, "0")}{" "}
                       <span className="font-semibold">{task}</span>
@@ -330,7 +335,10 @@ function CreateTask() {
 
             <input
               type="submit"
-              value="CREATE TASK"
+              value={
+                taskState.submit.isSubmitting ? "Submitting..." : "CREATE TASK"
+              }
+              disabled={taskState.submit.isSubmitting}
               className="btn btn-primary md:col-span-3 mt-3"
             />
           </form>
