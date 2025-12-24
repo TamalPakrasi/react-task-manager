@@ -1,11 +1,44 @@
-import { useRef } from "react";
+import { useRef, useReducer, useEffect } from "react";
 
 import { Users, Plus, Trash2, Paperclip } from "lucide-react";
 
 import { Card, Modal, AssignedTo } from "@components";
 
+import useAlert from "@hooks/useAlert";
+
+import createTaskReducer, {
+  createTaskInitState,
+} from "@reducers/createTask.reducer";
+
 function CreateTask() {
   const formModalRef = useRef(null);
+
+  const taskListRef = useRef(null);
+
+  const attachmentsRef = useRef(null);
+
+  const [taskState, taskDispatch] = useReducer(
+    createTaskReducer,
+    createTaskInitState
+  );
+
+  const { error: errorAlert } = useAlert();
+
+  useEffect(() => {
+    if (taskState.error.length > 0) {
+      errorAlert(taskState.error.join(", "));
+    }
+  }, [taskState]);
+
+  const handleChange = (e) => {
+    const { name, value } = e.target;
+
+    if (value.trim().length > 0)
+      taskDispatch({
+        type: "SET_VALUE",
+        payload: { name, value: value.trim() },
+      });
+  };
 
   return (
     <>
@@ -18,8 +51,10 @@ function CreateTask() {
             <input
               type="text"
               name="title"
+              value={taskState.data.title}
               placeholder="Enter Task Title..."
               className={`input w-full mt-2 leading-5 font-medium `}
+              onChange={handleChange}
             />
           </div>
 
@@ -27,27 +62,40 @@ function CreateTask() {
             <h4 className="text-xs text-neutral font-medium">Description</h4>
             <textarea
               name="description"
+              value={taskState.data.description}
               placeholder="Enter Task Description..."
               className={`textarea w-full mt-2 leading-5 font-medium`}
+              onChange={handleChange}
             ></textarea>
           </div>
 
           <div>
             <h4 className="text-xs text-neutral font-medium">Priority</h4>
             <select
-              defaultValue="Choose Priority"
+              value={taskState.data.priority}
+              name="priority"
               className={`select w-full mt-2`}
+              onChange={handleChange}
             >
-              <option disabled={true}>Choose Priority</option>
-              <option>Low</option>
-              <option>Medium</option>
-              <option>High</option>
+              <option value="" disabled={true}>
+                Choose Priority
+              </option>
+              <option value="Low">Low</option>
+              <option value="Medium">Medium</option>
+              <option value="High">High</option>
             </select>
           </div>
 
           <div>
             <h4 className="text-xs text-neutral font-medium">Due Date</h4>
-            <input type="date" className="input w-full mt-2" />
+            <input
+              type="date"
+              name="dueDate"
+              min={new Date().toISOString().split("T")[0]}
+              value={taskState.data.dueDate.toISOString().split("T")[0]}
+              className="input w-full mt-2"
+              onChange={handleChange}
+            />
           </div>
 
           <div>
@@ -63,29 +111,32 @@ function CreateTask() {
             </button>
           </div>
 
+          {/* Task check list */}
           <div className="md:col-span-3">
             <h4 className="text-xs text-neutral font-medium">Task Checklist</h4>
 
-            <ul className="list gap-2 mt-2">
-              <li className="list-row bg-neutral/15">
-                01 <span>Hello</span>
-              </li>
-              <li className="list-row bg-neutral/15">
-                02 <span>Hello</span>
-              </li>
-              <li className="list-row bg-neutral/15">
-                02 <span>Hello</span>
-              </li>
-              <li className="list-row bg-neutral/15">
-                02 <span>Hello</span>
-              </li>
-              <li className="list-row bg-neutral/15">
-                02 <span>Hello</span>
-                <button className="float-end btn btn-xs btn-ghost">
-                  <Trash2 size={15} color="red" />
-                </button>
-              </li>
-            </ul>
+            {taskState.data.taskCheckList.length > 0 && (
+              <ul className="list gap-2 mt-2">
+                {taskState.data.taskCheckList.map((task, index) => (
+                  <li className="list-row bg-neutral/15" key={task}>
+                    {(index + 1).toString().padStart(2, "0")}{" "}
+                    <span className="font-semibold">{task}</span>
+                    <button
+                      type="button"
+                      className="float-end btn btn-xs btn-ghost"
+                      onClick={() =>
+                        taskDispatch({
+                          type: "REMOVE_TASK_FROM_LIST",
+                          payload: { task },
+                        })
+                      }
+                    >
+                      <Trash2 size={15} color="red" />
+                    </button>
+                  </li>
+                ))}
+              </ul>
+            )}
 
             <div className="relative mt-2">
               <input
@@ -93,38 +144,62 @@ function CreateTask() {
                 name="title"
                 placeholder="Enter Task..."
                 className={`input w-full mt-2 leading-5 font-medium `}
+                ref={taskListRef}
               />
 
               <button
                 type="button"
-                className="btn btn-xs btn-secondary absolute top-4 right-3"
+                className="btn btn-xs btn-secondary absolute top-4 right-3 z-3"
+                onClick={() => {
+                  if (taskListRef.current) {
+                    const { value } = taskListRef.current;
+
+                    if (value.trim().length > 0) {
+                      taskListRef.current.value = "";
+                      taskDispatch({
+                        type: "ADD_TASK_TO_LIST",
+                        payload: { task: value.trim() },
+                      });
+                    }
+                  }
+                }}
               >
                 <Plus size={12} /> Add
               </button>
             </div>
           </div>
 
+          {/* Attachements */}
           <div className="md:col-span-3">
             <h4 className="text-xs text-neutral font-medium">
               Add Attachments
             </h4>
 
-            <ul className="list gap-2 mt-2">
-              <li className="list-row bg-neutral/15 items-center">
-                <Paperclip size={15} />{" "}
-                <span className="font-semibold">Hello</span>{" "}
-                <button className="float-end btn btn-xs btn-ghost">
-                  <Trash2 size={15} color="red" />
-                </button>
-              </li>
-              <li className="list-row bg-neutral/15 items-center">
-                <Paperclip size={15} />{" "}
-                <span className="font-semibold">Hello</span>{" "}
-                <button className="float-end btn btn-xs btn-ghost">
-                  <Trash2 size={15} color="red" />
-                </button>
-              </li>
-            </ul>
+            {taskState.data.attachments.length > 0 && (
+              <ul className="list gap-2 mt-2">
+                {taskState.data.attachments.map((attachment) => (
+                  <li
+                    className="list-row bg-neutral/15 items-center"
+                    key={attachment}
+                  >
+                    <Paperclip size={15} />{" "}
+                    <span className="font-semibold">{attachment}</span>{" "}
+                    <button
+                      type="button"
+                      className="float-end btn btn-xs btn-ghost"
+                      onClick={() => {
+                        taskDispatch({
+                          type: "REMOVE_ATTACHMENT",
+                          payload: { attachment },
+                        });
+                      }}
+                    >
+                      <Trash2 size={15} color="red" />
+                    </button>
+                  </li>
+                ))}
+              </ul>
+            )}
 
             <div className="relative mt-2">
               <input
@@ -132,11 +207,25 @@ function CreateTask() {
                 name="title"
                 placeholder="Enter Link..."
                 className={`input w-full mt-2 leading-5 font-medium `}
+                ref={attachmentsRef}
               />
 
               <button
                 type="button"
-                className="btn btn-xs btn-secondary absolute top-4 right-3"
+                className="btn btn-xs btn-secondary absolute top-4 right-3 z-3"
+                onClick={() => {
+                  if (attachmentsRef.current) {
+                    const { value } = attachmentsRef.current;
+
+                    if (value.trim().length > 0) {
+                      attachmentsRef.current.value = "";
+                      taskDispatch({
+                        type: "ADD_ATTACHMENTS",
+                        payload: { attachment: value.trim() },
+                      });
+                    }
+                  }
+                }}
               >
                 <Plus size={12} /> Add
               </button>
