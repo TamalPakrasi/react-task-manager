@@ -60,10 +60,10 @@ function Task({ id, task }) {
 
         <div className="mt-4">
           <h2 className="text-sm font-semibold wrap-break-word">
-            {task.title}
+            {task.title?.slice(0, 25)}
           </h2>
           <p className="text-xs text-neutral leading-5 mt-1 text-justify wrap-break-word">
-            {task.description}
+            {task.description?.slice(0, 50)}
           </p>
 
           <div className="mt-3">
