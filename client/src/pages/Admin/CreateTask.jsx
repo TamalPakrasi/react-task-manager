@@ -32,7 +32,7 @@ function CreateTask() {
   const { isLoading, isError, errorMsg, hasFetched, fetchDispatch } =
     useFetchContext();
 
-  const { error: errorAlert } = useAlert();
+  const { error: errorAlert, success: successAlert } = useAlert();
 
   const [members, setMembers] = useState([]);
 
@@ -41,14 +41,52 @@ function CreateTask() {
     createTaskInitState
   );
 
+  const createNewTask = async () => {
+    const formdata = Object.fromEntries(
+      Object.entries(taskState.data).map(([key, val]) => [
+        key,
+        val?.value ?? val,
+      ])
+    );
+
+    try {
+      await post({
+        api: "/tasks",
+        data: formdata,
+      });
+
+      taskDispatch({ type: "CLEAR_FORM" });
+
+      successAlert("Task Created Successfully");
+
+      formModalRef.current;
+    } catch (error) {
+      errorAlert(error.message);
+    } finally {
+      taskDispatch({ type: "STOP_SUBMITTING" });
+    }
+  };
+
   useEffect(() => {
     if (taskState.errors.length > 0) {
       errorAlert(taskState.errors.join(", "));
+    }
+
+    if (taskState.submit.hasValidationErrors) {
+      errorAlert("Validation Error - Submission Failed");
+    }
+
+    if (
+      !taskState.submit.hasValidationErrors &&
+      taskState.submit.isSubmitting
+    ) {
+      createNewTask();
     }
   }, [taskState]);
 
   const getAllMembers = async () => {
     try {
+      fetchDispatch({ type: "START_FETCHING" });
       const { data } = await get({ api: "/users" });
 
       setMembers(data);
@@ -63,7 +101,6 @@ function CreateTask() {
   };
 
   useEffect(() => {
-    fetchDispatch({ type: "START_FETCHING" });
     getAllMembers();
   }, []);
 
@@ -115,12 +152,16 @@ function CreateTask() {
                 name="title"
                 value={taskState.data.title.value}
                 placeholder="Enter Task Title..."
-                className={`input w-full mt-2 leading-5 font-medium `}
+                className={`input w-full mt-2 leading-5 ${
+                  taskState.data.title.error ? "border-error outline-error" : ""
+                } font-medium `}
                 onChange={handleChange}
               />
 
               {taskState.data.title.error && (
-                <p>{taskState.data.title.error}</p>
+                <p className="text-error text-sm mt-1">
+                  {taskState.data.title.error}
+                </p>
               )}
             </div>
 
@@ -131,9 +172,19 @@ function CreateTask() {
                 name="description"
                 value={taskState.data.description.value}
                 placeholder="Enter Task Description..."
-                className={`textarea w-full mt-2 leading-5 font-medium`}
+                className={`textarea w-full mt-2 leading-5 ${
+                  taskState.data.description.error
+                    ? "border-error outline-error"
+                    : ""
+                } font-medium`}
                 onChange={handleChange}
               ></textarea>
+
+              {taskState.data.description.error && (
+                <p className="text-error text-sm mt-1">
+                  {taskState.data.description.error}
+                </p>
+              )}
             </div>
 
             {/* task priority */}
@@ -142,16 +193,26 @@ function CreateTask() {
               <select
                 value={taskState.data.priority.value}
                 name="priority"
-                className={`select w-full mt-2`}
+                className={`select w-full ${
+                  taskState.data.priority.error
+                    ? "border-error outline-error"
+                    : ""
+                } mt-2`}
                 onChange={handleChange}
               >
                 <option value="" disabled={true}>
                   Choose Priority
                 </option>
-                <option value="Low">Low</option>
-                <option value="Medium">Medium</option>
-                <option value="High">High</option>
+                <option value="low">Low</option>
+                <option value="medium">Medium</option>
+                <option value="high">High</option>
               </select>
+
+              {taskState.data.priority.error && (
+                <p className="text-error text-sm mt-1">
+                  {taskState.data.priority.error}
+                </p>
+              )}
             </div>
 
             {/* task due Date */}
@@ -161,14 +222,20 @@ function CreateTask() {
                 type="date"
                 name="dueDate"
                 min={new Date().toISOString().split("T")[0]}
-                value={
-                  taskState.data.dueDate.value instanceof Date
-                    ? taskState.data.dueDate.value.toISOString().split("T")[0]
+                value={taskState.data.dueDate.value}
+                className={`input w-full ${
+                  taskState.data.dueDate.error
+                    ? "border-error outline-error"
                     : ""
-                }
-                className="input w-full mt-2"
+                } mt-2`}
                 onChange={handleChange}
               />
+
+              {taskState.data.dueDate.error && (
+                <p className="text-error text-sm mt-1">
+                  {taskState.data.dueDate.error}
+                </p>
+              )}
             </div>
 
             {/* task Assigned to */}
@@ -202,11 +269,19 @@ function CreateTask() {
                   {taskState.data.assignedTo.value.length > 3 && (
                     <div className="avatar avatar-placeholder">
                       <div className="bg-neutral text-neutral-content w-7">
-                        <span>+{taskState.data.assignedTo.length - 3}</span>
+                        <span>
+                          +{taskState.data.assignedTo.value.length - 3}
+                        </span>
                       </div>
                     </div>
                   )}
                 </div>
+              )}
+
+              {taskState.data.assignedTo.error && (
+                <p className="text-error text-sm mt-1">
+                  {taskState.data.assignedTo.error}
+                </p>
               )}
             </div>
 
@@ -244,7 +319,11 @@ function CreateTask() {
                   type="text"
                   name="title"
                   placeholder="Enter Task..."
-                  className={`input w-full mt-2 leading-5 font-medium `}
+                  className={`input w-full mt-2 leading-5 ${
+                    taskState.data.taskCheckList.error
+                      ? "border-error outline-error"
+                      : ""
+                  } font-medium `}
                   ref={taskListRef}
                 />
 
@@ -268,12 +347,18 @@ function CreateTask() {
                   <Plus size={12} /> Add
                 </button>
               </div>
+
+              {taskState.data.taskCheckList.error && (
+                <p className="text-error text-sm mt-1">
+                  {taskState.data.taskCheckList.error}
+                </p>
+              )}
             </div>
 
             {/* Attachements */}
             <div className="md:col-span-3">
               <h4 className="text-xs text-neutral font-medium">
-                Add Attachments
+                Add Attachments <span className="text-error">(optional)</span>
               </h4>
 
               {taskState.data.attachments.length > 0 && (
@@ -352,20 +437,20 @@ function CreateTask() {
               <li className="list-row px-0" key={_id}>
                 <AssignedTo
                   isForm={true}
-                  add={(id) =>
-                    taskDispatch({
-                      type: "ADD_TO_ASSIGNED_TO",
-                      payload: { id },
-                    })
-                  }
-                  remove={(id) =>
-                    taskDispatch({
-                      type: "REMOVE_FROM_ASSIGNED_TO",
-                      payload: { id },
-                    })
+                  onChange={({ checked, id }) =>
+                    checked
+                      ? taskDispatch({
+                          type: "ADD_TO_ASSIGNED_TO",
+                          payload: { id },
+                        })
+                      : taskDispatch({
+                          type: "REMOVE_FROM_ASSIGNED_TO",
+                          payload: { id },
+                        })
                   }
                   id={_id}
                   assignedTo={member}
+                  selectedMembers={taskState.data.assignedTo.value}
                 />
               </li>
             ))}

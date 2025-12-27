@@ -1,5 +1,4 @@
 import validateTask from "@utils/validateTask";
-import { data } from "react-router-dom";
 
 export const createTaskInitState = {
   data: {
@@ -14,6 +13,7 @@ export const createTaskInitState = {
 
   submit: {
     isSubmitting: false,
+    success: false,
     hasValidationErrors: false,
   },
 
@@ -90,11 +90,12 @@ const createTaskReducer = (state, action) => {
     case "SET_VALUE":
       let { name, value } = action.payload;
 
-      if (name === "dueDate") value = new Date(value);
-
       return {
         ...state,
-        data: { ...state.data, [name]: { ...state.data[name], value } },
+        data: {
+          ...state.data,
+          [name]: { ...state.data[name], error: null, value },
+        },
       };
 
     case "ADD_TO_ASSIGNED_TO":
@@ -151,11 +152,28 @@ const createTaskReducer = (state, action) => {
         : {
             ...state,
             data: updatedData,
-            submit: { isSubmitting: true, hasValidationErrors: false },
+            submit: {
+              ...state.submit,
+              isSubmitting: true,
+              hasValidationErrors: false,
+            },
           };
 
     case "STOP_SUBMITTING":
-      return { ...state, submit: { ...state.submit, isSubmitting: false } };
+      return {
+        ...state,
+        submit: {
+          ...state.submit,
+          isSubmitting: false,
+        },
+      };
+
+    case "CLEAR_FORM":
+      return {
+        ...state,
+        submit: { ...state.submit, success: true },
+        data: { ...createTaskInitState.data },
+      };
   }
 };
 

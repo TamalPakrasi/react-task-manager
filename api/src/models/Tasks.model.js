@@ -9,8 +9,14 @@ export const create = async (payload) => {
 
     payload.assignedTo = payload.assignedTo.map((id) => new ObjectId(id));
 
+    const taskCheckList = payload.taskCheckList.map((text) => ({
+      text,
+      completed: false,
+    }));
+
     const newTask = {
       ...payload,
+      taskCheckList,
       priority: payload.priority[0].toUpperCase() + payload.priority.slice(1),
       createdBy: new ObjectId(payload.createdBy),
       progress: 0,
@@ -25,6 +31,8 @@ export const create = async (payload) => {
 
     return { ...newTask, _id: res.insertedId };
   } catch (error) {
+    console.error(JSON.stringify(error.errInfo, null, 2));
+
     throwDBError("Failed to create new tasks");
   }
 };

@@ -122,7 +122,7 @@ function Task({ id, task }) {
             )}
           </div>
 
-          {task.attachments && (
+          {task.attachments?.length > 0 && (
             <button className="btn btn-sm btn-primary btn-soft">
               <Paperclip size={15} />{" "}
               <span className="text-black">{task.attachments.length}</span>

@@ -1,5 +1,3 @@
-import { useState, useEffect } from "react";
-
 import Image from "./Image";
 
 import { useAuthContext } from "@contexts/Auth/context";
@@ -8,18 +6,10 @@ function AssignedTo({
   assignedTo,
   id,
   isForm = false,
-  add = null,
-  remove = null,
+  selectedMembers = null,
+  onChange = null,
 }) {
   const { user } = useAuthContext();
-
-  const [isChecked, setIsChecked] = useState(false);
-
-  useEffect(() => {
-    if (isForm) {
-      isChecked ? add(id) : remove(id);
-    }
-  }, [isForm, isChecked]);
 
   return (
     <div className="flex items-center gap-3 col-span-2">
@@ -50,9 +40,9 @@ function AssignedTo({
         <div className="grow">
           <input
             type="checkbox"
-            checked={isChecked}
+            checked={selectedMembers.includes(id)}
             className="float-end checkbox size-5"
-            onChange={() => setIsChecked((p) => !p)}
+            onChange={(e) => onChange({ checked: e.target.checked, id })}
           />
         </div>
       )}
