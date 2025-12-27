@@ -2,7 +2,12 @@ import { useAuthContext } from "@contexts/Auth/context";
 
 import { DownloadButton } from "@components";
 
-function TasksNav({ name = "My Tasks", isActive, setIsActive, statusSummary }) {
+function TasksNav({
+  navName = "My Tasks",
+  isActive,
+  setIsActive,
+  statusSummary,
+}) {
   const { user } = useAuthContext();
 
   const handleClick = (e) => {
@@ -17,7 +22,7 @@ function TasksNav({ name = "My Tasks", isActive, setIsActive, statusSummary }) {
 
   return (
     <nav className="bg-base-200 px-5 py-4 rounded-box flex-col gap-3 md:gap-0 md:flex-row flex-between">
-      <h2 className="text-xl font-semibold">{name}</h2>
+      <h2 className="text-xl font-semibold">{navName}</h2>
 
       <ul className="menu justify-center menu-horizontal gap-2">
         <li>

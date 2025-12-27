@@ -59,8 +59,10 @@ function Task({ id, task }) {
         </div>
 
         <div className="mt-4">
-          <h2 className="text-sm font-semibold">{task.title}</h2>
-          <p className="text-xs text-neutral leading-5 mt-1 text-justify">
+          <h2 className="text-sm font-semibold wrap-break-word">
+            {task.title}
+          </h2>
+          <p className="text-xs text-neutral leading-5 mt-1 text-justify wrap-break-word">
             {task.description}
           </p>
 

@@ -8,7 +8,7 @@ import useAxios from "@hooks/useAxios";
 
 import myTasksReducer, { myTasksInitState } from "@reducers/myTasks.reducer";
 
-function MyTasks() {
+function AllTasks() {
   const [tasksState, tasksDispatch] = useReducer(
     myTasksReducer,
     myTasksInitState
@@ -66,6 +66,7 @@ function MyTasks() {
   return (
     <>
       <TasksNav
+        navName="All Tasks"
         isActive={tasksState.isActive}
         setIsActive={(value) =>
           tasksDispatch({
@@ -102,4 +103,4 @@ function MyTasks() {
   );
 }
 
-export default MyTasks;
+export default AllTasks;
