@@ -1,10 +1,13 @@
 import { useEffect, useReducer } from "react";
 
+import { useLocation } from "react-router-dom";
+
 import { TasksNav, Task, Loader, ErrorState } from "@components";
 
 import { useFetchContext } from "@contexts/Fetch/context";
 
 import useAxios from "@hooks/useAxios";
+import useAlert from "@hooks/useAlert";
 
 import myTasksReducer, { myTasksInitState } from "@reducers/myTasks.reducer";
 
@@ -13,6 +16,10 @@ function AllTasks() {
     myTasksReducer,
     myTasksInitState
   );
+
+  const { state } = useLocation();
+
+  const { success: successAlert } = useAlert();
 
   const { isLoading, isError, hasFetched, errorMsg, fetchDispatch } =
     useFetchContext();
@@ -47,6 +54,8 @@ function AllTasks() {
         type: "SET_DATA",
         payload: { statusSummary: data[1].statusSummary, tasks: data[0].tasks },
       });
+
+      if (state && "message" in state) successAlert(state.message);
     } catch (error) {
       fetchDispatch({
         type: "SET_ERROR",

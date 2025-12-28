@@ -40,7 +40,19 @@ const useAxios = (isPrivate = false) => {
     }
   };
 
-  return { post, get, put };
+  const del = async ({ api, config = {} }) => {
+    try {
+      const res = await axiosInstance.delete(api, config);
+
+      return { data: res.data.data, headers: res.headers };
+    } catch (error) {
+      throw new Error(
+        `${error.response.data.statusCode} - ${error.response.data.message}`
+      );
+    }
+  };
+
+  return { post, get, put, del };
 };
 
 export default useAxios;

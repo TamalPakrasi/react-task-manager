@@ -21,7 +21,7 @@ import createTaskReducer, {
 } from "@reducers/createTask.reducer";
 
 function CreateTask() {
-  const formModalRef = useRef(null);
+  const assignedToModalRef = useRef(null);
 
   const taskListRef = useRef(null);
 
@@ -58,8 +58,6 @@ function CreateTask() {
       taskDispatch({ type: "CLEAR_FORM" });
 
       successAlert("Task Created Successfully");
-
-      formModalRef.current;
     } catch (error) {
       errorAlert(error.message);
     } finally {
@@ -246,7 +244,8 @@ function CreateTask() {
                   type="button"
                   className="btn mt-2 btn-sm btn-secondary hover:btn-primary active:btn-primary"
                   onClick={() =>
-                    formModalRef.current && formModalRef.current.showModal()
+                    assignedToModalRef.current &&
+                    assignedToModalRef.current.showModal()
                   }
                 >
                   <Users size={15} /> Add Memebers
@@ -255,7 +254,8 @@ function CreateTask() {
                 <div
                   className="avatar-group -space-x-3 cursor-pointer"
                   onClick={() =>
-                    formModalRef.current && formModalRef.current.showModal()
+                    assignedToModalRef.current &&
+                    assignedToModalRef.current.showModal()
                   }
                 >
                   {taskState.data.assignedTo.value?.slice(0, 3).map((id) => (
@@ -429,7 +429,7 @@ function CreateTask() {
           </form>
         </Card>
 
-        <Modal modalRef={formModalRef}>
+        <Modal modalRef={assignedToModalRef}>
           <h4 className="text-lg text-neutral font-bold">Select Members</h4>
 
           <ul className="mt-7 list max-h-100 scrollbar">

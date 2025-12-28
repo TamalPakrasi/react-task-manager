@@ -88,7 +88,7 @@ const createTaskReducer = (state, action) => {
       };
 
     case "SET_VALUE":
-      let { name, value } = action.payload;
+      const { name, value } = action.payload;
 
       return {
         ...state,
