@@ -92,6 +92,8 @@ export const updateTask = async (req, res, next) => {
   try {
     const { id } = req.query;
 
+    console.log(req.body.dueDate);
+
     const updatedTask = await tasksService().update(id, req.body);
 
     return res.sendJSON(200, "Task Updated Successfully", updatedTask);

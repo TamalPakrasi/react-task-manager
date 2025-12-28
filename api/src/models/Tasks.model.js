@@ -178,6 +178,10 @@ export const update = async ({ id, payload }) => {
       payload.assignedTo = payload.assignedTo.map((id) => new ObjectId(id));
     }
 
+    if ("dueDate" in payload) {
+      payload.dueDate = new Date(payload.dueDate);
+    }
+
     const res = await Tasks.updateOne(
       { _id: new ObjectId(id) },
       { $set: payload }
