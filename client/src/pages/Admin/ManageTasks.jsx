@@ -1,6 +1,6 @@
 import { useEffect, useReducer } from "react";
 
-import { useLocation } from "react-router-dom";
+import { useLocation, useNavigate } from "react-router-dom";
 
 import { TasksNav, Task, Loader, ErrorState } from "@components";
 
@@ -17,7 +17,8 @@ function AllTasks() {
     myTasksInitState
   );
 
-  const { state } = useLocation();
+  const { state, pathname } = useLocation();
+  const navigate = useNavigate();
 
   const { success: successAlert } = useAlert();
 
@@ -55,7 +56,14 @@ function AllTasks() {
         payload: { statusSummary: data[1].statusSummary, tasks: data[0].tasks },
       });
 
-      if (state && "message" in state) successAlert(state.message);
+      if (state && "message" in state) {
+        successAlert(state.message);
+
+        navigate(pathname, {
+          replace: true,
+          state: null,
+        });
+      }
     } catch (error) {
       fetchDispatch({
         type: "SET_ERROR",

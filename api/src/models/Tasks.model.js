@@ -2,6 +2,32 @@ import { ObjectId } from "mongodb";
 import { getCollection } from "../config/db/conn.js";
 import throwDBError from "../utils/errors/Database.error.js";
 
+const updateProgress = {
+  $round: [
+    {
+      $multiply: [
+        {
+          $divide: [
+            {
+              $size: {
+                $filter: {
+                  input: "$taskCheckList",
+                  as: "item",
+                  cond: {
+                    $eq: ["$$item.completed", true],
+                  },
+                },
+              },
+            },
+            { $size: "$taskCheckList" },
+          ],
+        },
+        100,
+      ],
+    },
+  ],
+};
+
 // create new task
 export const create = async (payload) => {
   try {
@@ -182,10 +208,43 @@ export const update = async ({ id, payload }) => {
       payload.dueDate = new Date(payload.dueDate);
     }
 
-    const res = await Tasks.updateOne(
-      { _id: new ObjectId(id) },
-      { $set: payload }
-    );
+    const res = await Tasks.updateOne({ _id: new ObjectId(id) }, [
+      { $set: payload },
+      {
+        $set: {
+          progress: {
+            $cond: [
+              { $gt: [{ $size: "$taskCheckList" }, 0] },
+              updateProgress,
+              0,
+            ],
+          },
+        },
+      },
+      {
+        $set: {
+          status: {
+            $switch: {
+              branches: [
+                {
+                  case: {
+                    $eq: ["$progress", 100],
+                  },
+                  then: "Completed",
+                },
+                {
+                  case: {
+                    $gt: ["$progress", 0],
+                  },
+                  then: "In Progress",
+                },
+              ],
+              default: "Pending",
+            },
+          },
+        },
+      },
+    ]);
 
     return res.matchedCount > 0 && res.modifiedCount > 0;
   } catch (error) {
@@ -286,32 +345,6 @@ export const updateTaskCheckListAndProgress = async ({
     if (assignedTo) {
       filter.assignedTo = { $in: [new ObjectId(assignedTo)] };
     }
-
-    const updateProgress = {
-      $round: [
-        {
-          $multiply: [
-            {
-              $divide: [
-                {
-                  $size: {
-                    $filter: {
-                      input: "$taskCheckList",
-                      as: "item",
-                      cond: {
-                        $eq: ["$$item.completed", true],
-                      },
-                    },
-                  },
-                },
-                { $size: "$taskCheckList" },
-              ],
-            },
-            100,
-          ],
-        },
-      ],
-    };
 
     const res = await Tasks.updateOne(filter, [
       {
