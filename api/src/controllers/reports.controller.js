@@ -17,9 +17,11 @@ export const exportTasks = async (req, res, next) => {
       'attachment; filename="tasks_report.xlsx"'
     );
 
-    return workbook.xlsx.write(res).then(() => {
-      res.end();
-    });
+    // return workbook.xlsx.write(res).then(() => {
+    //   res.end();
+    // });
+
+    return await workbook.xlsx.write(res);
   } catch (error) {
     await next(error);
   }
@@ -42,9 +44,11 @@ export const exportUsers = async (req, res, next) => {
       'attachment; filename="user_tasks_report.xlsx"'
     );
 
-    return workbook.xlsx.write(res).then(() => {
-      res.end();
-    });
+    // return workbook.xlsx.write(res).then(() => {
+    //   res.end();
+    // });
+
+    return await workbook.xlsx.write(res);
   } catch (error) {
     await next(error);
   }
