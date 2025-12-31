@@ -22,6 +22,10 @@ function DownloadButton({ api = "tasks" }) {
         },
       });
 
+      console.log(blob);
+
+      console.log(headers);
+
       const filename = headers["content-disposition"]
         .split(";")
         .at(1)
