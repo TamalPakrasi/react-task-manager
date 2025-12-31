@@ -1,4 +1,4 @@
-import throwValidationError from "../utils/errors/validation.error.js";
+import throwValidationError from "../utils/errors/Validation.error.js";
 import { ObjectId } from "mongodb";
 
 class Validation {

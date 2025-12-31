@@ -10,7 +10,7 @@ import throwUploadError from "../utils/errors/Upload.error.js";
 import throwAuthError from "../utils/errors/Auth.error.js";
 
 // other services
-import ValidationService from "./Validation.service.js";
+import ValidationService from "./validation.service.js";
 import UplaodService from "./Upload.service.js";
 
 // models

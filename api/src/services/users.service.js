@@ -5,7 +5,7 @@ import * as UsersModel from "../models/Users.model.js";
 import throwBadRequestError from "../utils/errors/BadRequest.error.js";
 
 // other services
-import validationService from "./Validation.service.js";
+import validationService from "./validation.service.js";
 
 class Users {
   #userId = null;
