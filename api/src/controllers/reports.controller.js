@@ -12,6 +12,8 @@ export const exportTasks = async (req, res, next) => {
       "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet"
     );
 
+    res.setHeader("Access-Control-Expose-Headers", "Content-Disposition");
+
     res.setHeader(
       "Content-Disposition",
       'attachment; filename="tasks_report.xlsx"'
@@ -38,6 +40,8 @@ export const exportUsers = async (req, res, next) => {
       "Content-Type",
       "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet"
     );
+
+    res.setHeader("Access-Control-Expose-Headers", "Content-Disposition");
 
     res.setHeader(
       "Content-Disposition",
