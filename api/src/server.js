@@ -58,7 +58,7 @@ const server = http.createServer(
         ...globals,
         async (req, res) => {
           if (!req.url.startsWith("/api/")) {
-            return res.sendJSON({ route: req.url, message: "Not Found" }, 404);
+            return res.sendJSON(404, "Invalid Route");
           }
 
           await router(req, res);
