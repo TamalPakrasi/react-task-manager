@@ -7,7 +7,11 @@ const useAxios = (isPrivate = false) => {
     try {
       const res = await axiosInstance.post(api, data, config);
 
-      return { data: res.data.data, headers: res.headers };
+      return {
+        data: res.data.data,
+        headers: res.headers,
+        message: res.data.message,
+      };
     } catch (error) {
       throw new Error(
         `${error.response.data.statusCode} - ${error.response.data.message}`
@@ -22,6 +26,7 @@ const useAxios = (isPrivate = false) => {
       return {
         data: res.data?.data ? res.data.data : res.data,
         headers: res.headers,
+        message: res.data?.message ? res.data.message : "",
       };
     } catch (error) {
       throw error;
@@ -32,7 +37,11 @@ const useAxios = (isPrivate = false) => {
     try {
       const res = await axiosInstance.put(api, data, config);
 
-      return { data: res.data.data, headers: res.headers };
+      return {
+        data: res.data.data,
+        headers: res.headers,
+        message: res.data.message,
+      };
     } catch (error) {
       throw new Error(
         `${error.response.data.statusCode} - ${error.response.data.message}`
@@ -44,7 +53,11 @@ const useAxios = (isPrivate = false) => {
     try {
       const res = await axiosInstance.delete(api, config);
 
-      return { data: res.data.data, headers: res.headers };
+      return {
+        data: res.data.data,
+        headers: res.headers,
+        message: res.data.message,
+      };
     } catch (error) {
       throw new Error(
         `${error.response.data.statusCode} - ${error.response.data.message}`

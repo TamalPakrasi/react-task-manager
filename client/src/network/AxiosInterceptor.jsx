@@ -15,7 +15,8 @@ function AxiosInterceptor() {
     if (!token) return;
 
     const reqInterceptor = privateApi.interceptors.request.use((config) => {
-      config.headers.Authorization = `Bearer ${token}`;
+      if (!config.headers.Authorization)
+        config.headers.Authorization = `Bearer ${token}`;
 
       return config;
     });

@@ -16,6 +16,8 @@ export const updateTaskInitState = {
     hasValidationErrors: false,
   },
 
+  isOverDue: false,
+
   errors: [],
 };
 
@@ -30,6 +32,7 @@ const updateTaskReducer = (state, action) => {
         assignedTo,
         taskCheckList,
         attachments,
+        isOverDue,
       } = action.payload.data;
 
       return {
@@ -50,6 +53,7 @@ const updateTaskReducer = (state, action) => {
           },
           attachments,
         },
+        isOverDue,
       };
 
     case "CHANGE_DATA":

@@ -101,7 +101,7 @@ function ViewTaskDetails() {
                 taskState.task.isOverDue
               )} whitespace-nowrap`}
             >
-              {taskState.task.isOverDue ? "Over Due" : taskState.task.status}
+              {taskState.task.isOverDue ? "OverDue" : taskState.task.status}
             </div>
           </div>
 

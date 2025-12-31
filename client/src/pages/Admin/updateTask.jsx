@@ -131,6 +131,8 @@ function updateTask() {
   const handleSubmit = async (e) => {
     e.preventDefault();
 
+    if (taskState.isOverDue) return errorAlert("Cannot submit an overdue task");
+
     taskDispatch({ type: "VALIDATE" });
   };
 
@@ -251,13 +253,14 @@ function updateTask() {
             {/* task due Date */}
             <div>
               <h4 className="text-xs text-neutral font-medium">Due Date</h4>
+
               <input
                 type="date"
                 name="dueDate"
                 min={new Date().toISOString().split("T")[0]}
                 value={taskState.data.dueDate.value}
                 className={`input w-full ${
-                  taskState.data.dueDate.error
+                  taskState.data.dueDate.error || taskState.isOverDue
                     ? "border-error outline-error"
                     : ""
                 } mt-2`}
@@ -267,6 +270,13 @@ function updateTask() {
               {taskState.data.dueDate.error && (
                 <p className="text-error text-sm mt-1">
                   {taskState.data.dueDate.error}
+                </p>
+              )}
+
+              {taskState.isOverDue && (
+                <p className="text-error text-sm mt-1">
+                  Task has become been overdue. Either Change Due Date or Delete
+                  The Task
                 </p>
               )}
             </div>

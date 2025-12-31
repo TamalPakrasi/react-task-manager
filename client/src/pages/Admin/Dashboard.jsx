@@ -90,7 +90,7 @@ function Dashboard() {
             </div>
 
             <div className="stat">
-              <div className="stat-title">Over Due Tasks</div>
+              <div className="stat-title">OverDue Tasks</div>
               <div className="stat-value">
                 {dashboardState.data.stats.overDueTasks}
               </div>

@@ -48,7 +48,7 @@ function Task({ id, task }) {
               task.isOverDue
             )}`}
           >
-            {task.isOverDue ? "Over Due" : task.status}
+            {task.isOverDue ? "OverDue" : task.status}
           </div>
           <div
             className={`badge badge-sm badge-soft ${getPriorityBadgeClass(
