@@ -25,7 +25,7 @@ export default defineConfig({
     allowedHosts: ["darby-congregational-lael.ngrok-free.dev"],
     proxy: {
       "/api": {
-        target: "https://react-task-manager-njyw.onrender.com",
+        target: "http://localhost:5000",
         changeOrigin: true,
       },
     },
