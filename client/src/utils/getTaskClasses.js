@@ -1,4 +1,6 @@
-export const getStatusClass = (status) => {
+export const getStatusClass = (status, isOverDue) => {
+  if (isOverDue) return "text-error";
+
   switch (status) {
     case "Pending":
       return "text-[#5c1d70cc]";
@@ -20,7 +22,9 @@ export const getPriorityClass = (priority) => {
   }
 };
 
-export const getStatusBadgeClass = (status) => {
+export const getStatusBadgeClass = (status, isOverDue) => {
+  if (isOverDue) return "badge-error";
+
   switch (status) {
     case "Pending":
       return "badge-primary";

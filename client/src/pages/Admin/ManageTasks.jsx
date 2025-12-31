@@ -48,6 +48,8 @@ function AllTasks() {
 
     const api = status.length > 0 ? `/tasks?status=${status}` : `/tasks`;
 
+    fetchDispatch({ type: "START_FETCHING" });
+
     try {
       const { data } = await get({ api });
 
@@ -75,8 +77,6 @@ function AllTasks() {
   };
 
   useEffect(() => {
-    fetchDispatch({ type: "START_FETCHING" });
-
     getTasks();
   }, [tasksState.isActive]);
 

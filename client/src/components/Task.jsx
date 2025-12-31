@@ -44,10 +44,11 @@ function Task({ id, task }) {
         <div className="flex gap-3">
           <div
             className={`badge badge-sm badge-soft ${getStatusBadgeClass(
-              task.status
+              task.status,
+              task.isOverDue
             )}`}
           >
-            {task.status}
+            {task.isOverDue ? "Over Due" : task.status}
           </div>
           <div
             className={`badge badge-sm badge-soft ${getPriorityBadgeClass(

@@ -3,7 +3,7 @@ import { useParams } from "react-router-dom";
 import useAxios from "@hooks/useAxios";
 import useAlert from "@hooks/useAlert";
 
-function TaskChecklist({ taskList = [], setTaskList }) {
+function TaskChecklist({ taskList = [], setTaskList, isOverDue = false }) {
   const { id } = useParams();
 
   const { put } = useAxios(true);
@@ -39,13 +39,15 @@ function TaskChecklist({ taskList = [], setTaskList }) {
     <ul className="mt-0.5 list">
       {taskList.map(({ text, completed }, index) => (
         <li className="list-row px-0" key={text}>
-          <input
-            type="checkbox"
-            id={`task-${index}`}
-            className="checkbox size-5"
-            checked={completed}
-            onChange={async () => await handleChange(text)}
-          />
+          {!isOverDue && (
+            <input
+              type="checkbox"
+              id={`task-${index}`}
+              className="checkbox size-5"
+              checked={completed}
+              onChange={async () => await handleChange(text)}
+            />
+          )}
           <label htmlFor={`task-${index}`} className="font-semibold">
             {text}
           </label>

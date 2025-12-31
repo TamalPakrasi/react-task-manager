@@ -97,10 +97,11 @@ function ViewTaskDetails() {
             <h2 className="font-semibold text-base">{taskState.task.title}</h2>
             <div
               className={`badge badge-soft ${getStatusBadgeClass(
-                taskState.task.status
+                taskState.task.status,
+                taskState.task.isOverDue
               )} whitespace-nowrap`}
             >
-              {taskState.task.status}
+              {taskState.task.isOverDue ? "Over Due" : taskState.task.status}
             </div>
           </div>
 
@@ -169,6 +170,7 @@ function ViewTaskDetails() {
                   payload: { list, status },
                 })
               }
+              isOverDue={taskState.task.isOverDue}
             />
           </div>
 

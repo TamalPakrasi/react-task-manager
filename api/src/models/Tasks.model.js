@@ -82,6 +82,7 @@ export const find = async ({ status, assignedTo = null }) => {
       pipeline.push({
         $match: {
           status: { $eq: status },
+          dueDate: { $gte: new Date() },
         },
       });
     }
@@ -97,6 +98,16 @@ export const find = async ({ status, assignedTo = null }) => {
             pipeline: [
               { $project: { username: 1, email: 1, profileImageUrl: 1 } },
             ],
+          },
+        },
+        {
+          $addFields: {
+            isOverDue: {
+              $and: [
+                { $ne: ["$status", "Completed"] },
+                { $lt: ["$dueDate", new Date()] },
+              ],
+            },
           },
         },
         {
@@ -184,6 +195,19 @@ export const findById = async (id) => {
             { $project: { username: 1, email: 1, profileImageUrl: 1 } },
           ],
         },
+      },
+      {
+        $addFields: {
+          isOverDue: {
+            $and: [
+              { $ne: ["$status", "Completed"] },
+              { $lt: ["$dueDate", new Date()] },
+            ],
+          },
+        },
+      },
+      {
+        $unset: ["updatedAt"],
       },
     ];
 

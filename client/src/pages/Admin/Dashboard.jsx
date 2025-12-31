@@ -32,9 +32,11 @@ function Dashboard() {
   const { getUserDashboardData } = useGetUserDashboardData();
 
   useEffect(() => {
-    getUserDashboardData().then((data) =>
-      dashboardDispatch({ type: "SET_DATA", payload: { data } })
-    );
+    getUserDashboardData().then((data) => {
+      {
+        if (data) dashboardDispatch({ type: "SET_DATA", payload: { data } });
+      }
+    });
   }, []);
 
   if (isLoading) return <Loader className="loader-main" />;
@@ -46,7 +48,7 @@ function Dashboard() {
         desc={errorMsg}
         onRetry={async () => {
           const data = await getUserDashboardData();
-          dashboardDispatch({ type: "SET_DATA", payload: { data } });
+          if (data) dashboardDispatch({ type: "SET_DATA", payload: { data } });
         }}
       />
     );
@@ -84,6 +86,13 @@ function Dashboard() {
               <div className="stat-title">Completed Tasks</div>
               <div className="stat-value">
                 {dashboardState.data.stats.Completed}
+              </div>
+            </div>
+
+            <div className="stat">
+              <div className="stat-title">Over Due Tasks</div>
+              <div className="stat-value">
+                {dashboardState.data.stats.overDueTasks}
               </div>
             </div>
           </div>

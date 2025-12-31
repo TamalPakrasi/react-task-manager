@@ -5,6 +5,7 @@ export const dashboardInitState = {
       Pending: 0,
       "In Progress": 0,
       Completed: 0,
+      overDueTasks: 0,
     },
     dist: {
       Pending: 0,

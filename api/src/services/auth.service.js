@@ -41,7 +41,7 @@ class Auth {
 
   #generateAccessToken() {
     const token = jwt.sign({ id: this.#user._id }, ACCESS_TOKEN_SECRET, {
-      expiresIn: "15m",
+      expiresIn: "10s",
     });
     if (!token) {
       throwAuthError("Failed to generate tokens", 500);

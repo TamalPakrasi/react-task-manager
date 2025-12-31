@@ -1,5 +1,4 @@
 import authRoutes from "./routes/auth.route.js";
-import profileRoutes from "./routes/profile.route.js";
 import usersRoutes from "./routes/users.route.js";
 import tasksRoutes from "./routes/tasks.route.js";
 import dashboardRoutes from "./routes/dashboard.route.js";
@@ -13,9 +12,6 @@ const router = async (req, res) => {
   switch (route) {
     case "auth":
       await authRoutes(req, res);
-      break;
-    case "profile":
-      await profileRoutes(req, res);
       break;
     case "users":
       await usersRoutes(req, res);
