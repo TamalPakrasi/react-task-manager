@@ -7,7 +7,7 @@ import { PORT, CLIENT_SIDE_ORIGIN } from "./config/env/env.js";
 import run from "./utils/run.js";
 
 // middlewares
-import logger from "./middlewares/Logger.middleware.js";
+import logger from "./middlewares/logger.middleware.js";
 import parseParams from "./middlewares/parseParams.middleware.js";
 import parseBody from "./middlewares/parseBody.middleware.js";
 import parseCookies from "./middlewares/parseCookies.middleware.js";
