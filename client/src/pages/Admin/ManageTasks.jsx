@@ -108,7 +108,7 @@ function AllTasks() {
 
       {hasFetched &&
         (tasksState.tasks.length > 0 ? (
-          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-8 mt-5">
+          <div className="grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-3 gap-8 mt-5">
             {tasksState.tasks.map(({ _id, ...task }) => (
               <Task key={_id} id={_id} task={task} />
             ))}
