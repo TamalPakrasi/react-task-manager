@@ -1,7 +1,7 @@
 import axios from "axios";
 
 export const publicApi = axios.create({
-  baseURL: import.meta.VITE_API_BASE_URL,
+  baseURL: import.meta.env.VITE_API_BASE_URL,
   withCredentials: true,
   headers: {
     "Content-Type": "application/json",
@@ -9,7 +9,7 @@ export const publicApi = axios.create({
 });
 
 export const privateApi = axios.create({
-  baseURL: import.meta.VITE_API_BASE_URL,
+  baseURL: import.meta.env.VITE_API_BASE_URL,
   withCredentials: true,
   headers: {
     "Content-Type": "application/json",
