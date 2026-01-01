@@ -2,14 +2,12 @@ import { lazy, useEffect } from "react";
 import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
 
 // Layouts
+import AppLayout from "@layouts/AppLayout";
 import AuthLayout from "@layouts/AuthLayout";
 import MainLayout from "@layouts/MainLayout";
 
 // Route Protector
 import PrivateRoute from "@routes/PrivateRoute";
-
-// interceptor
-import AxiosInterceptor from "@network/AxiosInterceptor";
 
 // Auth Pages
 const Login = lazy(() => import("@pages/Auth/Login"));
@@ -29,6 +27,9 @@ const ViewMemberTaskDetails = lazy(() =>
   import("@pages/Users/ViewTaskDetails")
 );
 
+// Not Found Page
+const NotFound = lazy(() => import("@pages/Errors/NotFound"));
+
 function App() {
   useEffect(() => {
     document.documentElement.classList.add("scrollbar");
@@ -36,35 +37,41 @@ function App() {
 
   return (
     <Router>
-      <AxiosInterceptor />
-      {/* Auth Routes */}
       <Routes>
-        <Route path="/auth" element={<AuthLayout />}>
-          <Route path="login" element={<Login />} />
-          <Route path="register" element={<Register />} />
-        </Route>
-
-        {/* Other Routes */}
-        <Route path="/" element={<MainLayout />}>
-          {/* Admin Routes */}
-          <Route path="admin" element={<PrivateRoute allowedRole="admin" />}>
-            <Route path="dashboard" element={<AdminDashBorad />} />
-            <Route path="tasks" element={<ManageTasks />} />
-            <Route path="update-task/:id" element={<UpdateTask />} />
-            <Route path="create-tasks" element={<CreateTask />} />
-            <Route path="members" element={<ManageUsers />} />
+        <Route element={<AppLayout />}>
+          {/* Auth Routes */}
+          <Route path="/auth" element={<AuthLayout />}>
+            <Route path="login" element={<Login />} />
+            <Route path="register" element={<Register />} />
           </Route>
 
-          {/* User Routes */}
-          <Route path="member" element={<PrivateRoute allowedRole="member" />}>
-            <Route path="dashboard" element={<MemberDashBorad />} />
-            <Route path="tasks" element={<MyTasks />} />
+          {/* Other Routes */}
+          <Route path="/" element={<MainLayout />}>
+            {/* Admin Routes */}
+            <Route path="admin" element={<PrivateRoute allowedRole="admin" />}>
+              <Route path="dashboard" element={<AdminDashBorad />} />
+              <Route path="tasks" element={<ManageTasks />} />
+              <Route path="update-task/:id" element={<UpdateTask />} />
+              <Route path="create-tasks" element={<CreateTask />} />
+              <Route path="members" element={<ManageUsers />} />
+            </Route>
+
+            {/* User Routes */}
             <Route
-              path="task-details/:id"
-              element={<ViewMemberTaskDetails />}
-            />
+              path="member"
+              element={<PrivateRoute allowedRole="member" />}
+            >
+              <Route path="dashboard" element={<MemberDashBorad />} />
+              <Route path="tasks" element={<MyTasks />} />
+              <Route
+                path="task-details/:id"
+                element={<ViewMemberTaskDetails />}
+              />
+            </Route>
           </Route>
         </Route>
+
+        <Route path="*" element={<NotFound />} />
       </Routes>
     </Router>
   );
