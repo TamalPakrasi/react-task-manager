@@ -31,6 +31,8 @@ class MailService {
 
       console.log("Email sent:", info.messageId);
     } catch (error) {
+      console.error("Error Sending Mail:", error);
+
       throwMailError("Error Sending Mail");
     }
   }
