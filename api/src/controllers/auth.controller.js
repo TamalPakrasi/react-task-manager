@@ -98,10 +98,9 @@ export const logout = async (req, res, next) => {
 
     await authSevice().logout(token, userAgent);
 
-    res.setHeader(
-      "Set-Cookie",
-      "refresh_token=; path=/; HttpOnly; Expires=Thu, 01 Jan 1970 00:00:00 GMT"
-    );
+    res.setHeader("Set-Cookie", [
+      "refresh_token=; Path=/; HttpOnly; Secure; SameSite=None; Expires=Thu, 01 Jan 1970 00:00:00 GMT",
+    ]);
     return res.sendJSON(200, "User Logged Out Successfully");
   } catch (error) {
     await next(error);
