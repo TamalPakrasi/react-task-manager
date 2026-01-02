@@ -1,5 +1,5 @@
 import authSevice from "../services/auth.service.js";
-import MailService from "../services/mail.service.js";
+// import MailService from "../services/mail.service.js";
 
 // @desc    POST register new user
 // @route   POST /api/auth/register
@@ -22,24 +22,24 @@ export const register = async (req, res, next) => {
       }; HttpOnly; Secure; SameSite=None; Expires=${refresh_token.expiry.toUTCString()}; path=/`
     );
 
-    const loginTime = new Date().toString();
+    // const loginTime = new Date().toString();
 
     res.sendJSON(201, "User Registered and Logged In Successfully", {
       token: access_token.token,
       user,
     });
 
-    if (user.role !== "admin" && !user.email.endsWith("@demo.com")) {
-      MailService.sendMail({
-        to: user.email,
-        subject: "Login Successfull",
-        template: "login",
-        variables: {
-          name: user.username,
-          loginTime,
-        },
-      });
-    }
+    // if (user.role !== "admin" && !user.email.endsWith("@demo.com")) {
+    //   MailService.sendMail({
+    //     to: user.email,
+    //     subject: "Login Successfull",
+    //     template: "login",
+    //     variables: {
+    //       name: user.username,
+    //       loginTime,
+    //     },
+    //   });
+    // }
     return;
   } catch (error) {
     await next(error);
@@ -63,24 +63,24 @@ export const login = async (req, res, next) => {
       }; HttpOnly; Secure; SameSite=None; Expires=${refresh_token.expiry.toUTCString()}; path=/`
     );
 
-    const loginTime = new Date().toString();
+    // const loginTime = new Date().toString();
 
     res.sendJSON(200, "User Logged In Successfully", {
       token: access_token.token,
       user,
     });
 
-    if (user.role !== "admin" && !user.email.endsWith("@demo.com")) {
-      MailService.sendMail({
-        to: user.email,
-        subject: "Login Successfull",
-        template: "login",
-        variables: {
-          name: user.username,
-          loginTime,
-        },
-      });
-    }
+    // if (user.role !== "admin" && !user.email.endsWith("@demo.com")) {
+    //   MailService.sendMail({
+    //     to: user.email,
+    //     subject: "Login Successfull",
+    //     template: "login",
+    //     variables: {
+    //       name: user.username,
+    //       loginTime,
+    //     },
+    //   });
+    // }
     return;
   } catch (error) {
     await next(error);
